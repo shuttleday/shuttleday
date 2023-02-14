@@ -13,11 +13,13 @@ import Box from '@mui/material/Box';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import { green } from '@mui/material/colors';
+import Toolbar from '@mui/material/Toolbar';
+import AppBar from '@mui/material/AppBar';
+import MoreIcon from '@mui/icons-material/MoreVert';
+import IconButton from '@mui/material/IconButton';
 
 const Home = () => {
-  const [activeTab, setActiveTab] = useState('one');
-  const color = green[600];
+  const [activeTab, setActiveTab] = useState('1');
 
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);
@@ -46,7 +48,24 @@ const Home = () => {
             </TabList>
           </Box>
           <TabPanel value='1'>
-            <h3 alignItems='center'>date of session</h3>
+            <Box sx={{ flexGrow: 1 }}>
+              <AppBar position='static' style={{ background: 'green' }}>
+                <Toolbar>
+                  <Typography variant='h8' component='div' sx={{ flexGrow: 1 }}>
+                    News
+                  </Typography>
+                  <IconButton
+                    size='large'
+                    edge='start'
+                    color='inherit'
+                    aria-label='menu'
+                    sx={{ ml: 7 }}
+                  >
+                    <MoreIcon />
+                  </IconButton>
+                </Toolbar>
+              </AppBar>
+            </Box>
             <List
               sx={{
                 width: { xm: 300, sm: 500, lg: 440 },
