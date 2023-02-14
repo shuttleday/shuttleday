@@ -3,8 +3,6 @@ import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import { useContext } from 'react';
-import WbSunnyIcon from '@mui/icons-material/WbSunny';
-// import ModeNightIcon from '@mui/icons-material/ModeNight';
 import { ColorModeContext } from '../App';
 import Container from '@mui/material/Container';
 import { GiShuttlecock } from 'react-icons/gi';
@@ -28,7 +26,7 @@ const Header = () => {
         }}
       >
         <IconButton
-          sx={{ ml: 1, justifyContent: 'right' }}
+          sx={{ mr: 2 }}
           onClick={colorMode.toggleColorMode}
           color='inherit'
         >
