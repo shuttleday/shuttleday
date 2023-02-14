@@ -11,6 +11,7 @@ bdlist-frontend/coverage
 
 # production
 bdlist-frontend/build
+**/dist
 
 # misc
 .DS_Store
