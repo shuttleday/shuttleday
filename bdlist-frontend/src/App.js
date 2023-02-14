@@ -1,24 +1,45 @@
-import logo from './logo.svg';
 import './App.css';
+import { Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import { createContext, useMemo, useState } from 'react';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import Header from './components/header';
+import { CssBaseline } from '@mui/material';
+
+export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
 function App() {
+  const [mode, setMode] = useState('light');
+  const colorMode = useMemo(
+    () => ({
+      toggleColorMode: () => {
+        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+      },
+    }),
+    []
+  );
+
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode,
+        },
+      }),
+    [mode]
+  );
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Header />
+        <>
+          <Routes>
+            <Route path='/' element={<Home />} />
+          </Routes>
+        </>
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   );
 }
 

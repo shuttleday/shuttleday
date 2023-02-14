@@ -13,7 +13,7 @@ bdlist-frontend/coverage
 bdlist-frontend/build
 
 # misc
-bdlist-frontend/.DS_Store
+.DS_Store
 bdlist-frontend/.env.local
 bdlist-frontend/.env.development.local
 bdlist-frontend/.env.test.local
