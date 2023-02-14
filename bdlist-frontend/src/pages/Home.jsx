@@ -32,7 +32,7 @@ const Home = () => {
       justifyContent='center'
       alignItems='center'
     >
-      <Box sx={{ width: { xs: 320, sm: 400 }, typography: 'body1' }}>
+      <Box sx={{ width: { xs: 320, sm: 500 }, typography: 'body1' }}>
         <TabContext value={activeTab}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <TabList
@@ -49,17 +49,23 @@ const Home = () => {
           </Box>
           <TabPanel value='1'>
             <Box sx={{ flexGrow: 1 }}>
-              <AppBar position='static' style={{ background: 'green' }}>
+              <AppBar
+                position='static'
+                style={{
+                  background: 'green',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                }}
+              >
                 <Toolbar>
-                  <Typography variant='h8' component='div' sx={{ flexGrow: 1 }}>
-                    News
+                  <Typography variant='h7' component='div' sx={{ flexGrow: 1 }}>
+                    10 Feb (Sat)
                   </Typography>
                   <IconButton
                     size='large'
                     edge='start'
                     color='inherit'
                     aria-label='menu'
-                    sx={{ ml: 7 }}
                   >
                     <MoreIcon />
                   </IconButton>
