@@ -34,7 +34,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Stack
-          spacing={2}
+          spacing={1}
           display='flex'
           justifyContent='center'
           alignItems='center'
