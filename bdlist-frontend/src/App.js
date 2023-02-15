@@ -5,6 +5,7 @@ import { createContext, useMemo, useState } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Header from './components/header';
 import { CssBaseline } from '@mui/material';
+import Stack from '@mui/material/Stack';
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
@@ -32,12 +33,19 @@ function App() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Header />
-        <>
-          <Routes>
-            <Route path='/' element={<Home />} />
-          </Routes>
-        </>
+        <Stack
+          spacing={1}
+          display='flex'
+          justifyContent='center'
+          alignItems='center'
+        >
+          <Header />
+          <>
+            <Routes>
+              <Route path='/' element={<Home />} />
+            </Routes>
+          </>
+        </Stack>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );
