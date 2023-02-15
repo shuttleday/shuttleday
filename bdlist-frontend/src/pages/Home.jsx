@@ -74,16 +74,16 @@ const Home = () => {
             </Box>
             <List
               sx={{
-                width: { xm: 300, sm: 500, lg: 440 },
-                maxWidth: 360,
+                width: { xm: 300, sm: 452, lg: 610 },
+                maxWidth: 660,
                 bgcolor: 'background.paper',
                 maxHeight: 400,
                 overflow: 'auto',
               }}
               alignItems='center'
-              justifyContent='center'
+              justifycontent='center'
             >
-              <ListItem alignItems='flex-start'>
+              <ListItem alignitems='flex-start'>
                 <ListItemAvatar>
                   <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
                 </ListItemAvatar>
@@ -105,7 +105,7 @@ const Home = () => {
                 />
               </ListItem>
               <Divider variant='inset' component='li' />
-              <ListItem alignItems='flex-start'>
+              <ListItem alignitems='flex-start'>
                 <ListItemAvatar>
                   <Avatar
                     alt='Travis Howard'
@@ -130,7 +130,7 @@ const Home = () => {
                 />
               </ListItem>
               <Divider variant='inset' component='li' />
-              <ListItem alignItems='flex-start'>
+              <ListItem alignitems='flex-start'>
                 <ListItemAvatar>
                   <Avatar alt='Cindy Baker' src='/static/images/avatar/3.jpg' />
                 </ListItemAvatar>
@@ -151,7 +151,7 @@ const Home = () => {
                   }
                 />
               </ListItem>
-              <ListItem alignItems='flex-start'>
+              <ListItem alignitems='flex-start'>
                 <ListItemAvatar>
                   <Avatar alt='Cindy Baker' src='/static/images/avatar/3.jpg' />
                 </ListItemAvatar>
