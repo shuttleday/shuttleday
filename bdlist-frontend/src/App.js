@@ -6,6 +6,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Header from './components/header';
 import { CssBaseline } from '@mui/material';
 import Stack from '@mui/material/Stack';
+import Authentication from './pages/authentication';
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
@@ -33,19 +34,15 @@ function App() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Stack
-          spacing={1}
-          display='flex'
-          justifyContent='center'
-          alignItems='center'
-        >
+        <div justifyContent='center' alignItems='center'>
           <Header />
           <>
             <Routes>
               <Route path='/' element={<Home />} />
+              <Route path='/auth' element={<Authentication />} />
             </Routes>
           </>
-        </Stack>
+        </div>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );
