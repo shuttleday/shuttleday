@@ -2,17 +2,21 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
-  nickname: string | null;
+  nickname?: string;
+  createdAt: Date;
 }
 
 export interface UserPayment {
-  user: User;
+  user: string;
   paid: boolean;
+  paidAt?: Date | undefined;
 }
 
 export interface GameSession {
   date: Date;
-  players: UserPayment[];
+  players?: UserPayment[] | undefined;
   cost: number;
+  payTo: User;
   group: string;
+  createdAt: Date;
 }
