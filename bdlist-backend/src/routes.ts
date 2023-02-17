@@ -7,7 +7,7 @@ import { validateNewGameSessionDate } from "./utils/validateRequest";
 import * as argon2 from "argon2";
 
 export default function (app: Express) {
-  // healthcheck for API service
+  // Healthcheck for API service
   app.get(addPrefix("healthcheck"), (req: Request, res: Response) =>
     res.sendStatus(200)
   );
@@ -24,8 +24,8 @@ export default function (app: Express) {
     res.sendStatus(200);
   });
 
-  // Get game sessions based on date range
-  app.get(addPrefix("game-session"), async (req: Request, res: Response) => {
+  // Get game sessions by date range
+  app.get(addPrefix("game-sessions"), async (req: Request, res: Response) => {
     const fromDate: Date = req.query.fromDate
       ? new Date(req.query.fromDate as string)
       : new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // 7 days ago
@@ -41,6 +41,22 @@ export default function (app: Express) {
     }).toArray();
 
     res.status(200).json(gameSessions);
+  });
+
+  // Get game session by id
+  app.get(addPrefix("game-session"), async (req: Request, res: Response) => {
+    const sessionId = req.query.sessionId as string;
+
+    const gameSession = await GameSessions.find({
+      _id: new ObjectId(sessionId),
+    });
+
+    if (!gameSession)
+      return res
+        .status(404)
+        .json({ error: "Game session with that id does not exist." });
+
+    res.status(200).json(gameSession);
   });
 
   // Create new game session
