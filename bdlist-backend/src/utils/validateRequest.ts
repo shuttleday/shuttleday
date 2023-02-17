@@ -5,7 +5,7 @@ export async function validateNewGameSessionDate(
   res: Response,
   next: NextFunction
 ) {
-  if (!req.body.sessionDate)
+  if (!req.body.date)
     return res.status(400).json({ error: "Missing session date." });
 
   const sessionDate = new Date(req.body.date);

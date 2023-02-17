@@ -7,7 +7,7 @@ export interface User {
 }
 
 export interface UserPayment {
-  user: string;
+  userEmail: string;
   paid: boolean;
   paidAt?: Date | undefined;
 }

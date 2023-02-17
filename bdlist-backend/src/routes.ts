@@ -61,7 +61,7 @@ export default function (app: Express) {
         {
           $push: {
             players: {
-              user: req.body.userEmail,
+              userEmail: req.body.userEmail,
               paid: false,
               paidAt: undefined,
             },
@@ -69,19 +69,24 @@ export default function (app: Express) {
         }
       );
 
-      log.info(result);
-      res.status(200).json({ ack: result.acknowledged });
+      res.status(200).json({ result });
     }
   );
 
-  // Update payment status of user TODO
+  // Update payment status of user
   app.put(
-    addPrefix("game-session-user"),
+    addPrefix("payment-user-session"),
     async (req: Request, res: Response) => {
       const result = await GameSessions.updateOne(
-        { _id: req.body.sessionId, players: { email: req.body.playerEmail } },
-        { $set: {} }
+        {
+          _id: new ObjectId(req.body.sessionId),
+          "players.userEmail": req.body.playerEmail,
+          "players.paidAt": { $eq: null },
+        },
+        { $set: { "players.$.paid": true, "players.$.paidAt": new Date() } }
       );
+
+      res.status(200).json({ result });
     }
   );
 
@@ -101,6 +106,6 @@ export default function (app: Express) {
     };
 
     const result = await Users.insertOne(document);
-    res.status(200).json({ ack: result.acknowledged, document });
+    res.status(200).json({ result, document });
   });
 }
