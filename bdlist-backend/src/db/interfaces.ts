@@ -4,20 +4,22 @@ export interface User {
   lastName: string;
   username: string;
   createdAt: Date;
-  userType: string;
+  userType: string; // player | admin
 }
 
 export interface UserPayment {
   userEmail: string;
   paid: boolean;
-  paidAt?: Date | undefined;
+  paidAt: Date | undefined;
+  paymentImage?: string; // s3 link
 }
 
 export interface GameSession {
-  date: Date;
+  start: Date;
+  end: Date;
   players?: UserPayment[];
   cost: number;
-  payTo: User;
+  payTo: string; // username
   group: string;
   createdAt: Date;
 }

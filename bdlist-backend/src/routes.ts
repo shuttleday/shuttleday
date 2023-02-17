@@ -1,10 +1,15 @@
 import { Express, Request, Response } from "express";
 import { ObjectId } from "mongodb";
-import { addPrefix } from "./utils/apiRoute";
+import * as argon2 from "argon2";
+import fileUpload from "express-fileupload";
+import { addPrefix, processUploadedFiles, s3 } from "./utils/functions";
 import { Users, GameSessions, Passwords } from "./db/collections";
 import { GameSession, User } from "./db/interfaces";
-import { validateNewGameSessionDate } from "./utils/validateRequest";
-import * as argon2 from "argon2";
+import {
+  fileSizeLimiter,
+  validateFileUpload,
+  validateNewGameSessionDate,
+} from "./utils/validateRequest";
 import log from "./utils/logger";
 
 export default function (app: Express) {
@@ -80,10 +85,12 @@ export default function (app: Express) {
     addPrefix("game-session"),
     validateNewGameSessionDate,
     async (req: Request, res: Response) => {
-      const sessionDate = new Date(req.body.date as string);
+      const start = new Date(req.body.start as string);
+      const end = new Date(req.body.end as string);
 
       const document: GameSession = {
-        date: sessionDate,
+        start,
+        end,
         players: [],
         cost: req.body.cost as number,
         group: req.body.group,
@@ -156,16 +163,34 @@ export default function (app: Express) {
 
   // Update payment status of user TODO ADD FILE UPLOAD
   app.post(
-    addPrefix("payment-user-session"),
+    addPrefix("user-payment"),
+    fileUpload(),
+    validateFileUpload,
+    fileSizeLimiter,
     async (req: Request, res: Response) => {
       try {
+        const file = processUploadedFiles(req.files!);
+        const uploadedImage = await s3
+          .upload({
+            Bucket: process.env.AWS_S3_BUCKET_NAME!,
+            Key: file.name,
+            Body: file.data,
+          })
+          .promise();
+
         const result = await GameSessions.updateOne(
           {
             _id: new ObjectId(req.body.sessionId),
             "players.userEmail": req.body.playerEmail,
-            "players.paidAt": { $eq: null },
+            "players.paidAt": { $eq: null }, // prevents overwrites if already paid
           },
-          { $set: { "players.$.paid": true, "players.$.paidAt": new Date() } }
+          {
+            $set: {
+              "players.$.paid": true,
+              "players.$.paidAt": new Date(),
+              "players.$.paymentImage": uploadedImage.Location,
+            },
+          }
         );
 
         res.status(200).json({ result });
