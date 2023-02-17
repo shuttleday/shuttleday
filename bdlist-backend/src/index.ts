@@ -2,7 +2,7 @@ import express from "express";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-import log from "./logger";
+import log from "./utils/logger";
 import connect from "./db/connect";
 import routes from "./routes";
 
