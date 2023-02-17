@@ -4,6 +4,7 @@ export interface User {
   lastName: string;
   nickname?: string;
   createdAt: Date;
+  userType: string;
 }
 
 export interface UserPayment {
@@ -19,4 +20,10 @@ export interface GameSession {
   payTo: User;
   group: string;
   createdAt: Date;
+}
+
+export interface Password {
+  name: string;
+  password: string;
+  desc?: string;
 }

@@ -1,16 +1,27 @@
 import { Express, Request, Response } from "express";
 import { ObjectId } from "mongodb";
 import { addPrefix } from "./utils/apiRoute";
-import { Users, GameSessions } from "./db/collections";
+import { Users, GameSessions, Passwords } from "./db/collections";
 import { GameSession, User } from "./db/interfaces";
 import { validateNewGameSessionDate } from "./utils/validateRequest";
-import log from "./utils/logger";
+import * as argon2 from "argon2";
 
 export default function (app: Express) {
   // healthcheck for API service
   app.get(addPrefix("healthcheck"), (req: Request, res: Response) =>
     res.sendStatus(200)
   );
+
+  app.post(addPrefix("login"), async (req: Request, res: Response) => {
+    const candidatePw = req.body.password;
+
+    const result = await Passwords.findOne({ name: "checkpoint" });
+
+    if (!argon2.verify(result!.password, candidatePw))
+      return res.status(401).json({ error: "Invalid password." });
+
+    res.sendStatus(200);
+  });
 
   // Get game sessions based on date range
   app.get(addPrefix("game-session"), async (req: Request, res: Response) => {
@@ -53,7 +64,7 @@ export default function (app: Express) {
   );
 
   // Add user to game session
-  app.put(
+  app.patch(
     addPrefix("session-add-user"),
     async (req: Request, res: Response) => {
       const result = await GameSessions.updateOne(
@@ -73,8 +84,30 @@ export default function (app: Express) {
     }
   );
 
-  // Update payment status of user
-  app.put(
+  // Remove user from game session
+  app.patch(
+    addPrefix("session-remove-user"),
+    async (req: Request, res: Response) => {
+      const result = await GameSessions.updateOne(
+        {
+          _id: new ObjectId(req.body.sessionId),
+          "players.userEmail": req.body.userEmail,
+        },
+        {
+          $pull: {
+            players: {
+              userEmail: req.body.userEmail,
+            },
+          },
+        }
+      );
+
+      res.status(200).json({ result });
+    }
+  );
+
+  // Update payment status of user TODO ADD FILE UPLOAD
+  app.post(
     addPrefix("payment-user-session"),
     async (req: Request, res: Response) => {
       const result = await GameSessions.updateOne(
@@ -103,6 +136,7 @@ export default function (app: Express) {
       lastName,
       nickname,
       createdAt: new Date(),
+      userType: "player",
     };
 
     const result = await Users.insertOne(document);
