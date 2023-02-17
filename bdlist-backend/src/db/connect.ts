@@ -13,7 +13,7 @@ async function connect() {
     await client.connect();
     log.info("Database connected");
   } catch (error) {
-    log.error("db error", error);
+    log.error("Failed to connect to db", error);
     process.exit(1);
   }
 }

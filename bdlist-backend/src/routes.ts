@@ -24,6 +24,7 @@ export default function (app: Express) {
 
       res.sendStatus(200);
     } catch (error) {
+      log.error(error);
       res.sendStatus(500);
     }
   });
@@ -47,6 +48,7 @@ export default function (app: Express) {
 
       res.status(200).json(gameSessions);
     } catch (error) {
+      log.error(error);
       res.sendStatus(500);
     }
   });
@@ -61,6 +63,7 @@ export default function (app: Express) {
         _id: new ObjectId(sessionId),
       });
     } catch (error) {
+      log.error(error);
       res.sendStatus(500);
     }
 
@@ -92,6 +95,7 @@ export default function (app: Express) {
         const result = await GameSessions.insertOne(document);
         res.status(200).json({ result, document });
       } catch (error) {
+        log.error(error);
         res.sendStatus(500);
       }
     }
@@ -117,6 +121,7 @@ export default function (app: Express) {
 
         res.status(200).json({ result });
       } catch (error) {
+        log.error(error);
         res.sendStatus(500);
       }
     }
@@ -143,6 +148,7 @@ export default function (app: Express) {
 
         res.status(200).json({ result });
       } catch (error) {
+        log.error(error);
         res.sendStatus(500);
       }
     }
@@ -164,6 +170,7 @@ export default function (app: Express) {
 
         res.status(200).json({ result });
       } catch (error) {
+        log.error(error);
         res.sendStatus(500);
       }
     }
@@ -177,6 +184,7 @@ export default function (app: Express) {
     try {
       user = await Users.findOne({ email });
     } catch (error) {
+      log.error(error);
       res.sendStatus(500);
     }
 
@@ -208,6 +216,7 @@ export default function (app: Express) {
       const result = await Users.insertOne(document);
       res.status(200).json({ result, document });
     } catch (error) {
+      log.error(error);
       res.sendStatus(500);
     }
   });
