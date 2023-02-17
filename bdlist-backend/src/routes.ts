@@ -5,6 +5,7 @@ import { Users, GameSessions, Passwords } from "./db/collections";
 import { GameSession, User } from "./db/interfaces";
 import { validateNewGameSessionDate } from "./utils/validateRequest";
 import * as argon2 from "argon2";
+import log from "./utils/logger";
 
 export default function (app: Express) {
   // Healthcheck for API service
@@ -16,12 +17,15 @@ export default function (app: Express) {
   app.post(addPrefix("login"), async (req: Request, res: Response) => {
     const candidatePw = req.body.password;
 
-    const result = await Passwords.findOne({ name: "checkpoint" });
+    try {
+      const result = await Passwords.findOne({ name: "checkpoint" });
+      if (!argon2.verify(result!.password, candidatePw))
+        return res.status(401).json({ error: "Invalid password." });
 
-    if (!argon2.verify(result!.password, candidatePw))
-      return res.status(401).json({ error: "Invalid password." });
-
-    res.sendStatus(200);
+      res.sendStatus(200);
+    } catch (error) {
+      res.sendStatus(500);
+    }
   });
 
   // Get game sessions by date range
@@ -33,23 +37,32 @@ export default function (app: Express) {
       ? new Date(req.query.toDate as string)
       : new Date(); // current date
 
-    const gameSessions = await GameSessions.find({
-      date: {
-        $gte: fromDate,
-        $lte: toDate,
-      },
-    }).toArray();
+    try {
+      const gameSessions = await GameSessions.find({
+        date: {
+          $gte: fromDate,
+          $lte: toDate,
+        },
+      }).toArray();
 
-    res.status(200).json(gameSessions);
+      res.status(200).json(gameSessions);
+    } catch (error) {
+      res.sendStatus(500);
+    }
   });
 
   // Get game session by id
   app.get(addPrefix("game-session"), async (req: Request, res: Response) => {
     const sessionId = req.query.sessionId as string;
 
-    const gameSession = await GameSessions.findOne({
-      _id: new ObjectId(sessionId),
-    });
+    let gameSession;
+    try {
+      gameSession = await GameSessions.findOne({
+        _id: new ObjectId(sessionId),
+      });
+    } catch (error) {
+      res.sendStatus(500);
+    }
 
     if (!gameSession)
       return res
@@ -75,8 +88,12 @@ export default function (app: Express) {
         payTo: req.body.payToUser,
       };
 
-      const result = await GameSessions.insertOne(document);
-      res.status(200).json({ ack: result.acknowledged, document });
+      try {
+        const result = await GameSessions.insertOne(document);
+        res.status(200).json({ result, document });
+      } catch (error) {
+        res.sendStatus(500);
+      }
     }
   );
 
@@ -84,20 +101,24 @@ export default function (app: Express) {
   app.patch(
     addPrefix("session-add-user"),
     async (req: Request, res: Response) => {
-      const result = await GameSessions.updateOne(
-        { _id: new ObjectId(req.body.sessionId) },
-        {
-          $push: {
-            players: {
-              userEmail: req.body.userEmail,
-              paid: false,
-              paidAt: undefined,
+      try {
+        const result = await GameSessions.updateOne(
+          { _id: new ObjectId(req.body.sessionId) },
+          {
+            $push: {
+              players: {
+                userEmail: req.body.userEmail,
+                paid: false,
+                paidAt: undefined,
+              },
             },
-          },
-        }
-      );
+          }
+        );
 
-      res.status(200).json({ result });
+        res.status(200).json({ result });
+      } catch (error) {
+        res.sendStatus(500);
+      }
     }
   );
 
@@ -105,21 +126,25 @@ export default function (app: Express) {
   app.patch(
     addPrefix("session-remove-user"),
     async (req: Request, res: Response) => {
-      const result = await GameSessions.updateOne(
-        {
-          _id: new ObjectId(req.body.sessionId),
-          "players.userEmail": req.body.userEmail,
-        },
-        {
-          $pull: {
-            players: {
-              userEmail: req.body.userEmail,
-            },
+      try {
+        const result = await GameSessions.updateOne(
+          {
+            _id: new ObjectId(req.body.sessionId),
+            "players.userEmail": req.body.userEmail,
           },
-        }
-      );
+          {
+            $pull: {
+              players: {
+                userEmail: req.body.userEmail,
+              },
+            },
+          }
+        );
 
-      res.status(200).json({ result });
+        res.status(200).json({ result });
+      } catch (error) {
+        res.sendStatus(500);
+      }
     }
   );
 
@@ -127,16 +152,20 @@ export default function (app: Express) {
   app.post(
     addPrefix("payment-user-session"),
     async (req: Request, res: Response) => {
-      const result = await GameSessions.updateOne(
-        {
-          _id: new ObjectId(req.body.sessionId),
-          "players.userEmail": req.body.playerEmail,
-          "players.paidAt": { $eq: null },
-        },
-        { $set: { "players.$.paid": true, "players.$.paidAt": new Date() } }
-      );
+      try {
+        const result = await GameSessions.updateOne(
+          {
+            _id: new ObjectId(req.body.sessionId),
+            "players.userEmail": req.body.playerEmail,
+            "players.paidAt": { $eq: null },
+          },
+          { $set: { "players.$.paid": true, "players.$.paidAt": new Date() } }
+        );
 
-      res.status(200).json({ result });
+        res.status(200).json({ result });
+      } catch (error) {
+        res.sendStatus(500);
+      }
     }
   );
 
@@ -144,7 +173,12 @@ export default function (app: Express) {
   app.get(addPrefix("user"), async (req: Request, res: Response) => {
     const email = req.query.email;
 
-    const user = await Users.findOne({ email });
+    let user;
+    try {
+      user = await Users.findOne({ email });
+    } catch (error) {
+      res.sendStatus(500);
+    }
 
     if (!user)
       return res
@@ -170,7 +204,11 @@ export default function (app: Express) {
       userType: "player",
     };
 
-    const result = await Users.insertOne(document);
-    res.status(200).json({ result, document });
+    try {
+      const result = await Users.insertOne(document);
+      res.status(200).json({ result, document });
+    } catch (error) {
+      res.sendStatus(500);
+    }
   });
 }
