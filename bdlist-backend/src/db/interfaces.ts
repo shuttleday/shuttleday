@@ -15,7 +15,7 @@ export interface UserPayment {
 
 export interface GameSession {
   date: Date;
-  players?: UserPayment[] | undefined;
+  players?: UserPayment[];
   cost: number;
   payTo: User;
   group: string;
