@@ -12,6 +12,7 @@ export default function (app: Express) {
     res.sendStatus(200)
   );
 
+  // Login auth
   app.post(addPrefix("login"), async (req: Request, res: Response) => {
     const candidatePw = req.body.password;
 
@@ -122,6 +123,20 @@ export default function (app: Express) {
       res.status(200).json({ result });
     }
   );
+
+  // Get user object from email
+  app.get(addPrefix("user"), async (req: Request, res: Response) => {
+    const email = req.query.email;
+
+    const user = await Users.findOne({ email });
+
+    if (!user)
+      return res
+        .status(404)
+        .json({ error: "User with that email does not exist." });
+
+    res.status(200).json(user);
+  });
 
   // Create new user
   app.post(addPrefix("user"), async (req: Request, res: Response) => {
