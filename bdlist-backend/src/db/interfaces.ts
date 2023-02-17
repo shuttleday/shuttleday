@@ -2,7 +2,7 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
-  nickname?: string;
+  username: string;
   createdAt: Date;
   userType: string;
 }

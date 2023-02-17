@@ -47,7 +47,7 @@ export default function (app: Express) {
   app.get(addPrefix("game-session"), async (req: Request, res: Response) => {
     const sessionId = req.query.sessionId as string;
 
-    const gameSession = await GameSessions.find({
+    const gameSession = await GameSessions.findOne({
       _id: new ObjectId(sessionId),
     });
 
@@ -159,13 +159,13 @@ export default function (app: Express) {
     const email = req.body.email;
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
-    const nickname = req.body.nickname;
+    const username = req.body.username;
 
     const document: User = {
       email,
       firstName,
       lastName,
-      nickname,
+      username,
       createdAt: new Date(),
       userType: "player",
     };
