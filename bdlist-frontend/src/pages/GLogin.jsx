@@ -1,22 +1,34 @@
 import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import jwt_decode from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+import { Box } from '@mui/material';
 
 const GLogin = () => {
+  let navigate = useNavigate();
   function onResponse(response) {
-    console.log(response);
-    const user = jwt_decode(response.credential);
-    console.log(user);
+    const userObj = jwt_decode(response.credential);
+    const user = {
+      email: userObj.email,
+      username: userObj.name,
+    };
+
+    navigate('/', {
+      state: {
+        user: user,
+      },
+    });
   }
+
   return (
-    <div>
+    <Box mt={9} display='flex' justifyContent='center' alignItems='center'>
       <GoogleLogin
         onSuccess={(response) => {
           onResponse(response);
         }}
         onError={(response) => console.log('error')}
       />
-    </div>
+    </Box>
   );
 };
 

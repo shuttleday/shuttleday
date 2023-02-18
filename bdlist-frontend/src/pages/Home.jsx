@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
@@ -20,10 +20,16 @@ import IconButton from '@mui/material/IconButton';
 import { Button } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import { useLocation } from 'react-router-dom';
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState('1');
   const [open, setOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    console.log(location.state.user);
+  });
 
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
