@@ -20,6 +20,10 @@ bdlist-frontend/.env.development.local
 bdlist-frontend/.env.test.local
 bdlist-frontend/.env.production.local
 
+# dotenv environment variables file
+.env
+.env.test
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
