@@ -1,6 +1,5 @@
 import { Express, Request, Response } from "express";
 import { ObjectId } from "mongodb";
-import * as argon2 from "argon2";
 import fileUpload from "express-fileupload";
 import { addPrefix, processUploadedFiles, s3 } from "./utils/functions";
 import { Users, GameSessions } from "./db/collections";
