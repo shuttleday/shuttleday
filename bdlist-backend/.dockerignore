@@ -1,0 +1,17 @@
+.dockerignore
+.eslintignore
+.env
+.env.*
+.eslintrc.cjs
+.git
+.gitignore
+.vscode
+.svelte-kit
+.prettierignore
+.prettier
+node_modules
+Dockerfile
+docker-compose.yml
+docker-compose.local.yml
+Jenkinsfile
+README.md

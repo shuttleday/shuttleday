@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  db:
+    image: mongo:latest
+    ports:
+      - "4600:27017"
+    volumes:
+      - /Users/pierre/Documents/shuttleday-volume:/data/db
+    restart: always
+
+  app:
+    build: .
+    depends_on:
+      - db
+    ports:
+      - "3500:2600"
+    environment:
+      - MONGO_URL=mongodb://db:27017/shuttleday-prod
+    links:
+      - db
+    restart: always

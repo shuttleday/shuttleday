@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+  db:
+    image: mongo:latest
+    # mapping for Internet to access db
+    ports:
+      - "2500:27017"
+    volumes:
+      - /home/rocky/shuttleday-volume:/data/db
+    restart: always
+
+  app:
+    build: .
+    depends_on:
+      - db
+    ports:
+      - "2600:2600"
+    # access within subnet
+    environment:
+      - MONGO_URL=mongodb://db:27017/shuttleday-prod
+    links:
+      - db
+    restart: always

@@ -14,7 +14,7 @@ bdlist-frontend/build
 **/dist
 
 # misc
-bdlist-frontend/.DS_Store
+.DS_Store
 bdlist-frontend/.env.local
 bdlist-frontend/.env.development.local
 bdlist-frontend/.env.test.local
@@ -24,3 +24,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 package-lock.json
+**/.env
+.vscode
+*.log
