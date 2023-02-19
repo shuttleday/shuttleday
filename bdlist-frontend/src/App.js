@@ -6,8 +6,7 @@ import { createContext, useMemo, useState } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Header from './components/header';
 import { CssBaseline } from '@mui/material';
-import Stack from '@mui/material/Stack';
-import Authentication from './pages/authentication';
+// import Authentication from './pages/authentication';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
@@ -42,7 +41,7 @@ function App() {
             <>
               <Routes>
                 <Route path='/' element={<Home />} />
-                <Route path='/auth' element={<Authentication />} />
+                {/* <Route path='/auth' element={<Authentication />} /> */}
                 <Route path='/Glogin' element={<GLogin />} />
               </Routes>
             </>

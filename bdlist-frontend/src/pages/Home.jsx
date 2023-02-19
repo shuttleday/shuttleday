@@ -20,16 +20,24 @@ import IconButton from '@mui/material/IconButton';
 import { Button } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import { useLocation } from 'react-router-dom';
+import Modal from '@mui/material/Modal';
+import { useNavigate } from 'react-router-dom';
+import TextField from '@mui/material/TextField';
 
 const Home = () => {
+  let navigate = useNavigate();
+
   const [activeTab, setActiveTab] = useState('1');
   const [open, setOpen] = useState(false);
-  const location = useLocation();
 
   useEffect(() => {
-    console.log(location.state.user);
-  });
+    if (sessionStorage.getItem('jwtToken_Login') === null) {
+      navigate('/GLogin');
+    }
+
+    console.log(sessionStorage.getItem('jwtToken_Login'));
+    // eslint-disable-next-line
+  }, []);
 
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
@@ -46,6 +54,22 @@ const Home = () => {
     setOpen(false);
   };
 
+  const [openModal, setOpenModal] = useState(false);
+  const handleOpen = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: { xs: 320, sm: 500 },
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
   return (
     <Stack
       spacing={2}
@@ -53,6 +77,37 @@ const Home = () => {
       justifyContent='center'
       alignItems='center'
     >
+      <div>
+        <Button onClick={handleOpen}>Open modal</Button>
+        <Modal
+          open={openModal}
+          onClose={handleCloseModal}
+          aria-labelledby='modal-modal-title'
+          aria-describedby='modal-modal-description'
+        >
+          <Box sx={style}>
+            <Typography id='modal-modal-title' variant='h6' component='h2'>
+              Enter your preferred name
+            </Typography>
+            <Typography id='modal-modal-description' sx={{ mt: 2 }}>
+              <TextField
+                fullWidth
+                label='Name'
+                id='fullWidth'
+                color='secondary'
+                defaultValue='somethjing'
+              />
+            </Typography>
+            <br />
+            <Box textAlign='center'>
+              <Button variant='contained' color='success' maxWidth='100%'>
+                Enter
+              </Button>
+            </Box>
+          </Box>
+        </Modal>
+      </div>
+
       <Box sx={{ width: { xs: 320, sm: 500 }, typography: 'body1' }}>
         <TabContext value={activeTab}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
