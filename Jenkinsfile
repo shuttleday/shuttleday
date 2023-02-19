@@ -10,9 +10,10 @@ pipeline {
         when { changeset "bdlist-backend/"}
         stage ("Build Backend") {
             steps {
-                sh 'cd bdlist-backend'
-                sh 'pnpm i'
-                sh 'pnpm build'
+                dir("bdlist-backend") {
+                    sh 'pnpm i'
+                    sh 'pnpm build'
+                }
             }
         }
         stage("Docker Compose Up") {
