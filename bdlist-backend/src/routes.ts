@@ -13,12 +13,12 @@ import log from "./utils/logger";
 
 export default function (app: Express) {
   // Healthcheck for API service
-  app.get("healthcheck", (req: Request, res: Response) => {
+  app.get("/healthcheck", (req: Request, res: Response) => {
     res.sendStatus(200);
   });
 
   // Get game sessions by date range
-  app.get("game-sessions", async (req: Request, res: Response) => {
+  app.get("/game-sessions", async (req: Request, res: Response) => {
     const fromDate: Date = req.query.fromDate
       ? new Date(req.query.fromDate as string)
       : new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // 7 days ago
@@ -42,7 +42,7 @@ export default function (app: Express) {
   });
 
   // Get game session by id
-  app.get("game-session", async (req: Request, res: Response) => {
+  app.get("/game-session", async (req: Request, res: Response) => {
     const sessionId = req.query.sessionId as string;
 
     let gameSession;
@@ -65,7 +65,7 @@ export default function (app: Express) {
 
   // Create new game session
   app.post(
-    "game-session",
+    "/game-session",
     validateNewGameSessionDate,
     async (req: Request, res: Response) => {
       const start = new Date(req.body.start as string);
@@ -94,7 +94,7 @@ export default function (app: Express) {
   );
 
   // Add user to game session
-  app.post("session-add-user", async (req: Request, res: Response) => {
+  app.post("/session-add-user", async (req: Request, res: Response) => {
     try {
       const result = await GameSessions.updateOne(
         { _id: new ObjectId(req.body.sessionId) },
@@ -117,7 +117,7 @@ export default function (app: Express) {
   });
 
   // Remove user from game session
-  app.delete("session-remove-user", async (req: Request, res: Response) => {
+  app.delete("/session-remove-user", async (req: Request, res: Response) => {
     try {
       const result = await GameSessions.updateOne(
         {
@@ -142,7 +142,7 @@ export default function (app: Express) {
 
   // Update user payment status
   app.post(
-    "user-payment",
+    "/user-payment",
     fileUpload(),
     validateFileUpload,
     fileSizeLimiter,
@@ -181,7 +181,7 @@ export default function (app: Express) {
   );
 
   // Get user object from email
-  app.get("user", async (req: Request, res: Response) => {
+  app.get("/user", async (req: Request, res: Response) => {
     const email = req.query.email;
 
     let user;
@@ -201,7 +201,7 @@ export default function (app: Express) {
   });
 
   // Create new user
-  app.post("user", async (req: Request, res: Response) => {
+  app.post("/user", async (req: Request, res: Response) => {
     const email = req.body.email;
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;

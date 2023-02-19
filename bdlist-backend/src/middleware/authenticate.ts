@@ -14,6 +14,7 @@ const authenticate = async (
   next: NextFunction
 ) => {
   try {
+    if (req.path === "/healthcheck") return next();
     const token = req.headers.authorization;
     async function verify() {
       const ticket = await client.verifyIdToken({
