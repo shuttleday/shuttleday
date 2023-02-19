@@ -1,9 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import { OAuth2Client } from "google-auth-library";
-const CLIENT_ID =
-  "1068634634840-54f4f64s3pgj9vgqh26b4eseqdnvgp0v.apps.googleusercontent.com";
-const client = new OAuth2Client(CLIENT_ID);
+import { Users } from "../db/collections";
+import * as dotenv from "dotenv";
+dotenv.config();
+const CLIENT_ID = process.env.G_AUTH_CLIENT_ID;
 import log from "../utils/logger";
+
+const client = new OAuth2Client(CLIENT_ID);
 
 const authenticate = async (
   req: Request,
@@ -13,10 +16,17 @@ const authenticate = async (
   try {
     const token = req.headers.authorization;
     async function verify() {
-      await client.verifyIdToken({
+      const ticket = await client.verifyIdToken({
         idToken: token!,
         audience: CLIENT_ID,
       });
+      const payload = ticket.getPayload();
+
+      const user = await Users.findOne({ email: payload!.email });
+
+      if (!user) return;
+
+      req.ctx.user = user;
     }
     verify()
       .then(() => next())

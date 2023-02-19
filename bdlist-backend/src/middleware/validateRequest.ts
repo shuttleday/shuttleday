@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { UploadedFile } from "express-fileupload";
-import { processUploadedFiles } from "./functions";
+import { processUploadedFiles } from "../utils/functions";
 const MB = 5;
 const FILE_SIZE_LIMIT = MB * 1024 * 1024;
 

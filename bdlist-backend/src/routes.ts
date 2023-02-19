@@ -3,35 +3,20 @@ import { ObjectId } from "mongodb";
 import * as argon2 from "argon2";
 import fileUpload from "express-fileupload";
 import { addPrefix, processUploadedFiles, s3 } from "./utils/functions";
-import { Users, GameSessions, Passwords } from "./db/collections";
+import { Users, GameSessions } from "./db/collections";
 import { GameSession, User } from "./db/interfaces";
 import {
   fileSizeLimiter,
   validateFileUpload,
   validateNewGameSessionDate,
-} from "./utils/validateRequest";
+} from "./middleware/validateRequest";
 import log from "./utils/logger";
 
 export default function (app: Express) {
   // Healthcheck for API service
-  app.get(addPrefix("healthcheck"), (req: Request, res: Response) =>
-    res.sendStatus(200)
-  );
-
-  // Login auth
-  app.post(addPrefix("login"), async (req: Request, res: Response) => {
-    const candidatePw = req.body.password;
-
-    try {
-      const result = await Passwords.findOne({ name: "checkpoint" });
-      if (!argon2.verify(result!.password, candidatePw))
-        return res.status(401).json({ error: "Invalid password." });
-
-      res.sendStatus(200);
-    } catch (error) {
-      log.error(error);
-      res.sendStatus(500);
-    }
+  app.get(addPrefix("healthcheck"), (req: Request, res: Response) => {
+    log.info(req.ctx.user);
+    res.sendStatus(200);
   });
 
   // Get game sessions by date range
@@ -89,6 +74,7 @@ export default function (app: Express) {
       const end = new Date(req.body.end as string);
 
       const document: GameSession = {
+        _id: new ObjectId(),
         start,
         end,
         players: [],
@@ -162,7 +148,7 @@ export default function (app: Express) {
     }
   );
 
-  // Update user payment status TODO ADD FILE UPLOAD
+  // Update user payment status
   app.post(
     addPrefix("user-payment"),
     fileUpload(),
@@ -230,6 +216,7 @@ export default function (app: Express) {
     const username = req.body.username;
 
     const document: User = {
+      _id: new ObjectId(),
       email,
       firstName,
       lastName,

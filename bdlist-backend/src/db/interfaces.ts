@@ -1,4 +1,6 @@
-export interface User {
+import { WithId, Document } from "mongodb";
+
+export interface User extends WithId<Document> {
   email: string;
   firstName: string;
   lastName: string;
@@ -7,14 +9,14 @@ export interface User {
   userType: string; // player | admin
 }
 
-export interface UserPayment {
+export interface UserPayment extends WithId<Document> {
   userEmail: string;
   paid: boolean;
   paidAt: Date | undefined;
   paymentImage?: string; // s3 link
 }
 
-export interface GameSession {
+export interface GameSession extends WithId<Document> {
   start: Date;
   end: Date;
   players?: UserPayment[];
@@ -23,10 +25,4 @@ export interface GameSession {
   courts: string[];
   group: string;
   createdAt: Date;
-}
-
-export interface Password {
-  name: string;
-  password: string;
-  desc?: string;
 }
