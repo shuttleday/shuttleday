@@ -93,6 +93,7 @@ export default function (app: Express) {
         end,
         players: [],
         cost: req.body.cost as number,
+        courts: req.body.courts,
         group: req.body.group,
         createdAt: new Date(),
         payTo: req.body.payToUser,
@@ -109,7 +110,7 @@ export default function (app: Express) {
   );
 
   // Add user to game session
-  app.patch(
+  app.post(
     addPrefix("session-add-user"),
     async (req: Request, res: Response) => {
       try {
@@ -135,7 +136,7 @@ export default function (app: Express) {
   );
 
   // Remove user from game session
-  app.patch(
+  app.delete(
     addPrefix("session-remove-user"),
     async (req: Request, res: Response) => {
       try {
@@ -161,7 +162,7 @@ export default function (app: Express) {
     }
   );
 
-  // Update payment status of user TODO ADD FILE UPLOAD
+  // Update user payment status TODO ADD FILE UPLOAD
   app.post(
     addPrefix("user-payment"),
     fileUpload(),
@@ -173,7 +174,7 @@ export default function (app: Express) {
         const uploadedImage = await s3
           .upload({
             Bucket: process.env.AWS_S3_BUCKET_NAME!,
-            Key: file.name,
+            Key: ``,
             Body: file.data,
           })
           .promise();

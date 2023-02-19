@@ -20,6 +20,7 @@ export interface GameSession {
   players?: UserPayment[];
   cost: number;
   payTo: string; // username
+  courts: string[];
   group: string;
   createdAt: Date;
 }
