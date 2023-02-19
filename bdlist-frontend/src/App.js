@@ -2,6 +2,7 @@ import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import GLogin from './pages/GLogin';
+import NotFound from './pages/NotFound';
 import { createContext, useMemo, useState } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Header from './components/header';
@@ -43,6 +44,7 @@ function App() {
                 <Route path='/' element={<Home />} />
                 {/* <Route path='/auth' element={<Authentication />} /> */}
                 <Route path='/Glogin' element={<GLogin />} />
+                <Route path='*' element={<NotFound />} />
               </Routes>
             </>
           </div>
