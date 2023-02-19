@@ -25,7 +25,7 @@ pipeline {
             when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
             steps {
                 dir("bdlist-backend/") {
-                    sh 'sudo docker compose up --build --env $ENV_VARS -d'
+                    sh 'sudo docker compose up --build --env-file $ENV_VARS -d'
                 }
             }
         }
