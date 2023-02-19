@@ -18,6 +18,7 @@ services:
     # access within subnet
     environment:
       - MONGO_URL=mongodb://db:27017/shuttleday-prod
+      - SERVER_PORT=2600
     links:
       - db
     restart: always

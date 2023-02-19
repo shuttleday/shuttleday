@@ -6,6 +6,10 @@ pipeline {
         nodejs 'nodejs'
     }
 
+    environment {
+        ENV_VARS     = credentials('shuttleday-env-file')
+    }
+
     stages {
         
         stage ("Build Backend") {
@@ -21,7 +25,7 @@ pipeline {
             when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
             steps {
                 dir("bdlist-backend/") {
-                    sh 'sudo docker compose up --build -d'
+                    sh 'sudo docker compose up --build --env $ENV_VARS -d'
                 }
             }
         }
