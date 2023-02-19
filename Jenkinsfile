@@ -7,8 +7,9 @@ pipeline {
     }
 
     stages {
-        when { changeset "bdlist-backend/"}
+        
         stage ("Build Backend") {
+            when { changeset "bdlist-backend/"}
             steps {
                 dir("bdlist-backend") {
                     sh 'pnpm i'
@@ -21,8 +22,9 @@ pipeline {
                 sh 'sudo docker compose up'
             }
         }
-        when { changeset "bdlist-frontend/"}
+        
         stage ("Build Frontend") {
+            when { changeset "bdlist-frontend/"}
             steps {
                 sh 'echo hi'
             }
