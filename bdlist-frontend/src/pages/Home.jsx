@@ -20,15 +20,53 @@ import IconButton from '@mui/material/IconButton';
 import { Button } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import Card from '@mui/material/Card';
+import CardMedia from '@mui/material/CardMedia';
+import Bank from '../BankQR.jpg';
 import Modal from '@mui/material/Modal';
+import Chip from '@mui/material/Chip';
+import ImageIcon from '@mui/icons-material/Image';
 import { useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 
 const Home = () => {
+  //Modal style
+  const styleImage = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: { xs: 400, sm: 500, md: 900 },
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
   let navigate = useNavigate();
 
+  const amount = 'This session is $4.50 Per person';
+
+  //Control logic for Modal
+  const [openModalImage, setOpenModalImage] = useState(false);
+  const handleOpenModalImage = () => setOpenModalImage(true);
+  const handleCloseModalImage = () => setOpenModalImage(false);
+
+  //Control logic for tabs
   const [activeTab, setActiveTab] = useState('1');
   const [open, setOpen] = useState(false);
+
+  //Control logic for Images
+  const [image, setImage] = useState(null);
+  const [buttonOn, setButtonON] = useState(true);
+
+  const handleOnChange = (e) => {
+    console.log(e.target.files[0]);
+    setButtonON(false);
+    setImage(e.target.files[0]);
+  };
+
+  // const onUpload = () => {};
 
   useEffect(() => {
     if (sessionStorage.getItem('jwtToken_Login') === null) {
@@ -78,6 +116,54 @@ const Home = () => {
       alignItems='center'
     >
       <div>
+        <Modal
+          open={openModalImage}
+          onClose={handleCloseModalImage}
+          aria-labelledby='modal-modal-title'
+          aria-describedby='modal-modal-description'
+        >
+          <Box sx={styleImage}>
+            <Stack
+              spacing={2}
+              display='flex'
+              justifyContent='center'
+              alignItems='center'
+            >
+              {image !== null && (
+                <>
+                  <Card
+                    sx={{
+                      width: { sx: 400, sm: 450, md: 500 },
+                      height: { sx: 300, sm: 350, md: 300 },
+                    }}
+                  >
+                    <CardMedia
+                      component='img'
+                      image={URL.createObjectURL(image)}
+                      alt='Your Image'
+                    />
+                  </Card>
+                </>
+              )}
+              <IconButton
+                color='primary'
+                aria-label='upload picture'
+                component='label'
+              >
+                <input
+                  hidden
+                  accept='image/*'
+                  type='file'
+                  onChange={handleOnChange}
+                />
+                <ImageIcon />
+              </IconButton>
+              <Button variant='contained' color='success' disabled={buttonOn}>
+                Success
+              </Button>
+            </Stack>
+          </Box>
+        </Modal>
         <Button onClick={handleOpen}>Open modal</Button>
         <Modal
           open={openModal}
@@ -107,7 +193,6 @@ const Home = () => {
           </Box>
         </Modal>
       </div>
-
       <Box sx={{ width: { xs: 320, sm: 500 }, typography: 'body1' }}>
         <TabContext value={activeTab}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -457,192 +542,32 @@ const Home = () => {
             </Snackbar>
           </TabPanel>
           {/* ---------------------------------------------------------------------------------------------------------------------------- */}
+
           <TabPanel value='2'>
-            <List
-              sx={{
-                width: { xm: 300, sm: 500, lg: 440 },
-                maxWidth: 360,
-                bgcolor: 'background.paper',
-                maxHeight: 400,
-                overflow: 'auto',
-              }}
+            <Stack
+              spacing={2}
+              direction='column'
               alignItems='center'
               justifyContent='center'
             >
-              <ListItem alignItems='flex-start'>
-                <ListItemAvatar>
-                  <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
-                </ListItemAvatar>
-                <ListItemText
-                  primary='Mikel cool'
-                  secondary={
-                    <Fragment>
-                      <Typography
-                        sx={{ display: 'inline' }}
-                        component='span'
-                        variant='body2'
-                        color='text.primary'
-                      >
-                        Ali Connors
-                      </Typography>
-                      {" — I'll be in your neighborhood doing errands this…"}
-                    </Fragment>
-                  }
-                />
-              </ListItem>
-              <Divider variant='inset' component='li' />
-              <ListItem alignItems='flex-start'>
-                <ListItemAvatar>
-                  <Avatar
-                    alt='Travis Howard'
-                    src='/static/images/avatar/2.jpg'
-                  />
-                </ListItemAvatar>
-                <ListItemText
-                  primary='Summer BBQ'
-                  secondary={
-                    <Fragment>
-                      <Typography
-                        sx={{ display: 'inline' }}
-                        component='span'
-                        variant='body2'
-                        color='text.primary'
-                      >
-                        to Scott, Alex, Jennifer
-                      </Typography>
-                      {" — Wish I could come, but I'm out of town this…"}
-                    </Fragment>
-                  }
-                />
-              </ListItem>
-              <Divider variant='inset' component='li' />
-              <ListItem alignItems='flex-start'>
-                <ListItemAvatar>
-                  <Avatar alt='Cindy Baker' src='/static/images/avatar/3.jpg' />
-                </ListItemAvatar>
-                <ListItemText
-                  primary='Oui Oui'
-                  secondary={
-                    <Fragment>
-                      <Typography
-                        sx={{ display: 'inline' }}
-                        component='span'
-                        variant='body2'
-                        color='text.primary'
-                      >
-                        Sandra Adams
-                      </Typography>
-                      {' — Do you have Paris recommendations? Have you ever…'}
-                    </Fragment>
-                  }
-                />
-              </ListItem>
-              <ListItem alignItems='flex-start'>
-                <ListItemAvatar>
-                  <Avatar alt='Cindy Baker' src='/static/images/avatar/3.jpg' />
-                </ListItemAvatar>
-                <ListItemText
-                  primary='Oui Oui'
-                  secondary={
-                    <Fragment>
-                      <Typography
-                        sx={{ display: 'inline' }}
-                        component='span'
-                        variant='body2'
-                        color='text.primary'
-                      >
-                        Sandra Adams
-                      </Typography>
-                      {' — Do you have Paris recommendations? Have you ever…'}
-                    </Fragment>
-                  }
-                />
-              </ListItem>
-              <ListItem alignItems='flex-start'>
-                <ListItemAvatar>
-                  <Avatar alt='Cindy Baker' src='/static/images/avatar/3.jpg' />
-                </ListItemAvatar>
-                <ListItemText
-                  primary='Oui Oui'
-                  secondary={
-                    <Fragment>
-                      <Typography
-                        sx={{ display: 'inline' }}
-                        component='span'
-                        variant='body2'
-                        color='text.primary'
-                      >
-                        Sandra Adams
-                      </Typography>
-                      {' — Do you have Paris recommendations? Have you ever…'}
-                    </Fragment>
-                  }
-                />
-              </ListItem>
-              <ListItem alignItems='flex-start'>
-                <ListItemAvatar>
-                  <Avatar alt='Cindy Baker' src='/static/images/avatar/3.jpg' />
-                </ListItemAvatar>
-                <ListItemText
-                  primary='Oui Oui'
-                  secondary={
-                    <Fragment>
-                      <Typography
-                        sx={{ display: 'inline' }}
-                        component='span'
-                        variant='body2'
-                        color='text.primary'
-                      >
-                        Sandra Adams
-                      </Typography>
-                      {' — Do you have Paris recommendations? Have you ever…'}
-                    </Fragment>
-                  }
-                />
-              </ListItem>
-              <ListItem alignItems='flex-start'>
-                <ListItemAvatar>
-                  <Avatar alt='Cindy Baker' src='/static/images/avatar/3.jpg' />
-                </ListItemAvatar>
-                <ListItemText
-                  primary='Oui Oui'
-                  secondary={
-                    <Fragment>
-                      <Typography
-                        sx={{ display: 'inline' }}
-                        component='span'
-                        variant='body2'
-                        color='text.primary'
-                      >
-                        Sandra Adams
-                      </Typography>
-                      {' — Do you have Paris recommendations? Have you ever…'}
-                    </Fragment>
-                  }
-                />
-              </ListItem>
-              <ListItem alignItems='flex-start'>
-                <ListItemAvatar>
-                  <Avatar alt='Cindy Baker' src='/static/images/avatar/3.jpg' />
-                </ListItemAvatar>
-                <ListItemText
-                  primary='Oui Oui'
-                  secondary={
-                    <Fragment>
-                      <Typography
-                        sx={{ display: 'inline' }}
-                        component='span'
-                        variant='body2'
-                        color='text.primary'
-                      >
-                        Sandra Adams
-                      </Typography>
-                      {' — Do you have Paris recommendations? Have you ever…'}
-                    </Fragment>
-                  }
-                />
-              </ListItem>
-            </List>
+              <Card
+                sx={{
+                  width: { sx: 280, sm: 350, md: 400 },
+                  height: { sx: 280, sm: 590, md: 660 },
+                }}
+              >
+                <CardMedia component='img' image={Bank} alt='Paella dish' />
+              </Card>
+              <Chip label={amount} color='success' variant='outlined' />
+              <Button
+                variant='contained'
+                color='success'
+                size='large'
+                onClick={handleOpenModalImage}
+              >
+                Upload Receipt
+              </Button>
+            </Stack>
           </TabPanel>
         </TabContext>
       </Box>
