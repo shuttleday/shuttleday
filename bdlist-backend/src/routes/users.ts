@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import { Users } from "../db/collections";
 import { User } from "../db/interfaces";
 import log from "../utils/logger";
+import { checkDupeUser } from "../middleware/validateRequest";
 
 const router = Router();
 
@@ -27,18 +28,11 @@ router.get("/:email", async (req: Request, res: Response) => {
 });
 
 // Create new user
-router.post("/", async (req: Request, res: Response) => {
-  const email = req.body.email;
-
+router.post("/", checkDupeUser, async (req: Request, res: Response) => {
   try {
-    // Check if user with that email already exists
-    const userExists = await Users.findOne({ email });
-    if (userExists)
-      res.status(409).json({ error: "User with that email already exists." });
-
     const document: User = {
       _id: new ObjectId(),
-      email,
+      email: req.body.email,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       username: req.body.username,
