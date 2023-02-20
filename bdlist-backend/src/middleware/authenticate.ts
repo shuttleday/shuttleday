@@ -4,9 +4,19 @@ import { Users } from "../db/collections";
 import * as dotenv from "dotenv";
 dotenv.config();
 const CLIENT_ID = process.env.G_AUTH_CLIENT_ID;
+const CLIENT_SECRET = process.env.G_AUTH_CLIENT_SECRET;
+const REDIRECT_URI = process.env.G_AUTH_REDIRECT_URI;
 import log from "../utils/logger";
 
-const client = new OAuth2Client(CLIENT_ID);
+const client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
+
+const getAuthUrl = () => {
+  return client.generateAuthUrl({
+    access_type: "offline",
+    scope: "email",
+    include_granted_scopes: true,
+  });
+};
 
 const authenticate = async (
   req: Request,
@@ -25,8 +35,8 @@ const authenticate = async (
 
       const user = await Users.findOne({ email: payload!.email });
 
-      if (!user)
-        return res.status(404).json({ error: "That user does not exist." });
+      // Initiate OAuth2 authorization
+      if (!user) return res.redirect(301, getAuthUrl());
 
       req.ctx.user = user;
     }
