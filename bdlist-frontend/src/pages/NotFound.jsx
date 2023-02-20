@@ -2,7 +2,8 @@ import { Stack } from '@mui/system';
 import React, { useEffect } from 'react';
 import Mikel from '../img/Mikel.jpg';
 import Typography from '@mui/material/Typography';
-
+import Card from '@mui/material/Card';
+import CardMedia from '@mui/material/CardMedia';
 import { useNavigate } from 'react-router-dom';
 
 const NotFound = () => {
@@ -10,10 +11,10 @@ const NotFound = () => {
 
   useEffect(() => {
     let timer1 = setTimeout(() => navigate('/'), 5000);
-
     return () => {
       clearTimeout(timer1);
     };
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -23,13 +24,16 @@ const NotFound = () => {
       justifyContent='center'
       alignItems='center'
     >
-      <img
-        alt='mikel threaten'
-        src={Mikel}
-        style={{ width: 500, height: 500 }}
-      />
+      <Card
+        sx={{
+          width: { sx: 280, sm: 350, md: 500 },
+          height: { sx: 280, sm: 350, md: 500 },
+        }}
+      >
+        <CardMedia component='img' image={Mikel} alt='Paella dish' />
+      </Card>
       <Typography
-        sx={{ display: 'inline' }}
+        sx={{ display: 'flex' }}
         component='span'
         variant='h3'
         color='text.primary'
