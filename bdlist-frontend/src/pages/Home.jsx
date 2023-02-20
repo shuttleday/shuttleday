@@ -44,9 +44,9 @@ const Home = () => {
   const amount = 'This session is $4.50 Per person';
 
   //Control logic for Modal
-  const [openModal, setOpenModal] = React.useState(false);
-  const handleOpenModal = () => setOpenModal(true);
-  const handleCloseModal = () => setOpenModal(false);
+  const [openModalImage, setOpenModalImage] = useState(false);
+  const handleOpenModalImage = () => setOpenModalImage(true);
+  const handleCloseModalImage = () => setOpenModalImage(false);
 
   //Control logic for tabs
   const [activeTab, setActiveTab] = useState('1');
@@ -63,7 +63,7 @@ const Home = () => {
     setImage(e.target.files[0]);
   };
 
-  const onUpload = () => {};
+  // const onUpload = () => {};
 
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
@@ -89,8 +89,8 @@ const Home = () => {
     >
       <div>
         <Modal
-          open={openModal}
-          onClose={handleCloseModal}
+          open={openModalImage}
+          onClose={handleCloseModalImage}
           aria-labelledby='modal-modal-title'
           aria-describedby='modal-modal-description'
         >
@@ -507,7 +507,7 @@ const Home = () => {
                 variant='contained'
                 color='success'
                 size='large'
-                onClick={handleOpenModal}
+                onClick={handleOpenModalImage}
               >
                 Upload Receipt
               </Button>
