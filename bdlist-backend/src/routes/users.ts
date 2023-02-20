@@ -29,6 +29,7 @@ router.get("/:email", async (req: Request, res: Response) => {
 
 router
   .route("/")
+  // Get all users
   .get(async (req: Request, res: Response) => {
     try {
       const result = await Users.find().toArray();

@@ -17,9 +17,11 @@ app.use(express.json());
 // Authentication middleware
 app.use(authenticate);
 
+// Request validation middleware
 app.use(validateBody);
+// app.use(validateQuery);
 
-// start server
+// Start server
 app.listen(parseInt(port), async () => {
   log.info(`Server is running on port ${port}.`);
   connect();
