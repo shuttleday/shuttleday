@@ -45,7 +45,6 @@ const GLogin = () => {
               width: 500,
               maxWidth: '100%',
               mt: 14,
-              ml: 6,
               justifyContent: 'center',
               alignItems: 'center',
             }}
