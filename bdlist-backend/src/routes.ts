@@ -1,10 +1,12 @@
 import { Express, Request, Response } from "express";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { ObjectId } from "mongodb";
 import fileUpload from "express-fileupload";
 import { processUploadedFiles, s3 } from "./utils/functions";
 import { Users, GameSessions } from "./db/collections";
 import { GameSession, User } from "./db/interfaces";
 import {
+  adminCheck,
   fileSizeLimiter,
   validateFileUpload,
   validateNewGameSessionDate,
@@ -93,8 +95,8 @@ export default function (app: Express) {
     }
   );
 
-  // Add user to game session
-  app.post("/session-add-user", async (req: Request, res: Response) => {
+  // Add player to game session
+  app.post("/session-player", async (req: Request, res: Response) => {
     try {
       const result = await GameSessions.updateOne(
         { _id: new ObjectId(req.body.sessionId) },
@@ -116,8 +118,8 @@ export default function (app: Express) {
     }
   });
 
-  // Remove user from game session
-  app.delete("/session-remove-user", async (req: Request, res: Response) => {
+  // Remove player from game session
+  app.delete("/session-player", async (req: Request, res: Response) => {
     try {
       const result = await GameSessions.updateOne(
         {
@@ -148,6 +150,7 @@ export default function (app: Express) {
     fileSizeLimiter,
     async (req: Request, res: Response) => {
       try {
+        // Verify sessionId
         const gameSession = await GameSessions.findOne({
           _id: new ObjectId(req.body.sessionId),
         });
@@ -157,16 +160,16 @@ export default function (app: Express) {
             .status(400)
             .json({ error: "That session does not exist." });
 
+        // Upload files to S3
         const file = processUploadedFiles(req.files!);
-        const uploadedImage = await s3
-          .upload({
-            Bucket: process.env.AWS_S3_BUCKET_NAME!,
-            Key: `${gameSession.start.toUTCString()}-${req.ctx.user.username}.${
-              file.name.split(".")[1]
-            }`,
-            Body: file.data,
-          })
-          .promise();
+        const bucketParams = {
+          Bucket: process.env.AWS_S3_BUCKET_NAME!,
+          Key: `${gameSession.start.toUTCString()}-${req.ctx.user.username}.${
+            file.name.split(".")[1]
+          }`,
+          Body: file.data,
+        };
+        const data = await s3.send(new PutObjectCommand(bucketParams));
 
         const result = await GameSessions.updateOne(
           {
@@ -178,7 +181,6 @@ export default function (app: Express) {
             $set: {
               "players.$.paid": true,
               "players.$.paidAt": new Date(),
-              "players.$.paymentImage": uploadedImage.Location,
             },
           }
         );
@@ -236,4 +238,6 @@ export default function (app: Express) {
       res.sendStatus(500);
     }
   });
+
+  app.get("/payment-receipts", adminCheck, (req: Request, res: Response) => {});
 }
