@@ -25,7 +25,8 @@ const authenticate = async (
 
       const user = await Users.findOne({ email: payload!.email });
 
-      if (!user) return;
+      if (!user)
+        return res.status(404).json({ error: "That user does not exist." });
 
       req.ctx.user = user;
     }
