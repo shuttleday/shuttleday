@@ -15,7 +15,7 @@ const authenticate = async (
 ) => {
   try {
     if (req.path === "/healthcheck") return next();
-    const token = req.headers.authorization?.split(" ")[1]; // Expects { authorization: Bearer TOKEN } format
+    const token = req.headers.authorization?.split(" ")[1]; // Expects { Authorization: Bearer TOKEN } format
     async function verify() {
       const ticket = await client.verifyIdToken({
         idToken: token!,
