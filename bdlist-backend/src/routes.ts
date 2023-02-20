@@ -148,11 +148,22 @@ export default function (app: Express) {
     fileSizeLimiter,
     async (req: Request, res: Response) => {
       try {
+        const gameSession = await GameSessions.findOne({
+          _id: new ObjectId(req.body.sessionId),
+        });
+
+        if (!gameSession)
+          return res
+            .status(400)
+            .json({ error: "That session does not exist." });
+
         const file = processUploadedFiles(req.files!);
         const uploadedImage = await s3
           .upload({
             Bucket: process.env.AWS_S3_BUCKET_NAME!,
-            Key: ``,
+            Key: `${gameSession.start.toUTCString()}-${req.ctx.user.username}.${
+              file.name.split(".")[1]
+            }`,
             Body: file.data,
           })
           .promise();
