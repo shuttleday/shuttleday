@@ -20,6 +20,16 @@ export async function validateNewGameSessionDate(
   return next();
 }
 
+export async function adminCheck(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  if (req.ctx.user.userType !== "admin")
+    res.status(403).json({ error: "You must be an admin." });
+  next();
+}
+
 export function validateFileUpload(
   req: Request,
   res: Response,
