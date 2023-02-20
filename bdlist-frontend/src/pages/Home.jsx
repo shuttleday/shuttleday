@@ -115,7 +115,84 @@ const Home = () => {
       justifyContent='center'
       alignItems='center'
     >
-      <div></div>
+      <div>
+        <Modal
+          open={openModalImage}
+          onClose={handleCloseModalImage}
+          aria-labelledby='modal-modal-title'
+          aria-describedby='modal-modal-description'
+        >
+          <Box sx={styleImage}>
+            <Stack
+              spacing={2}
+              display='flex'
+              justifyContent='center'
+              alignItems='center'
+            >
+              {image !== null && (
+                <>
+                  <Card
+                    sx={{
+                      width: { sx: 400, sm: 450, md: 500 },
+                      height: { sx: 300, sm: 350, md: 300 },
+                    }}
+                  >
+                    <CardMedia
+                      component='img'
+                      image={URL.createObjectURL(image)}
+                      alt='Your Image'
+                    />
+                  </Card>
+                </>
+              )}
+              <IconButton
+                color='primary'
+                aria-label='upload picture'
+                component='label'
+              >
+                <input
+                  hidden
+                  accept='image/*'
+                  type='file'
+                  onChange={handleOnChange}
+                />
+                <ImageIcon />
+              </IconButton>
+              <Button variant='contained' color='success' disabled={buttonOn}>
+                Success
+              </Button>
+            </Stack>
+          </Box>
+        </Modal>
+        <Button onClick={handleOpen}>Open modal</Button>
+        <Modal
+          open={openModal}
+          onClose={handleCloseModal}
+          aria-labelledby='modal-modal-title'
+          aria-describedby='modal-modal-description'
+        >
+          <Box sx={style}>
+            <Typography id='modal-modal-title' variant='h6' component='h2'>
+              Enter your preferred name
+            </Typography>
+            <Typography id='modal-modal-description' sx={{ mt: 2 }}>
+              <TextField
+                fullWidth
+                label='Name'
+                id='fullWidth'
+                color='secondary'
+                defaultValue='somethjing'
+              />
+            </Typography>
+            <br />
+            <Box textAlign='center'>
+              <Button variant='contained' color='success' maxWidth='100%'>
+                Enter
+              </Button>
+            </Box>
+          </Box>
+        </Modal>
+      </div>
       <Box sx={{ width: { xs: 320, sm: 500 }, typography: 'body1' }}>
         <TabContext value={activeTab}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
