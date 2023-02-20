@@ -1,5 +1,10 @@
 import { Express, Request, Response } from "express";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  PutObjectCommand,
+  ListObjectsCommand,
+  GetObjectCommand,
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { ObjectId } from "mongodb";
 import fileUpload from "express-fileupload";
 import { processUploadedFiles, s3 } from "./utils/functions";
@@ -239,5 +244,46 @@ export default function (app: Express) {
     }
   });
 
-  app.get("/payment-receipts", adminCheck, (req: Request, res: Response) => {});
+  app.get(
+    "/payment-receipts",
+    adminCheck,
+    async (req: Request, res: Response) => {
+      // Fetch first 1000 objects in S3
+      const bucketParams = { Bucket: process.env.AWS_S3_BUCKET_NAME };
+      const getListObjects = async () => {
+        try {
+          const data = await s3.send(new ListObjectsCommand(bucketParams));
+          if (data.$metadata.httpStatusCode === 200) return data.Contents;
+        } catch (err) {
+          log.error(err);
+        }
+      };
+      const objects = await getListObjects();
+
+      // Filter ListObjects by date
+      const fromDate: Date = req.query.fromDate
+        ? new Date(req.query.fromDate as string)
+        : new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // 7 days ago
+      const toDate: Date = req.query.toDate
+        ? new Date(req.query.toDate as string)
+        : new Date(); // current date
+
+      const filteredObjects = objects?.filter((obj) => {
+        return fromDate <= obj.LastModified! && obj.LastModified! <= toDate;
+      });
+
+      // Get signed URLs for public view
+      const signedUrls = [];
+
+      for (const obj of filteredObjects!) {
+        const command = new GetObjectCommand({
+          Bucket: process.env.AWS_S3_BUCKET_NAME,
+          Key: obj.Key,
+        });
+        const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+        signedUrls.push({ key: obj.Key, signedUrl: url });
+      }
+      res.status(200).json({ signedUrls });
+    }
+  );
 }
