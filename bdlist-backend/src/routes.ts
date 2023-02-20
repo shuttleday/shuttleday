@@ -28,7 +28,7 @@ export default function (app: Express) {
   app.use("/game-sessions", gameSessionsRouter);
 
   app
-    .route("/session-player")
+    .route("/session-players")
     // Add player to game session
     .post(async (req: Request, res: Response) => {
       try {
@@ -77,7 +77,7 @@ export default function (app: Express) {
 
   // Update user payment status
   app.post(
-    "/user-payment",
+    "/user-payments",
     fileUpload(),
     validateFileUpload,
     fileSizeLimiter,

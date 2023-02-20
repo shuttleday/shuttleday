@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { Users } from "../db/collections";
 import { processUploadedFiles } from "../utils/functions";
+import { requiredBody } from "./validation";
 const MB = 5;
 const FILE_SIZE_LIMIT = MB * 1024 * 1024;
 
@@ -67,6 +68,41 @@ export async function checkDupeUser(
   const userExists = await Users.findOne({ email });
   if (userExists)
     res.status(409).json({ error: "User with that email already exists." });
+
+  next();
+}
+
+export async function validateBody(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  // Get required req.body keys
+  const required = Object.entries(requiredBody);
+
+  const tmp = required.find((path) => path[0] === req.path);
+
+  if (!tmp) return next(); // Return early if there are no targets
+  const target = tmp[1];
+
+  // Get supplied req.body keys
+  const supplied = Object.keys(req.body);
+
+  // Check if all target keys are in supplied keys
+  const missing: string[] = [];
+  target.forEach((reqKey) => {
+    if (!supplied.includes(reqKey)) missing.push(reqKey);
+  });
+
+  // Return 400 with dynamic error message if there are missing keys
+  if (missing.length > 0) {
+    let missingKeys = "";
+    missing.forEach((word, index) => {
+      if (index !== missing.length - 1) missingKeys = `${missingKeys} ${word},`;
+      else missingKeys = `${missingKeys} ${word}`;
+    });
+    return res.status(400).json({ error: `Missing keys:${missingKeys}` });
+  }
 
   next();
 }

@@ -6,6 +6,7 @@ import log from "./utils/logger";
 import connect from "./db/connect";
 import routes from "./routes";
 import authenticate from "./middleware/authenticate";
+import { validateBody } from "./middleware/validateRequest";
 
 const port = process.env.SERVER_PORT as string;
 const app = express();
@@ -15,6 +16,8 @@ app.use(express.json());
 
 // Authentication middleware
 app.use(authenticate);
+
+app.use(validateBody);
 
 // start server
 app.listen(parseInt(port), async () => {
