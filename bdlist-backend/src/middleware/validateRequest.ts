@@ -52,7 +52,7 @@ export function fileSizeLimiter(
   if (file.size > FILE_SIZE_LIMIT)
     return res
       .status(413)
-      .json({ error: `Uploaded file is over the file size limit of ${MB} Mb` });
+      .json({ error: `Uploaded file is over the file size limit of ${MB} MB` });
 
   next();
 }
