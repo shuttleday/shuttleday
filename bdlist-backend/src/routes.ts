@@ -5,7 +5,7 @@ import {
   GetObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { ObjectId } from "mongodb";
+import { ObjectId, PullOperator, PushOperator } from "mongodb";
 import fileUpload from "express-fileupload";
 import { processUploadedFiles, s3, validateDates } from "./utils/functions";
 import { GameSessions } from "./db/collections";
@@ -19,6 +19,7 @@ import gameSessionsRouter from "./routes/game-sessions";
 import usersRouter from "./routes/users";
 import authRouter from "./routes/auth";
 import gAuthRouter from "./routes/g-auth";
+import { GameSession } from "db/interfaces";
 
 export default function (app: Express) {
   // Healthcheck for API service
@@ -34,10 +35,9 @@ export default function (app: Express) {
   app
     .route("/session-players")
     // Add player to game session
-    // TODO merge both queries
     .post(async (req: Request, res: Response) => {
       try {
-        const result = await GameSessions.updateOne(
+        const result = await GameSessions.findOneAndUpdate(
           { _id: new ObjectId(req.body.sessionId) },
           {
             $push: {
@@ -46,25 +46,21 @@ export default function (app: Express) {
                 paid: false,
                 paidAt: undefined,
               },
-            },
-          }
+            } as PushOperator<Document>, // Required or TS complains. Possibly a bug?
+          },
+          { returnDocument: "after" }
         );
 
-        const updated = await GameSessions.findOne({
-          _id: new ObjectId(req.body.sessionId),
-        });
-
-        res.status(200).json({ players: updated!.players });
+        res.status(200).json({ players: result.value?.players });
       } catch (error) {
         log.error(req, error);
         res.sendStatus(500);
       }
     })
     // Remove player from game session
-    // TODO merge both queries
     .delete(async (req: Request, res: Response) => {
       try {
-        const result = await GameSessions.updateOne(
+        const result = await GameSessions.findOneAndUpdate(
           {
             _id: new ObjectId(req.body.sessionId),
             "players.userEmail": req.body.userEmail,
@@ -74,15 +70,12 @@ export default function (app: Express) {
               players: {
                 userEmail: req.body.userEmail,
               },
-            },
-          }
+            } as PullOperator<Document>, // Required or TS complains. Possibly a bug?
+          },
+          { returnDocument: "after" }
         );
 
-        const updated = await GameSessions.findOne({
-          _id: new ObjectId(req.body.sessionId),
-        });
-
-        res.status(200).json({ players: updated!.players });
+        res.status(200).json({ players: result.value?.players });
       } catch (error) {
         log.error(req, error);
         res.sendStatus(500);
