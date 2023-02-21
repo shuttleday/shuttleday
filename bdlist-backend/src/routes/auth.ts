@@ -52,15 +52,24 @@ router.post("/refreshToken", async (req: Request, res: Response) => {
       return res.status(404).json({ error: "No user with that email" });
 
     if (!found.refreshToken)
-      return res.status(401).json({ error: "Please sign in first." });
+      return res.status(401).json({ error: "Please sign in first" });
 
     if (!(await argon2.verify(found.refreshToken, candidateToken)))
       return res.sendStatus(403);
 
-    // Return new access token
-    const accessToken = genAccessToken(decoded.userEmail);
+    // Generate new access token
+    const newAccessToken = genAccessToken(decoded.userEmail);
 
-    res.status(200).json({ accessToken });
+    // Save new access token to db
+    const result = await Users.updateOne(
+      { email: decoded.userEmail },
+      { $set: { accessToken: await argon2.hash(newAccessToken) } }
+    );
+
+    if (result.modifiedCount === 0) res.sendStatus(500);
+
+    // Return new access token
+    res.status(200).json({ accessToken: newAccessToken });
   } catch (error) {
     log.error(req, error);
     res.sendStatus(500);
