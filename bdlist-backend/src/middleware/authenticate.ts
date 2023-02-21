@@ -31,8 +31,7 @@ const authenticate = async (
 
     const found = await Users.findOne({ email: decoded.userEmail });
 
-    if (!found)
-      return res.status(404).json({ error: "No user with that email" });
+    if (!found) return res.status(404).json({ error: "Invalid JWT" });
 
     if (!found.accessToken)
       return res.status(401).json({ error: "Please sign in first." });
