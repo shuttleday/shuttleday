@@ -8,10 +8,8 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 const CLIENT_ID = process.env.G_AUTH_CLIENT_ID;
-const CLIENT_SECRET = process.env.G_AUTH_CLIENT_SECRET;
-const REDIRECT_URI = process.env.G_AUTH_REDIRECT_URI;
 
-const client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
+const client = new OAuth2Client(CLIENT_ID);
 
 const REGION = "ap-southeast-1";
 export const s3 = new S3Client({
