@@ -3,7 +3,7 @@ services:
   db:
     image: mongo:latest
     ports:
-      - "4600:27017"
+      - "2500:27017"
     volumes:
       - /Users/pierre/Documents/shuttleday-volume:/data/db
     restart: always
@@ -13,9 +13,16 @@ services:
     depends_on:
       - db
     ports:
-      - "3500:2600"
+      - "3600:2600"
     environment:
       - MONGO_URL=mongodb://db:27017/shuttleday-prod
+      - SERVER_PORT=${SERVER_PORT}
+      - AWS_S3_SECRET_ACCESS_KEY=${AWS_S3_SECRET_ACCESS_KEY}
+      - AWS_S3_ACCESS_KEY_ID=${AWS_S3_ACCESS_KEY_ID}
+      - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
+      - G_AUTH_CLIENT_ID=${G_AUTH_CLIENT_ID}
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
     links:
       - db
     restart: always
