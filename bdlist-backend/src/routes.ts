@@ -32,6 +32,7 @@ export default function (app: Express) {
   app
     .route("/session-players")
     // Add player to game session
+    // TODO merge both queries
     .post(async (req: Request, res: Response) => {
       try {
         const result = await GameSessions.updateOne(
@@ -47,13 +48,18 @@ export default function (app: Express) {
           }
         );
 
-        res.status(200).json({ result });
+        const updated = await GameSessions.findOne({
+          _id: new ObjectId(req.body.sessionId),
+        });
+
+        res.status(200).json({ players: updated!.players });
       } catch (error) {
         log.error(req, error);
         res.sendStatus(500);
       }
     })
     // Remove player from game session
+    // TODO merge both queries
     .delete(async (req: Request, res: Response) => {
       try {
         const result = await GameSessions.updateOne(
@@ -70,7 +76,11 @@ export default function (app: Express) {
           }
         );
 
-        res.status(200).json({ result });
+        const updated = await GameSessions.findOne({
+          _id: new ObjectId(req.body.sessionId),
+        });
+
+        res.status(200).json({ players: updated!.players });
       } catch (error) {
         log.error(req, error);
         res.sendStatus(500);
