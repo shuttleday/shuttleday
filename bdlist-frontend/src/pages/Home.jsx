@@ -22,7 +22,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
-import Bank from '../BankQR.jpg';
+import Bank from '../img/BankQR.jpg';
 import Modal from '@mui/material/Modal';
 import Chip from '@mui/material/Chip';
 import ImageIcon from '@mui/icons-material/Image';
@@ -31,21 +31,29 @@ import TextField from '@mui/material/TextField';
 import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
-import FileCopyIcon from '@mui/icons-material/FileCopyOutlined';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import InfoIcon from '@mui/icons-material/Info';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 const Home = () => {
   const actions = [
-    { icon: <FileCopyIcon />, name: 'Copy', operation: 'product' },
-    { icon: <ReceiptIcon />, name: 'Save', operation: 'payment' },
+    {
+      icon: <ManageAccountsIcon />,
+      name: 'Manage User',
+      operation: 'management',
+    },
+    { icon: <ReceiptIcon />, name: 'Payment History', operation: 'payment' },
+    { icon: <InfoIcon />, name: 'User Details', operation: 'details' },
   ];
 
   function handleSpeedDial(operation) {
     if (operation === 'payment') {
       console.log('payments');
-    } else if (operation === 'tag') {
-      console.log('other stuff');
+    } else if (operation === 'details') {
+      navigate('/details');
+    } else if (operation === 'management') {
+      navigate('/management');
     }
   }
 
