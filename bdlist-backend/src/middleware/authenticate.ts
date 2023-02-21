@@ -33,6 +33,7 @@ const authenticate = async (
     if (!(await argon2.verify(found.accessToken, token)))
       return res.sendStatus(403);
 
+    req.ctx.user = found;
     next();
   } catch (error) {
     log.error(req, error);
