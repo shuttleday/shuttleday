@@ -5,7 +5,7 @@ import log from "../utils/logger";
 const router = Router();
 
 // Endpoint to validate Google JWT
-router.post("/g-auth", (req: Request, res: Response) => {
+router.post("/", (req: Request, res: Response) => {
   try {
     validateGJwt(req)
       .then((payload) => res.status(200).json({ payload }))
