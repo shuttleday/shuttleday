@@ -14,7 +14,7 @@ export async function validateNewGameSessionDate(
   if (sessionDate < new Date())
     return res.status(400).json({ error: "Cannot create session in the past" });
 
-  return next();
+  next();
 }
 
 export async function adminCheck(
