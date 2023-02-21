@@ -17,7 +17,7 @@ services:
       - "2600:2600"
     # access within subnet
     environment:
-      - MONGO_URL=${MONGO_URL}
+      - MONGO_URL=mongodb://db:27017/shuttleday-prod
       - SERVER_PORT=${SERVER_PORT}
       - AWS_S3_SECRET_ACCESS_KEY=${AWS_S3_SECRET_ACCESS_KEY}
       - AWS_S3_ACCESS_KEY_ID=${AWS_S3_ACCESS_KEY_ID}
