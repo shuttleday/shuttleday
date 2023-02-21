@@ -17,7 +17,7 @@ import {
 import log from "./utils/logger";
 import gameSessionsRouter from "./routes/game-sessions";
 import usersRouter from "./routes/users";
-import signInRouter from "./routes/signin";
+import authRouter from "./routes/auth";
 
 export default function (app: Express) {
   // Healthcheck for API service
@@ -25,7 +25,7 @@ export default function (app: Express) {
     res.sendStatus(200);
   });
 
-  app.use("/signin", signInRouter);
+  app.use("/auth", authRouter);
   app.use("/users", usersRouter);
   app.use("/game-sessions", gameSessionsRouter);
 

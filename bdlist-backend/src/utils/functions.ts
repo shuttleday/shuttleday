@@ -2,6 +2,7 @@ import { Request } from "express";
 import { S3Client } from "@aws-sdk/client-s3";
 import { OAuth2Client } from "google-auth-library";
 import fileUpload, { UploadedFile } from "express-fileupload";
+import jwt from "jsonwebtoken";
 
 import * as dotenv from "dotenv";
 dotenv.config();
@@ -44,4 +45,24 @@ export function validateDates(req: Request) {
   const toDate: Date = req.query.toDate
     ? new Date(req.query.toDate as string)
     : new Date(); // current date
+}
+
+export function genAccessToken(userEmail: string) {
+  return jwt.sign({ userEmail }, process.env.ACCESS_TOKEN_SECRET!, {
+    expiresIn: "7d",
+  });
+}
+
+export function genRefreshToken(userEmail: string) {
+  return jwt.sign({ userEmail }, process.env.REFRESH_TOKEN_SECRET!, {
+    expiresIn: "120d",
+  });
+}
+
+export function verifyAccessToken(token: string) {
+  return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as jwt.JwtPayload;
+}
+
+export function verifyRefreshToken(token: string) {
+  return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET!) as jwt.JwtPayload;
 }

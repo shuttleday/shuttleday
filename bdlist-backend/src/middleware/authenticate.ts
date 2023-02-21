@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import * as argon2 from "argon2";
-import jwt, { JsonWebTokenError } from "jsonwebtoken";
+import { JsonWebTokenError } from "jsonwebtoken";
+import { verifyAccessToken } from "../utils/functions";
 import { Users } from "../db/collections";
 
 import log from "../utils/logger";
@@ -19,10 +20,7 @@ const authenticate = async (
 
     if (!token) return res.status(403);
 
-    const decoded = jwt.verify(
-      token,
-      process.env.ACCESS_TOKEN_SECRET!
-    ) as jwt.JwtPayload;
+    const decoded = verifyAccessToken(token);
 
     const found = await Users.findOne({ email: decoded.userEmail });
 
