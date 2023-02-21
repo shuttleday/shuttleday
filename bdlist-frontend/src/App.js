@@ -42,6 +42,7 @@ function App() {
             <>
               <Routes>
                 <Route path='/' element={<Home />} />
+
                 {/* <Route path='/auth' element={<Authentication />} /> */}
                 <Route path='/Glogin' element={<GLogin />} />
                 <Route path='*' element={<NotFound />} />
