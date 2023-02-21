@@ -2,19 +2,21 @@ import { Request, Response, Router } from "express";
 import * as argon2 from "argon2";
 import { Users } from "../db/collections";
 import log from "../utils/logger";
-import gauth from "../middleware/g-auth.middleware";
 import {
   genAccessToken,
   genRefreshToken,
+  validateGJwt,
   verifyRefreshToken,
 } from "../utils/functions";
 
 const router = Router();
 
 // Get Shuttleday JWT
-router.post("/signin", gauth, async (req: Request, res: Response) => {
+router.post("/signin", async (req: Request, res: Response) => {
   try {
-    const userEmail = req.body.email;
+    const decoded = await validateGJwt(req);
+
+    const userEmail = decoded?.email!;
     const accessToken = genAccessToken(userEmail);
     const refreshToken = genRefreshToken(userEmail);
 
@@ -32,8 +34,10 @@ router.post("/signin", gauth, async (req: Request, res: Response) => {
       return res.status(404).json({ error: "No user with that email" });
 
     res.status(200).json({ accessToken, refreshToken });
-  } catch (error) {
-    log.error(req, error);
+  } catch (error: any) {
+    if (error.message.startsWith("Invalid token signature"))
+      return res.sendStatus(401);
+    log.error(error);
     res.sendStatus(500);
   }
 });
