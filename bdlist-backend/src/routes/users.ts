@@ -4,6 +4,7 @@ import { Users } from "../db/collections";
 import { User } from "../db/interfaces";
 import log from "../utils/logger";
 import { checkDupeUser } from "../middleware/validateRequest";
+import gauth from "../middleware/g-auth.middleware";
 
 const router = Router();
 
@@ -32,7 +33,14 @@ router
   // Get all users
   .get(async (req: Request, res: Response) => {
     try {
-      const result = await Users.find().toArray();
+      const response = await Users.find().toArray();
+
+      // Don't show hashed tokens
+      const result = response.map((user) => {
+        delete user.accessToken;
+        delete user.refreshToken;
+        return user;
+      });
 
       res.status(200).json({ result });
     } catch (error) {
@@ -41,7 +49,8 @@ router
     }
   })
   // Create new user
-  .post(checkDupeUser, async (req: Request, res: Response) => {
+  // Only allowed if supplied with a valid Google JWT
+  .post(checkDupeUser, gauth, async (req: Request, res: Response) => {
     try {
       const document: User = {
         _id: new ObjectId(),
@@ -51,6 +60,8 @@ router
         username: req.body.username,
         createdAt: new Date(),
         userType: "player",
+        accessToken: undefined,
+        refreshToken: undefined,
       };
 
       const result = await Users.insertOne(document);
