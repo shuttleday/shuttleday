@@ -1,0 +1,22 @@
+import { Request, Response, Router } from "express";
+import { validateGJwt } from "../utils/functions";
+import log from "../utils/logger";
+
+const router = Router();
+
+// Endpoint to validate Google JWT
+router.post("/g-auth", (req: Request, res: Response) => {
+  try {
+    validateGJwt(req)
+      .then((payload) => res.status(200).json({ payload }))
+      .catch((err) => {
+        log.error(err);
+        return res.sendStatus(403);
+      });
+  } catch (error) {
+    log.error(error);
+    res.sendStatus(500);
+  }
+});
+
+export default router;
