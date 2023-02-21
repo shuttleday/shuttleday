@@ -14,7 +14,7 @@ router.post("/g-auth", (req: Request, res: Response) => {
         return res.sendStatus(403);
       });
   } catch (error) {
-    log.error(error);
+    log.error(req, error);
     res.sendStatus(500);
   }
 });

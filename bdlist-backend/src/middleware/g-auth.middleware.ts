@@ -15,7 +15,7 @@ const gauth = async (req: Request, res: Response, next: NextFunction) => {
         return res.sendStatus(403);
       });
   } catch (error) {
-    log.error(error);
+    log.error(req, error);
     res.sendStatus(500);
   }
 };

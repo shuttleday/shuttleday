@@ -28,7 +28,7 @@ router
 
       res.status(200).json(gameSessions);
     } catch (error) {
-      log.error(error);
+      log.error(req, error);
       res.sendStatus(500);
     }
   })

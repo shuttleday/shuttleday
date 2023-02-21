@@ -16,7 +16,7 @@ router.get("/:email", async (req: Request, res: Response) => {
   try {
     user = await Users.findOne({ email });
   } catch (error) {
-    log.error(error);
+    log.error(req, error);
     res.sendStatus(500);
   }
 

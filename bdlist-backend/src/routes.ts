@@ -49,7 +49,7 @@ export default function (app: Express) {
 
         res.status(200).json({ result });
       } catch (error) {
-        log.error(error);
+        log.error(req, error);
         res.sendStatus(500);
       }
     })
@@ -72,7 +72,7 @@ export default function (app: Express) {
 
         res.status(200).json({ result });
       } catch (error) {
-        log.error(error);
+        log.error(req, error);
         res.sendStatus(500);
       }
     });
@@ -122,7 +122,7 @@ export default function (app: Express) {
 
         res.status(200).json({ result });
       } catch (error) {
-        log.error(error);
+        log.error(req, error);
         res.sendStatus(500);
       }
     }
@@ -132,42 +132,43 @@ export default function (app: Express) {
     "/payment-receipts",
     adminCheck,
     async (req: Request, res: Response) => {
-      // Fetch first 1000 objects in S3
-      const bucketParams = { Bucket: process.env.AWS_S3_BUCKET_NAME };
-      const getListObjects = async () => {
-        try {
+      try {
+        // Fetch first 1000 objects in S3
+        const bucketParams = { Bucket: process.env.AWS_S3_BUCKET_NAME };
+        const getListObjects = async () => {
           const data = await s3.send(new ListObjectsCommand(bucketParams));
           if (data.$metadata.httpStatusCode === 200) return data.Contents;
-        } catch (err) {
-          log.error(err);
-        }
-      };
-      const objects = await getListObjects();
+        };
+        const objects = await getListObjects();
 
-      // Filter ListObjects by date
-      const fromDate: Date = req.query.fromDate
-        ? new Date(req.query.fromDate as string)
-        : new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // 7 days ago
-      const toDate: Date = req.query.toDate
-        ? new Date(req.query.toDate as string)
-        : new Date(); // current date
+        // Filter ListObjects by date
+        const fromDate: Date = req.query.fromDate
+          ? new Date(req.query.fromDate as string)
+          : new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // 7 days ago
+        const toDate: Date = req.query.toDate
+          ? new Date(req.query.toDate as string)
+          : new Date(); // current date
 
-      const filteredObjects = objects?.filter((obj) => {
-        return fromDate <= obj.LastModified! && obj.LastModified! <= toDate;
-      });
-
-      // Get signed URLs for public view
-      const signedUrls = [];
-
-      for (const obj of filteredObjects!) {
-        const command = new GetObjectCommand({
-          Bucket: process.env.AWS_S3_BUCKET_NAME,
-          Key: obj.Key,
+        const filteredObjects = objects?.filter((obj) => {
+          return fromDate <= obj.LastModified! && obj.LastModified! <= toDate;
         });
-        const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
-        signedUrls.push({ key: obj.Key, signedUrl: url });
+
+        // Get signed URLs for public view
+        const signedUrls = [];
+
+        for (const obj of filteredObjects!) {
+          const command = new GetObjectCommand({
+            Bucket: process.env.AWS_S3_BUCKET_NAME,
+            Key: obj.Key,
+          });
+          const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+          signedUrls.push({ key: obj.Key, signedUrl: url });
+        }
+        res.status(200).json({ signedUrls });
+      } catch (err) {
+        log.error(req, err);
+        res.sendStatus(500);
       }
-      res.status(200).json({ signedUrls });
     }
   );
 }
