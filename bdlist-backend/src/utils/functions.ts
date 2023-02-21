@@ -43,6 +43,8 @@ export function validateDates(req: Request) {
   const toDate: Date = req.query.toDate
     ? new Date(req.query.toDate as string)
     : new Date(); // current date
+
+  return { fromDate, toDate };
 }
 
 export function genAccessToken(userEmail: string) {

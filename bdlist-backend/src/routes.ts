@@ -7,7 +7,7 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { ObjectId } from "mongodb";
 import fileUpload from "express-fileupload";
-import { processUploadedFiles, s3 } from "./utils/functions";
+import { processUploadedFiles, s3, validateDates } from "./utils/functions";
 import { GameSessions } from "./db/collections";
 import {
   adminCheck,
@@ -142,12 +142,7 @@ export default function (app: Express) {
         const objects = await getListObjects();
 
         // Filter ListObjects by date
-        const fromDate: Date = req.query.fromDate
-          ? new Date(req.query.fromDate as string)
-          : new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // 7 days ago
-        const toDate: Date = req.query.toDate
-          ? new Date(req.query.toDate as string)
-          : new Date(); // current date
+        const { fromDate, toDate } = validateDates(req);
 
         const filteredObjects = objects?.filter((obj) => {
           return fromDate <= obj.LastModified! && obj.LastModified! <= toDate;

@@ -4,6 +4,7 @@ import { GameSessions } from "../db/collections";
 import { validateNewGameSessionDate } from "../middleware/validateRequest";
 import { GameSession } from "../db/interfaces";
 import log from "../utils/logger";
+import { validateDates } from "../utils/functions";
 
 const router = Router();
 
@@ -11,12 +12,7 @@ const router = Router();
 router
   .route("/")
   .get(async (req: Request, res: Response) => {
-    const fromDate: Date = req.query.fromDate
-      ? new Date(req.query.fromDate as string)
-      : new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // 7 days ago
-    const toDate: Date = req.query.toDate
-      ? new Date(req.query.toDate as string)
-      : new Date(); // current date
+    const { fromDate, toDate } = validateDates(req);
 
     try {
       const gameSessions = await GameSessions.find({
