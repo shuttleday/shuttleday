@@ -1,10 +1,11 @@
-import { Request } from "express";
+import { Request, Response } from "express";
 import { S3Client } from "@aws-sdk/client-s3";
 import { OAuth2Client } from "google-auth-library";
 import fileUpload, { UploadedFile } from "express-fileupload";
 import jwt from "jsonwebtoken";
 
 import * as dotenv from "dotenv";
+import { Users } from "../db/collections";
 dotenv.config();
 
 const CLIENT_ID = process.env.G_AUTH_CLIENT_ID;
@@ -65,4 +66,10 @@ export function verifyAccessToken(token: string) {
 
 export function verifyRefreshToken(token: string) {
   return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET!) as jwt.JwtPayload;
+}
+
+// Check if user with that email already exists
+export async function userExists(email: string) {
+  const userExists = await Users.findOne({ email });
+  return userExists !== null;
 }

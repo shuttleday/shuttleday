@@ -3,8 +3,7 @@ import { ObjectId } from "mongodb";
 import { Users } from "../db/collections";
 import { User } from "../db/interfaces";
 import log from "../utils/logger";
-import { checkDupeUser } from "../middleware/validateRequest";
-import gauth from "../middleware/g-auth.middleware";
+import { userExists, validateGJwt } from "../utils/functions";
 
 const router = Router();
 
@@ -24,6 +23,10 @@ router.get("/:email", async (req: Request, res: Response) => {
     return res
       .status(404)
       .json({ error: "User with that email does not exist." });
+
+  // Don't show hashed tokens
+  delete user.accessToken;
+  delete user.refreshToken;
 
   res.status(200).json(user);
 });
@@ -48,25 +51,37 @@ router
       res.sendStatus(500);
     }
   })
+
   // Create new user
-  // Only allowed if supplied with a valid Google JWT
-  .post(checkDupeUser, gauth, async (req: Request, res: Response) => {
+  // Only allowed if supplied with a valid Google JWT and doesn't exist
+  .post(async (req: Request, res: Response) => {
     try {
+      // Get details of user trying to sign up
+      const decoded = await validateGJwt(req);
+
+      // Ensure user with that email doesn't already exist
+      if (await userExists(decoded?.email!))
+        return res
+          .status(409)
+          .json({ error: "User with that email already exists" });
+
       const document: User = {
         _id: new ObjectId(),
-        email: req.body.email,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
+        email: decoded?.email!,
+        firstName: decoded?.given_name!,
+        lastName: decoded?.family_name!,
         username: req.body.username,
         createdAt: new Date(),
-        userType: "player",
+        userType: "player", // default
         accessToken: undefined,
         refreshToken: undefined,
       };
 
       const result = await Users.insertOne(document);
       res.status(200).json({ result, document });
-    } catch (error) {
+    } catch (error: any) {
+      if (error.message.startsWith("Invalid token signature"))
+        return res.sendStatus(401);
       log.error(error);
       res.sendStatus(500);
     }

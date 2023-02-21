@@ -16,7 +16,7 @@ router
 
     try {
       const gameSessions = await GameSessions.find({
-        date: {
+        start: {
           $gte: fromDate,
           $lte: toDate,
         },

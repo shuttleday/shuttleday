@@ -7,7 +7,7 @@ export {};
 declare global {
   namespace Express {
     export interface Request {
-      ctx: { user?: WithId<User> };
+      user?: WithId<User>;
     }
   }
 }

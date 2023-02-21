@@ -6,7 +6,12 @@ import { Users } from "../db/collections";
 
 import log from "../utils/logger";
 
-const excludedPaths = ["/healthcheck", "/g-auth", "/signin"];
+const excludedPaths = [
+  "/healthcheck",
+  "/g-auth",
+  "/auth/signin",
+  "/auth/refreshToken",
+];
 
 // JWT Auth
 const authenticate = async (
@@ -16,6 +21,8 @@ const authenticate = async (
 ) => {
   try {
     if (excludedPaths.includes(req.path)) return next();
+    if (req.path === "/users" && req.method === "POST") return next();
+    if (!req.headers.authorization) return res.sendStatus(401);
     const token = req.headers.authorization?.split(" ")[1]; // Expects { Authorization: Bearer TOKEN } format
 
     if (!token) return res.status(403);
@@ -33,7 +40,7 @@ const authenticate = async (
     if (!(await argon2.verify(found.accessToken, token)))
       return res.sendStatus(403);
 
-    req.ctx.user = found;
+    req.user = found;
     next();
   } catch (error) {
     log.error(req, error);

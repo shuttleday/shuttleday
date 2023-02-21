@@ -19,7 +19,6 @@ import gameSessionsRouter from "./routes/game-sessions";
 import usersRouter from "./routes/users";
 import authRouter from "./routes/auth";
 import gAuthRouter from "./routes/g-auth";
-import { GameSession } from "db/interfaces";
 
 export default function (app: Express) {
   // Healthcheck for API service
@@ -42,7 +41,7 @@ export default function (app: Express) {
           {
             $push: {
               players: {
-                userEmail: req.body.userEmail,
+                userEmail: req.user.email,
                 paid: false,
                 paidAt: undefined,
               },
@@ -63,12 +62,12 @@ export default function (app: Express) {
         const result = await GameSessions.findOneAndUpdate(
           {
             _id: new ObjectId(req.body.sessionId),
-            "players.userEmail": req.body.userEmail,
+            "players.userEmail": req.user.email,
           },
           {
             $pull: {
               players: {
-                userEmail: req.body.userEmail,
+                userEmail: req.user.email,
               },
             } as PullOperator<Document>, // Required or TS complains. Possibly a bug?
           },
@@ -93,18 +92,19 @@ export default function (app: Express) {
         // Verify sessionId
         const gameSession = await GameSessions.findOne({
           _id: new ObjectId(req.body.sessionId),
+          "players.userEmail": req.user.email,
         });
 
         if (!gameSession)
           return res
             .status(400)
-            .json({ error: "That session does not exist." });
+            .json({ error: "No session with that id and your email" });
 
         // Upload files to S3
         const file = processUploadedFiles(req.files!);
         const bucketParams = {
           Bucket: process.env.AWS_S3_BUCKET_NAME!,
-          Key: `${gameSession.start.toUTCString()}-${req.ctx.user.username}.${
+          Key: `${gameSession.start.toUTCString()}-${req.user.username}.${
             file.name.split(".")[1]
           }`,
           Body: file.data,
@@ -114,7 +114,7 @@ export default function (app: Express) {
         const result = await GameSessions.updateOne(
           {
             _id: new ObjectId(req.body.sessionId),
-            "players.userEmail": req.body.playerEmail,
+            "players.userEmail": req.user.email,
             "players.paidAt": { $eq: null }, // prevents overwrites if already paid
           },
           {

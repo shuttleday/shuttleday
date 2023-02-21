@@ -22,7 +22,7 @@ export async function adminCheck(
   res: Response,
   next: NextFunction
 ) {
-  if (req.ctx.user.userType !== "admin")
+  if (req.user.userType !== "admin")
     res
       .status(403)
       .json({ error: "You must be an admin to access this resource" });
@@ -51,20 +51,6 @@ export function fileSizeLimiter(
     return res
       .status(413)
       .json({ error: `Uploaded file is over the file size limit of ${MB} MB` });
-
-  next();
-}
-
-export async function checkDupeUser(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  // Check if user with that email already exists
-  const email = req.body.email;
-  const userExists = await Users.findOne({ email });
-  if (userExists)
-    res.status(409).json({ error: "User with that email already exists" });
 
   next();
 }

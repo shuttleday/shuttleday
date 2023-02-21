@@ -1,8 +1,7 @@
 export const requiredBody = {
-  "/users": ["email", "firstName", "lastName", "username"],
+  "/users": ["username"],
   "/game-sessions": ["start", "end", "cost", "courts", "group", "payTo"],
-  "/session-players": ["sessionId", "userEmail"],
-  "/user-payments": ["sessionId", "playerEmail"],
+  "/session-players": ["sessionId"],
   "/refreshToken": ["refreshToken"],
   "/signin": ["email"],
 };
