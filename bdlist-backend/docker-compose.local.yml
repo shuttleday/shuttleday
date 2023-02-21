@@ -15,7 +15,9 @@ services:
     ports:
       - "3600:2600"
     environment:
-      - MONGO_URL=mongodb://db:27017/shuttleday-prod
+      - MONGO_USER=${MONGO_USER}
+      - MONGO_PW=${MONGO_PW}
+      - MONGO_URL=db:27017/?authSource=shuttleday-prod
       - SERVER_PORT=${SERVER_PORT}
       - AWS_S3_SECRET_ACCESS_KEY=${AWS_S3_SECRET_ACCESS_KEY}
       - AWS_S3_ACCESS_KEY_ID=${AWS_S3_ACCESS_KEY_ID}
@@ -25,4 +27,5 @@ services:
       - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
     links:
       - db
+    command: [--auth]
     restart: always
