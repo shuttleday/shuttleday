@@ -6,6 +6,7 @@ services:
       - "2500:27017"
     volumes:
       - /Users/pierre/Documents/shuttleday-volume:/data/db
+    command: [--auth]
     restart: always
 
   app:
@@ -27,5 +28,4 @@ services:
       - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
     links:
       - db
-    command: [--auth]
     restart: always
