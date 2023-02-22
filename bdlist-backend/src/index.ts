@@ -8,6 +8,7 @@ import routes from "./routes";
 import authenticate from "./middleware/authenticate";
 import { validateBody } from "./middleware/validateRequest";
 import connectDb from "./db/connect";
+import errorHandler from "./middleware/errorHandler";
 
 const port = process.env.SERVER_PORT as string;
 export const app = express();
@@ -27,6 +28,9 @@ app.use(validateBody);
 
 // Load routes
 routes(app);
+
+// Load error handler
+app.use(errorHandler);
 
 // Start server and test db connection
 app.listen(parseInt(port), async () => {

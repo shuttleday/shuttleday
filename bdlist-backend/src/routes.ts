@@ -1,4 +1,4 @@
-import { Express, Request, Response } from "express";
+import { Express, NextFunction, Request, Response } from "express";
 import {
   PutObjectCommand,
   ListObjectsCommand,
@@ -14,7 +14,6 @@ import {
   fileSizeLimiter,
   validateFileUpload,
 } from "./middleware/validateRequest";
-import log from "./utils/logger";
 import gameSessionsRouter from "./routes/game-sessions";
 import usersRouter from "./routes/users";
 import authRouter from "./routes/auth";
@@ -34,7 +33,7 @@ export default function (app: Express) {
   app
     .route("/session-players")
     // Add player to game session
-    .post(async (req: Request, res: Response) => {
+    .post(async (req: Request, res: Response, next: NextFunction) => {
       try {
         const result = await GameSessions.findOneAndUpdate(
           { _id: new ObjectId(req.body.sessionId) },
@@ -52,12 +51,11 @@ export default function (app: Express) {
 
         res.status(201).json({ players: result.value?.players });
       } catch (error) {
-        log.error(req, error);
-        res.sendStatus(500);
+        next(error);
       }
     })
     // Remove player from game session
-    .delete(async (req: Request, res: Response) => {
+    .delete(async (req: Request, res: Response, next: NextFunction) => {
       try {
         const result = await GameSessions.findOneAndUpdate(
           {
@@ -76,8 +74,7 @@ export default function (app: Express) {
 
         res.status(200).json({ players: result.value?.players });
       } catch (error) {
-        log.error(req, error);
-        res.sendStatus(500);
+        next(error);
       }
     });
 
@@ -87,7 +84,7 @@ export default function (app: Express) {
     fileUpload(),
     validateFileUpload,
     fileSizeLimiter,
-    async (req: Request, res: Response) => {
+    async (req: Request, res: Response, next: NextFunction) => {
       try {
         // Verify sessionId
         const gameSession = await GameSessions.findOne({
@@ -127,8 +124,7 @@ export default function (app: Express) {
 
         res.status(201).json({ result });
       } catch (error) {
-        log.error(req, error);
-        res.sendStatus(500);
+        next(error);
       }
     }
   );
@@ -136,7 +132,7 @@ export default function (app: Express) {
   app.get(
     "/payment-receipts",
     adminCheck,
-    async (req: Request, res: Response) => {
+    async (req: Request, res: Response, next: NextFunction) => {
       try {
         // Fetch first 1000 objects in S3
         const bucketParams = { Bucket: process.env.AWS_S3_BUCKET_NAME };
@@ -166,8 +162,7 @@ export default function (app: Express) {
         }
         res.status(200).json({ signedUrls });
       } catch (err) {
-        log.error(req, err);
-        res.sendStatus(500);
+        next(err);
       }
     }
   );
