@@ -22,9 +22,7 @@ router.post(
       const result = await GameSessions.findOneAndUpdate(
         {
           _id: new ObjectId(req.body.sessionId),
-          "players.userEmail": { $in: [req.user.email] },
-          "players.paid": { $eq: false },
-          "players.paidAt": { $eq: null }, // prevents overwrites if already paid
+          players: { userEmail: req.user.email, paid: false, paidAt: null },
         },
         {
           $set: {
@@ -57,6 +55,20 @@ router.post(
       };
       const data = await s3.send(new PutObjectCommand(bucketParams));
 
+      // Rollback db write if s3 upload fails
+      if (data.$metadata.httpStatusCode !== 200) {
+        await GameSessions.updateOne(
+          {
+            _id: new ObjectId(req.body.sessionId),
+            players: { userEmail: req.user.email },
+          },
+          {
+            $set: { "players.$.paid": false },
+            $unset: { "players.$.paidAt": "" },
+          }
+        );
+        throw new Error("Could not upload to S3");
+      }
       res.status(201).json({ result: modified });
     } catch (error) {
       next(error);
