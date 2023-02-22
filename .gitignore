@@ -8,6 +8,7 @@ bdlist-frontend/node_modules
 
 # testing
 bdlist-frontend/coverage
+bdlist-backend/coverage
 
 # production
 bdlist-frontend/build
