@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import GLogin from './pages/GLogin';
 import NotFound from './pages/NotFound';
 import Details from './pages/Details';
+import PaymentHistory from './pages/PaymentHistory';
 import { createContext, useMemo, useState } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Header from './components/header';
@@ -47,7 +48,7 @@ function App() {
                 {/* <Route path='/auth' element={<Authentication />} /> */}
                 <Route path='/Glogin' element={<GLogin />} />
                 <Route path='*' element={<NotFound />} />
-
+                <Route path='payment' element={<PaymentHistory />} />
                 <Route path='/details' element={<Details />} />
               </Routes>
             </>
