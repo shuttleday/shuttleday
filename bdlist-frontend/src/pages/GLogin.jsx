@@ -1,26 +1,22 @@
 import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
-import jwt_decode from 'jwt-decode';
+// import jwt_decode from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import { googleSignIn } from '../data/repository';
 
 const GLogin = () => {
   let navigate = useNavigate();
   function onResponse(response) {
     console.log(response.credential);
-    const userObj = jwt_decode(response.credential);
-    const user = {
-      email: userObj.email,
-      username: userObj.name,
-    };
-    sessionStorage.setItem('jwtToken_Login', response.credential);
-
+    sessionStorage.setItem('jwtToken_Login', 'Bearer ' + response.credential);
+    const res = googleSignIn();
     navigate('/', {
       state: {
-        user: user,
+        googleToken: response.credential,
       },
     });
   }

@@ -100,7 +100,7 @@ const Home = () => {
       navigate('/GLogin');
     }
 
-    console.log(sessionStorage.getItem('jwtToken_Login'));
+    // const token = verifyUser();
     // eslint-disable-next-line
   }, []);
 
@@ -214,7 +214,7 @@ const Home = () => {
               </Typography>
               <br />
               <Box textAlign='center'>
-                <Button variant='contained' color='success' maxWidth='100%'>
+                <Button variant='contained' color='success' maxwidth='100%'>
                   Enter
                 </Button>
               </Box>
@@ -269,7 +269,7 @@ const Home = () => {
                 <List
                   sx={{
                     width: { xm: 300, sm: 452, lg: 452 },
-                    maxWidth: 660,
+                    maxwidth: 660,
                     bgcolor: 'background.paper',
                     maxHeight: 400,
                     overflow: 'auto',
@@ -631,7 +631,7 @@ const Home = () => {
           }}
         >
           <SpeedDial
-            sticky
+            sticky='true'
             ariaLabel='SpeedDial openIcon example'
             sx={{ position: 'absolute', bottom: 16, right: 16 }}
             icon={<SpeedDialIcon openIcon={<AccountCircleIcon />} />}
