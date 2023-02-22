@@ -10,7 +10,10 @@ router
   .post(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await GameSessions.findOneAndUpdate(
-        { _id: new ObjectId(req.body.sessionId) },
+        {
+          _id: new ObjectId(req.body.sessionId),
+          "players.userEmail": { $nin: [req.user.email] },
+        },
         {
           $push: {
             players: {
@@ -23,6 +26,9 @@ router
         { returnDocument: "after" }
       );
 
+      if (result.value === null)
+        return res.status(409).json({ error: "Already added to this session" });
+
       res.status(201).json({ players: result.value?.players });
     } catch (error) {
       next(error);
@@ -34,7 +40,7 @@ router
       const result = await GameSessions.findOneAndUpdate(
         {
           _id: new ObjectId(req.body.sessionId),
-          "players.userEmail": req.user.email,
+          "players.userEmail": { $in: [req.user.email] },
         },
         {
           $pull: {
@@ -45,6 +51,9 @@ router
         },
         { returnDocument: "after" }
       );
+
+      if (result.value === null)
+        return res.status(404).json({ error: "User is not in this session" });
 
       res.status(200).json({ players: result.value?.players });
     } catch (error) {
