@@ -39,6 +39,10 @@ const authenticate = async (
     if (!(await argon2.verify(found.accessToken, token)))
       return res.sendStatus(401);
 
+    // Remove tokens for safety
+    delete found.accessToken;
+    delete found.refreshToken;
+
     req.user = found;
     next();
   } catch (error) {
