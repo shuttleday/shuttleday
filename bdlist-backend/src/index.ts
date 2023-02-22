@@ -4,7 +4,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import log from "./utils/logger";
-import routes from "./routes";
+import routes from "./routes/index";
 import authenticate from "./middleware/authenticate";
 import { validateBody } from "./middleware/validateRequest";
 import connectDb from "./db/connect";
