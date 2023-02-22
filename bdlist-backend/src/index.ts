@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import * as dotenv from "dotenv";
 dotenv.config();
 
@@ -13,6 +14,9 @@ export const app = express();
 
 // Parse requests of content-type - application/json.
 app.use(express.json());
+
+// Enable CORS on all routes
+app.use(cors());
 
 // Authentication middleware
 app.use(authenticate);
