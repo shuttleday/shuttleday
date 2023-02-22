@@ -11,7 +11,7 @@ router.get("/", (req: Request, res: Response) => {
       .then((payload) => res.status(200).json({ payload }))
       .catch((err) => {
         log.error(err);
-        return res.sendStatus(403);
+        return res.sendStatus(401);
       });
   } catch (error) {
     log.error(req, error);

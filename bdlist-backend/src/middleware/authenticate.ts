@@ -25,7 +25,7 @@ const authenticate = async (
     if (!req.headers.authorization) return res.sendStatus(401);
     const token = req.headers.authorization?.split(" ")[1]; // Expects { Authorization: Bearer TOKEN } format
 
-    if (!token) return res.status(403);
+    if (!token) return res.status(401);
 
     const decoded = verifyAccessToken(token);
 
@@ -37,7 +37,7 @@ const authenticate = async (
       return res.status(401).json({ error: "Please sign in first." });
 
     if (!(await argon2.verify(found.accessToken, token)))
-      return res.sendStatus(403);
+      return res.sendStatus(401);
 
     req.user = found;
     next();

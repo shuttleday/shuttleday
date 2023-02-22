@@ -44,7 +44,7 @@ router
 
     try {
       const result = await GameSessions.insertOne(document);
-      res.status(200).json({ result, document });
+      res.status(201).json({ result, document });
     } catch (error) {
       log.error(error);
       res.sendStatus(500);

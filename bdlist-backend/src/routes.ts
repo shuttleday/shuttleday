@@ -50,7 +50,7 @@ export default function (app: Express) {
           { returnDocument: "after" }
         );
 
-        res.status(200).json({ players: result.value?.players });
+        res.status(201).json({ players: result.value?.players });
       } catch (error) {
         log.error(req, error);
         res.sendStatus(500);
@@ -125,7 +125,7 @@ export default function (app: Express) {
           }
         );
 
-        res.status(200).json({ result });
+        res.status(201).json({ result });
       } catch (error) {
         log.error(req, error);
         res.sendStatus(500);

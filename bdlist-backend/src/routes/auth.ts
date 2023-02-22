@@ -33,7 +33,7 @@ router.post("/signin", async (req: Request, res: Response) => {
     if (found.modifiedCount === 0)
       return res.status(404).json({ error: "No user with that email" });
 
-    res.status(200).json({ accessToken, refreshToken });
+    res.status(201).json({ accessToken, refreshToken });
   } catch (error: any) {
     log.error(error);
     if (error.message.startsWith("Invalid Google JWT"))
@@ -59,7 +59,7 @@ router.post("/refreshToken", async (req: Request, res: Response) => {
       return res.status(401).json({ error: "Please sign in first" });
 
     if (!(await argon2.verify(found.refreshToken, candidateToken)))
-      return res.sendStatus(403);
+      return res.sendStatus(401);
 
     // Generate new access token
     const newAccessToken = genAccessToken(decoded.userEmail);
@@ -70,10 +70,10 @@ router.post("/refreshToken", async (req: Request, res: Response) => {
       { $set: { accessToken: await argon2.hash(newAccessToken) } }
     );
 
-    if (result.modifiedCount === 0) res.sendStatus(500);
+    if (result.modifiedCount === 0) return res.sendStatus(500);
 
     // Return new access token
-    res.status(200).json({ accessToken: newAccessToken });
+    res.status(201).json({ accessToken: newAccessToken });
   } catch (error) {
     log.error(req, error);
     res.sendStatus(500);

@@ -78,7 +78,7 @@ router
       };
 
       const result = await Users.insertOne(document);
-      res.status(200).json({ result, document });
+      res.status(201).json({ result, document });
     } catch (error: any) {
       log.error(error);
       if (error.message.startsWith("Invalid Google JWT"))
