@@ -32,7 +32,7 @@ routes(app);
 // Load error handler
 app.use(errorHandler);
 
-// Start server and test db connection
+// Start server and connect to db
 app.listen(parseInt(port), async () => {
   log.info(`Server is running on port ${port}.`);
   connectDb();
