@@ -7,6 +7,7 @@ import gAuthRouter from "./g-auth";
 import sessionPlayersRouter from "./session-players";
 import userPaymentsRouter from "./user-payments";
 import paymentReceiptsRouter from "./payment-receipts";
+import healthcheckRouter from "./healthcheck";
 
 export default function (app: Express) {
   app.use("/g-auth", gAuthRouter);
@@ -16,4 +17,5 @@ export default function (app: Express) {
   app.use("/session-players", sessionPlayersRouter);
   app.use("/user-payments", userPaymentsRouter);
   app.use("/payment-receipts", paymentReceiptsRouter);
+  app.use("/healthcheck", healthcheckRouter);
 }
