@@ -13,12 +13,11 @@ export const client = new MongoClient(uri, {
   minPoolSize: 10,
 });
 
-async function testDbConn() {
+async function connectDb() {
   try {
     log.info(`Attempting connection to: ${uri}`);
     await client.connect();
     log.info("Database connected successfully");
-    await client.close();
   } catch (error) {
     log.error("Failed to connect to db");
     log.error(error);
@@ -26,4 +25,4 @@ async function testDbConn() {
   }
 }
 
-export default testDbConn;
+export default connectDb;

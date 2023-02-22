@@ -6,10 +6,10 @@ import log from "./utils/logger";
 import routes from "./routes";
 import authenticate from "./middleware/authenticate";
 import { validateBody } from "./middleware/validateRequest";
-import testDbConn from "./db/connect";
+import connectDb from "./db/connect";
 
 const port = process.env.SERVER_PORT as string;
-const app = express();
+export const app = express();
 
 // Parse requests of content-type - application/json.
 app.use(express.json());
@@ -25,9 +25,9 @@ app.use(validateBody);
 routes(app);
 
 // Start server and test db connection
-const server = app.listen(parseInt(port), async () => {
+app.listen(parseInt(port), async () => {
   log.info(`Server is running on port ${port}.`);
-  testDbConn();
+  connectDb();
 });
 
-export default server;
+export default app;
