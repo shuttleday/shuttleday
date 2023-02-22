@@ -3,10 +3,10 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import log from "./utils/logger";
-import connect from "./db/connect";
 import routes from "./routes";
 import authenticate from "./middleware/authenticate";
 import { validateBody } from "./middleware/validateRequest";
+import testDbConn from "./db/connect";
 
 const port = process.env.SERVER_PORT as string;
 const app = express();
@@ -21,9 +21,13 @@ app.use(authenticate);
 app.use(validateBody);
 // app.use(validateQuery);
 
-// Start server
-app.listen(parseInt(port), async () => {
+// Load routes
+routes(app);
+
+// Start server and test db connection
+const server = app.listen(parseInt(port), async () => {
   log.info(`Server is running on port ${port}.`);
-  connect();
-  routes(app);
+  testDbConn();
 });
+
+export default server;
