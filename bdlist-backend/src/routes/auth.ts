@@ -35,9 +35,9 @@ router.post("/signin", async (req: Request, res: Response) => {
 
     res.status(200).json({ accessToken, refreshToken });
   } catch (error: any) {
-    if (error.message.startsWith("Invalid token signature"))
-      return res.sendStatus(401);
     log.error(error);
+    if (error.message.startsWith("Invalid Google JWT"))
+      return res.sendStatus(401);
     res.sendStatus(500);
   }
 });

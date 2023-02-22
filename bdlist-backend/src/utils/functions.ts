@@ -27,11 +27,19 @@ export function processUploadedFiles(uploadedFiles: fileUpload.FileArray) {
 
 export async function validateGJwt(req: Request) {
   const token = req.headers.authorization?.split(" ")[1]; // Expects { Authorization: Bearer TOKEN } format
-  const ticket = await client.verifyIdToken({
-    idToken: token!,
-    audience: CLIENT_ID,
+
+  async function verify() {
+    const ticket = await client.verifyIdToken({
+      idToken: token!,
+      audience: CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    return payload;
+  }
+
+  const payload = verify().catch(() => {
+    throw new Error("Invalid Google JWT");
   });
-  const payload = ticket.getPayload();
 
   return payload;
 }
