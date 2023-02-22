@@ -21,7 +21,7 @@ router
         },
       }).toArray();
 
-      res.status(200).json(gameSessions);
+      res.status(200).json({ gameSessions });
     } catch (error) {
       next(error);
     }
