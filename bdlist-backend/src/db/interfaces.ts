@@ -23,7 +23,7 @@ export interface GameSession extends WithId<Document> {
   end: Date;
   players?: UserPayment[];
   cost: number;
-  payTo: string; // username
+  payTo: string; // email
   courts: string[];
   group: string;
   createdAt: Date;
