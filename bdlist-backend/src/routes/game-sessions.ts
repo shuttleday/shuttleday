@@ -44,7 +44,7 @@ router
         courts: req.body.courts,
         group: req.body.group,
         createdAt: new Date(),
-        payTo: req.user!.email,
+        payTo: req.user.email,
       };
 
       try {
