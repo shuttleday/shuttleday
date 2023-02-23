@@ -35,8 +35,12 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import InfoIcon from '@mui/icons-material/Info';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import jwt_decode from 'jwt-decode';
+import { userCheck, createAccount } from '../data/repository';
+import { useLocation } from 'react-router-dom';
 
 const Home = () => {
+  const location = useLocation();
   const actions = [
     {
       icon: <ManageAccountsIcon />,
@@ -98,9 +102,21 @@ const Home = () => {
   useEffect(() => {
     if (sessionStorage.getItem('jwtToken_Login') === null) {
       navigate('/GLogin');
+    } else {
+      const googleToken = jwt_decode(location.state.googleToken);
+      userCheck(googleToken.email).then((user) => {
+        if (!user) {
+          sessionStorage.setItem('jwtToken_Login', location.state.googleToken);
+          setUsername(googleToken.name);
+          handleOpen();
+        } else {
+          if (user.data.userType === 'admin') {
+            setRender(true);
+          }
+        }
+      });
     }
 
-    // const token = verifyUser();
     // eslint-disable-next-line
   }, []);
 
@@ -119,9 +135,30 @@ const Home = () => {
     setOpen(false);
   };
 
+  //Modal for username
   const [openModal, setOpenModal] = useState(false);
+  const [username, setUsername] = useState('');
+
   const handleOpen = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
+  const onChange = (event) => {
+    setUsername(event.target.value);
+  };
+
+  const handleSubmit = async () => {
+    const accessToken = sessionStorage.getItem('jwtToken_Login');
+    console.log(username);
+    sessionStorage.setItem('jwtToken_Login', location.state.googleToken);
+    const res = await createAccount(username);
+    console.log(res);
+    sessionStorage.setItem('jwtToken_Login', accessToken);
+  };
+
+  // For rendering buttons only admins can access
+  const [render, setRender] = useState(false);
+
+  //For setting alert condition
+  const [condition, setCondtion] = useState('success');
 
   const style = {
     position: 'absolute',
@@ -195,7 +232,6 @@ const Home = () => {
           <Button onClick={handleOpen}>Open modal</Button>
           <Modal
             open={openModal}
-            onClose={handleCloseModal}
             aria-labelledby='modal-modal-title'
             aria-describedby='modal-modal-description'
           >
@@ -209,12 +245,18 @@ const Home = () => {
                   label='Name'
                   id='fullWidth'
                   color='secondary'
-                  defaultValue='somethjing'
+                  defaultValue={jwt_decode(location.state.googleToken).name}
+                  onChange={onChange}
                 />
               </Typography>
               <br />
               <Box textAlign='center'>
-                <Button variant='contained' color='success' maxwidth='100%'>
+                <Button
+                  variant='contained'
+                  color='success'
+                  maxwidth='100%'
+                  onClick={handleSubmit}
+                >
                   Enter
                 </Button>
               </Box>
@@ -582,7 +624,7 @@ const Home = () => {
               >
                 <Alert
                   onClose={handleClose}
-                  severity='success'
+                  severity={condition}
                   sx={{ width: '100%' }}
                 >
                   Joined successfully!
@@ -620,7 +662,7 @@ const Home = () => {
           </TabContext>
         </Box>
       </Stack>
-      {
+      {render ?? (
         <Box
           sx={{
             transform: 'translateZ(0px)',
@@ -649,7 +691,7 @@ const Home = () => {
             ))}
           </SpeedDial>
         </Box>
-      }
+      )}
     </div>
   );
 };

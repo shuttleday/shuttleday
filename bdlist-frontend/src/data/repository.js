@@ -7,50 +7,57 @@ async function getUsers() {
   return user;
 }
 
-async function createAccount() {
+//Checks if an user exist in the db
+async function userCheck(email) {
+  try {
+    const user = await axios.get(
+      `${process.env.REACT_APP_API_LINK}/users/${email}`
+    );
+    console.log(user);
+    return user;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+//Creates an account for new users automatically with their given username (also requires google jwt)
+async function createAccount(username) {
   const data = JSON.stringify({
-    username: 'kirix',
+    username: username,
   });
 
-  const config = {
-    method: 'post',
-    maxBodyLength: Infinity,
-    url: process.env.REACT_APP_API_LINK + '/users',
-    data: data,
-  };
-
-  axios(config)
-    .then(function (response) {
-      console.log(JSON.stringify(response.data));
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+  try {
+    const response = await axios.post(
+      process.env.REACT_APP_API_LINK + '/users',
+      data
+    );
+    const user = response.data;
+    return user;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 }
 
+//Sends the google jwt token for verification and returns a refresh token and access token
 async function googleSignIn() {
-  const config = {
-    method: 'post',
-    maxBodyLength: Infinity,
-    url: process.env.REACT_APP_API_LINK + '/auth/signin',
-  };
-
-  axios(config)
-    .then(function (response) {
-      console.log(JSON.stringify(response.data));
-      return response.data;
-    })
-    .catch(function (error) {
-      console.log(error);
-      return null;
-    });
+  try {
+    const response = await axios.post(
+      process.env.REACT_APP_API_LINK + '/auth/signin'
+    );
+    const user = response.data;
+    return user;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 }
 
+//Intercepts all request to the server and attaches the token to the header
 axios.interceptors.request.use(function (config) {
   const token = sessionStorage.getItem('jwtToken_Login');
-  config.headers.Authorization = token;
-
+  config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
-export { getUsers, createAccount, googleSignIn };
+export { getUsers, createAccount, googleSignIn, userCheck };
