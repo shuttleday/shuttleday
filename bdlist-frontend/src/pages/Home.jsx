@@ -78,9 +78,10 @@ const Home = () => {
 
   const amount = 'This session is $4.50 Per person';
 
-  //Control logic for tabs
+  //Control logic for tabs----------------------------------------------------------
   const [activeTab, setActiveTab] = useState('1');
   const [open, setOpen] = useState(false);
+  //--------------------------------------------------------------------------------
 
   //Control logic for Modal---------------------------------------------------------
   const [openModalImage, setOpenModalImage] = useState(false);
@@ -96,8 +97,8 @@ const Home = () => {
     setButtonON(false);
     setImage(e.target.files[0]);
   };
-  //--------------------------------------------------------------------------------
   // const onUpload = () => {};
+  //--------------------------------------------------------------------------------
 
   useEffect(() => {
     if (sessionStorage.getItem('jwtToken_Login') === null) {
