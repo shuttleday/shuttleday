@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import { Users } from "../db/collections";
 import { processUploadedFiles } from "../utils/functions";
 import { requiredBody } from "./validation";
 const MB = 5;
