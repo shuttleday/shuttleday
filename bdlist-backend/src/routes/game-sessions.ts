@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from "express";
-import { ObjectId } from "mongodb";
+import { ObjectId, Filter } from "mongodb";
 import { GameSessions } from "../db/collections";
 import { validateNewGameSessionDate } from "../middleware/validateRequest";
 import { GameSession } from "../db/interfaces";
@@ -11,15 +11,20 @@ const router = Router();
 router
   .route("/")
   .get(async (req: Request, res: Response, next: NextFunction) => {
-    const { fromDate, toDate } = validateDates(req);
-
     try {
-      const gameSessions = await GameSessions.find({
+      // Build query
+      const { fromDate, toDate } = validateDates(req);
+      const query: Filter<GameSession> = {
         start: {
           $gte: fromDate,
           $lte: toDate,
         },
-      }).toArray();
+      };
+
+      // Add group filter
+      if (req.query.group) query.group = req.query.group;
+
+      const gameSessions = await GameSessions.find(query).toArray();
 
       res.status(200).json({ gameSessions });
     } catch (error) {
