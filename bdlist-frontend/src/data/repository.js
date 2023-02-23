@@ -22,9 +22,9 @@ async function userCheck(email) {
 }
 //Creates an account for new users automatically with their given username (also requires google jwt)
 async function createAccount(username) {
-  const data = JSON.stringify({
+  const data = {
     username: username,
-  });
+  };
 
   try {
     const response = await axios.post(
@@ -35,7 +35,7 @@ async function createAccount(username) {
     return user;
   } catch (error) {
     console.log(error);
-    return null;
+    return 'error';
   }
 }
 

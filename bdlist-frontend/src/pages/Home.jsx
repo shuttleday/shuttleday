@@ -78,14 +78,14 @@ const Home = () => {
 
   const amount = 'This session is $4.50 Per person';
 
-  //Control logic for Modal
-  const [openModalImage, setOpenModalImage] = useState(false);
-  const handleOpenModalImage = () => setOpenModalImage(true);
-  const handleCloseModalImage = () => setOpenModalImage(false);
-
   //Control logic for tabs
   const [activeTab, setActiveTab] = useState('1');
   const [open, setOpen] = useState(false);
+
+  //Control logic for Modal---------------------------------------------------------
+  const [openModalImage, setOpenModalImage] = useState(false);
+  const handleOpenModalImage = () => setOpenModalImage(true);
+  const handleCloseModalImage = () => setOpenModalImage(false);
 
   //Control logic for Images
   const [image, setImage] = useState(null);
@@ -96,7 +96,7 @@ const Home = () => {
     setButtonON(false);
     setImage(e.target.files[0]);
   };
-
+  //--------------------------------------------------------------------------------
   // const onUpload = () => {};
 
   useEffect(() => {
@@ -124,18 +124,21 @@ const Home = () => {
     return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
   });
 
+  const [alertMsg, setAlertMsg] = useState('');
+
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);
   };
 
   const onJoin = () => {
+    setAlertMsg('Joined successfully!');
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
   };
 
-  //Modal for username
+  //Modal for username -----------------------------------------------------------------------
   const [openModal, setOpenModal] = useState(false);
   const [username, setUsername] = useState('');
 
@@ -150,15 +153,24 @@ const Home = () => {
     console.log(username);
     sessionStorage.setItem('jwtToken_Login', location.state.googleToken);
     const res = await createAccount(username);
-    console.log(res);
+    if (res === 'error') {
+      setCondition(res);
+      setAlertMsg('Username has been taken!');
+      setOpen(true);
+    } else {
+      setCondition('success');
+      setAlertMsg('Username has been taken!');
+      handleCloseModal();
+    }
     sessionStorage.setItem('jwtToken_Login', accessToken);
   };
+  // -----------------------------------------------------------------------------------------
 
-  // For rendering buttons only admins can access
+  // For rendering buttons only admins can access --------------------------------------------
   const [render, setRender] = useState(false);
 
-  //For setting alert condition
-  const [condition, setCondtion] = useState('success');
+  //For setting alert condition---------------------------------------------------------------
+  const [condition, setCondition] = useState('success');
 
   const style = {
     position: 'absolute',
@@ -627,7 +639,7 @@ const Home = () => {
                   severity={condition}
                   sx={{ width: '100%' }}
                 >
-                  Joined successfully!
+                  {alertMsg}
                 </Alert>
               </Snackbar>
             </TabPanel>

@@ -10,10 +10,7 @@ import { googleSignIn } from '../data/repository';
 const GLogin = () => {
   let navigate = useNavigate();
   async function onResponse(response) {
-    console.log(response.credential);
     sessionStorage.setItem('jwtToken_Login', response.credential);
-    console.log(response.credential);
-    console.log(sessionStorage.getItem('jwtToken_Login'));
     const res = await googleSignIn();
     sessionStorage.setItem('jwtToken_Login', res.accessToken);
     sessionStorage.setItem('refreshToken', res.refreshToken);
