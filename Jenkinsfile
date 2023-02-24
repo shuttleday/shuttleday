@@ -11,6 +11,21 @@ pipeline {
     }
 
     stages {
+        stage("SonarQube Analysis") {
+            steps {
+              withSonarQubeEnv('My SonarQube Server') {
+                echo "Running analysis"
+              }
+            }
+          }
+
+        stage("Quality Gate") {
+            steps {
+                timeout(time: 30, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
         
         stage ("Build Backend") {
             when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
