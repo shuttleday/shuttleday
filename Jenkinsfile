@@ -8,14 +8,13 @@ pipeline {
 
     environment {
         ENV_VARS     = credentials('shuttleday-env-file')
-        scannerHome = tool 'SonarQubeScanner'
     }
 
     stages {
         stage("SonarQube Analysis") {
             steps {
                 script {
-                    def scannerHome = tool 'SonarScanner';
+                    def scannerHome = tool 'sonarqube';
                     withSonarQubeEnv() {
                         sh "${scannerHome}/bin/sonar-scanner"
                     }
