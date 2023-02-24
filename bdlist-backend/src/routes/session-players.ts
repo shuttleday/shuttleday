@@ -18,6 +18,7 @@ router
           $push: {
             players: {
               userEmail: req.user.email,
+              username: req.user.username,
               paid: false,
               paidAt: undefined,
             },

@@ -13,6 +13,7 @@ export interface User extends WithId<Document> {
 
 export interface UserPayment extends WithId<Document> {
   userEmail: string;
+  username: string;
   paid: boolean;
   paidAt: Date | undefined;
   paymentImage?: string; // s3 link
