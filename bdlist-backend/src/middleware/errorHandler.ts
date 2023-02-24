@@ -8,7 +8,7 @@ const errorHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  log.error(req, err);
+  log.error({ req, err });
   res.sendStatus(500);
 };
 
