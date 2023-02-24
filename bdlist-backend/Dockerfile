@@ -1,5 +1,10 @@
 FROM docker.io/library/node:19-alpine
 
+RUN addgroup -S nonroot \
+    && adduser -S nonroot -G nonroot
+
+USER nonroot
+
 # setup directory for app
 WORKDIR /app
 
