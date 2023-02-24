@@ -21,17 +21,8 @@ pipeline {
                 }
             }
           }
-        
-        stage ("Build Backend") {
-            when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
-            steps {
-                dir("bdlist-backend/") {
-                    sh 'pnpm i'
-                    sh 'pnpm build'
-                }
-            }
-        }
-        stage("Deploy changes") {
+          
+        stage("Build and deploy") {
             when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
             steps {
                 dir("bdlist-backend/") {
@@ -46,5 +37,12 @@ pipeline {
                 sh 'echo hi'
             }
         }
+    }
+
+    post {
+      cleanup {
+        // remove old builds
+        sh 'sudo docker system prune'
+      }
     }
 }
