@@ -12,6 +12,7 @@ pipeline {
 
     stages {
         stage("SonarQube Analysis") {
+            agent any
             steps {
               withSonarQubeEnv('My SonarQube Server') {
                 echo "Running analysis"
