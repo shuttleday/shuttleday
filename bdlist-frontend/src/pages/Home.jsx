@@ -107,12 +107,16 @@ const Home = () => {
     } else {
       console.log(sessionStorage.getItem('jwtToken_Login'));
       const googleToken = jwt_decode(location.state.googleToken);
-      getSession().then((res) => {
-        console.log(res);
-        if (res.players.length === 0) {
-          setPlayerList(res.players);
-        }
-      });
+      async function getSessionData() {
+        getSession().then((res) => {
+          console.log(res.gameSessions[0].players);
+          if (res.gameSessions[0].players.length !== 0) {
+            setPlayerList(res.gameSessions[0].players);
+          }
+        });
+      }
+
+      getSessionData();
 
       userCheck(googleToken.email).then((user) => {
         if (!user) {
@@ -126,7 +130,6 @@ const Home = () => {
         }
       });
     }
-
     // eslint-disable-next-line
   }, []);
 
@@ -334,6 +337,7 @@ const Home = () => {
                   sx={{
                     width: { xm: 300, sm: 452, lg: 452 },
                     maxwidth: 660,
+                    minHeight: 300,
                     bgcolor: 'background.paper',
                     maxHeight: 400,
                     overflow: 'auto',
@@ -341,292 +345,45 @@ const Home = () => {
                   alignItems='center'
                   justifycontent='center'
                 >
-                  <ListItem alignitems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Remy Sharp'
-                        src='/static/images/avatar/1.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Mikel Lu'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            Ali Connors
-                          </Typography>
-                          {
-                            " — I'll be in your neighborhood doing errands this…"
-                          }
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <Divider variant='inset' component='li' />
-                  <ListItem alignitems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Travis Howard'
-                        src='/static/images/avatar/2.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Summer BBQ'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            to Scott, Alex, Jennifer
-                          </Typography>
-                          {" — Wish I could come, but I'm out of town this…"}
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <Divider variant='inset' component='li' />
-                  <ListItem alignitems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Cindy Baker'
-                        src='/static/images/avatar/3.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Oui Oui'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            Sandra Adams
-                          </Typography>
-                          {
-                            ' — Do you have Paris recommendations? Have you ever…'
-                          }
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <ListItem alignitems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Cindy Baker'
-                        src='/static/images/avatar/3.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Oui Oui'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            Sandra Adams
-                          </Typography>
-                          {
-                            ' — Do you have Paris recommendations? Have you ever…'
-                          }
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <ListItem alignItems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Cindy Baker'
-                        src='/static/images/avatar/3.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Oui Oui'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            Sandra Adams
-                          </Typography>
-                          {
-                            ' — Do you have Paris recommendations? Have you ever…'
-                          }
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <ListItem alignItems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Cindy Baker'
-                        src='/static/images/avatar/3.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Oui Oui'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            Sandra Adams
-                          </Typography>
-                          {
-                            ' — Do you have Paris recommendations? Have you ever…'
-                          }
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <ListItem alignItems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Cindy Baker'
-                        src='/static/images/avatar/3.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Oui Oui'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            Sandra Adams
-                          </Typography>
-                          {
-                            ' — Do you have Paris recommendations? Have you ever…'
-                          }
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <ListItem alignItems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Cindy Baker'
-                        src='/static/images/avatar/3.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Oui Oui'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            Sandra Adams
-                          </Typography>
-                          {
-                            ' — Do you have Paris recommendations? Have you ever…'
-                          }
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <ListItem alignItems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Cindy Baker'
-                        src='/static/images/avatar/3.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Oui Oui'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            Sandra Adams
-                          </Typography>
-                          {
-                            ' — Do you have Paris recommendations? Have you ever…'
-                          }
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <ListItem alignItems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Cindy Baker'
-                        src='/static/images/avatar/3.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Oui Oui'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            Sandra Adams
-                          </Typography>
-                          {
-                            ' — Do you have Paris recommendations? Have you ever…'
-                          }
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <ListItem alignItems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Cindy Baker'
-                        src='/static/images/avatar/3.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Oui Oui'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            Sandra Adams
-                          </Typography>
-                          {
-                            ' — Do you have Paris recommendations? Have you ever…'
-                          }
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
+                  {playerList === null ? (
+                    <div>
+                      <Typography
+                        sx={{ display: 'flex', justifyContent: 'center' }}
+                        component='span'
+                        variant='h5'
+                        color='text.primary'
+                      >
+                        No player present yet
+                      </Typography>
+                    </div>
+                  ) : (
+                    playerList.map((player) => (
+                      <div key={player.username}>
+                        <ListItem alignitems='center'>
+                          <ListItemText
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'center',
+                              size: 30,
+                            }}
+                            primary={
+                              <Fragment>
+                                <Typography
+                                  sx={{ display: 'inline' }}
+                                  component='span'
+                                  variant='h5'
+                                  color='text.primary'
+                                >
+                                  {player.username}
+                                </Typography>
+                              </Fragment>
+                            }
+                          />
+                        </ListItem>
+                        <Divider variant='middle' />
+                      </div>
+                    ))
+                  )}
                 </List>
                 <br />
                 <Button

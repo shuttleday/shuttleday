@@ -58,8 +58,6 @@ async function getSession() {
   try {
     const today = dayjs();
     const future = today.add(7, 'day');
-
-    const futureISO = future.toISOString();
     const response = await axios.get(
       process.env.REACT_APP_API_LINK + '/game-sessions',
       {
