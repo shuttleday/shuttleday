@@ -1,4 +1,5 @@
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 async function getUsers() {
   const response = await axios.get(process.env.REACT_APP_API_LINK + '/users');
@@ -53,6 +54,25 @@ async function googleSignIn() {
   }
 }
 
+async function getSession() {
+  try {
+    const today = dayjs();
+    const future = today.add(7, 'day');
+
+    const futureISO = future.toISOString();
+    const response = await axios.get(
+      process.env.REACT_APP_API_LINK + '/game-sessions',
+      {
+        params: { fromDate: today.toISOString(), toDate: future.toISOString() },
+      }
+    );
+    const user = response.data;
+    return user;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 //Intercepts all request to the server and attaches the token to the header
 axios.interceptors.request.use(function (config) {
   const token = sessionStorage.getItem('jwtToken_Login');
@@ -60,4 +80,4 @@ axios.interceptors.request.use(function (config) {
   return config;
 });
 
-export { getUsers, createAccount, googleSignIn, userCheck };
+export { getUsers, createAccount, googleSignIn, userCheck, getSession };

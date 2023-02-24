@@ -36,11 +36,13 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import InfoIcon from '@mui/icons-material/Info';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import jwt_decode from 'jwt-decode';
-import { userCheck, createAccount } from '../data/repository';
+import { userCheck, createAccount, getSession } from '../data/repository';
 import { useLocation } from 'react-router-dom';
 
 const Home = () => {
   const location = useLocation();
+  let navigate = useNavigate();
+
   const actions = [
     {
       icon: <ManageAccountsIcon />,
@@ -74,8 +76,7 @@ const Home = () => {
     p: 4,
   };
 
-  let navigate = useNavigate();
-
+  const [playerList, setPlayerList] = useState(null);
   const amount = 'This session is $4.50 Per person';
 
   //Control logic for tabs----------------------------------------------------------
@@ -88,7 +89,7 @@ const Home = () => {
   const handleOpenModalImage = () => setOpenModalImage(true);
   const handleCloseModalImage = () => setOpenModalImage(false);
 
-  //Control logic for Images
+  //Control logic for Images--------------------------------------------------------
   const [image, setImage] = useState(null);
   const [buttonOn, setButtonON] = useState(true);
 
@@ -104,7 +105,15 @@ const Home = () => {
     if (sessionStorage.getItem('jwtToken_Login') === null) {
       navigate('/GLogin');
     } else {
+      console.log(sessionStorage.getItem('jwtToken_Login'));
       const googleToken = jwt_decode(location.state.googleToken);
+      getSession().then((res) => {
+        console.log(res);
+        if (res.players.length === 0) {
+          setPlayerList(res.players);
+        }
+      });
+
       userCheck(googleToken.email).then((user) => {
         if (!user) {
           sessionStorage.setItem('jwtToken_Login', location.state.googleToken);
