@@ -21,9 +21,6 @@ router
         },
       };
 
-      // Add group filter
-      if (req.query.group) query.group = req.query.group;
-
       const gameSessions = await GameSessions.find(query).toArray();
 
       res.status(200).json({ gameSessions });
@@ -42,7 +39,6 @@ router
         players: [],
         cost: req.body.cost as number,
         courts: req.body.courts,
-        group: req.body.group,
         createdAt: new Date(),
         payTo: req.user.email,
       };
