@@ -4,8 +4,3 @@ export const requiredBody = {
   "/session-players": ["sessionId"],
   "/refreshToken": ["refreshToken"],
 };
-
-// For future use
-// export const requiredQuery = {
-//   "/users": ["email", "firstName", "lastName", "username"],
-// };
