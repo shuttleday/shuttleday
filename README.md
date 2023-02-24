@@ -83,8 +83,8 @@
 
 # Read More
 
-[BACKEND_DEV.md](./BACKEND_DEV.md)
+[BACKEND_DEV.md](./docs/BACKEND_DEV.md)
 
-[FRONTEND_DEV.md](./FRONTEND_DEV.md)
+[FRONTEND_DEV.md](./docs/FRONTEND_DEV.md)
 
-[DEPLOYMENT.md](./DEPLOYMENT.md)
+[DEPLOYMENT.md](./docs/DEPLOYMENT.md)
