@@ -21,10 +21,9 @@ export interface UserPayment extends WithId<Document> {
 export interface GameSession extends WithId<Document> {
   start: Date;
   end: Date;
-  players?: UserPayment[];
+  players: UserPayment[];
   cost: number;
-  payTo: string; // username
+  payTo: string; // email
   courts: string[];
-  group: string;
   createdAt: Date;
 }

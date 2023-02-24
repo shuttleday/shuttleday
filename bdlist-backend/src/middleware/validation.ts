@@ -3,7 +3,6 @@ export const requiredBody = {
   "/game-sessions": ["start", "end", "cost", "courts", "group", "payTo"],
   "/session-players": ["sessionId"],
   "/refreshToken": ["refreshToken"],
-  "/signin": ["email"],
 };
 
 // For future use

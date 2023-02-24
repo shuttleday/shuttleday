@@ -1,18 +1,24 @@
 import express from "express";
+import cors from "cors";
 import * as dotenv from "dotenv";
 dotenv.config();
 
 import log from "./utils/logger";
-import routes from "./routes";
+import routes from "./routes/index";
 import authenticate from "./middleware/authenticate";
 import { validateBody } from "./middleware/validateRequest";
 import connectDb from "./db/connect";
+import errorHandler from "./middleware/errorHandler";
+import requestLogger from "./middleware/logger";
 
 const port = process.env.SERVER_PORT as string;
 export const app = express();
 
 // Parse requests of content-type - application/json.
 app.use(express.json());
+
+// Enable CORS on all routes
+app.use(cors());
 
 // Authentication middleware
 app.use(authenticate);
@@ -24,7 +30,13 @@ app.use(validateBody);
 // Load routes
 routes(app);
 
-// Start server and test db connection
+// Load request logger
+app.use(requestLogger);
+
+// Load error handler
+app.use(errorHandler);
+
+// Start server and connect to db
 app.listen(parseInt(port), async () => {
   log.info(`Server is running on port ${port}.`);
   connectDb();

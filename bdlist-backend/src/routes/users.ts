@@ -1,40 +1,40 @@
-import { Request, Response, Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import { ObjectId } from "mongodb";
 import { Users } from "../db/collections";
 import { User } from "../db/interfaces";
-import log from "../utils/logger";
 import { userExists, validateGJwt } from "../utils/functions";
 
 const router = Router();
 
 // Get user object from email
-router.get("/:email", async (req: Request, res: Response) => {
-  const email = req.params.email;
+router.get(
+  "/:email",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const email = req.params.email;
+      const user = await Users.findOne({ email });
 
-  let user;
-  try {
-    user = await Users.findOne({ email });
-  } catch (error) {
-    log.error(req, error);
-    res.sendStatus(500);
+      if (!user)
+        return res
+          .status(404)
+          .json({ error: "User with that email does not exist." });
+
+      // Don't show hashed tokens
+      delete user.accessToken;
+      delete user.refreshToken;
+
+      res.status(200).json(user);
+      next();
+    } catch (error) {
+      next(error);
+    }
   }
-
-  if (!user)
-    return res
-      .status(404)
-      .json({ error: "User with that email does not exist." });
-
-  // Don't show hashed tokens
-  delete user.accessToken;
-  delete user.refreshToken;
-
-  res.status(200).json(user);
-});
+);
 
 router
   .route("/")
   // Get all users
-  .get(async (req: Request, res: Response) => {
+  .get(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const response = await Users.find().toArray();
 
@@ -46,15 +46,15 @@ router
       });
 
       res.status(200).json({ result });
+      next();
     } catch (error) {
-      log.error(error);
-      res.sendStatus(500);
+      next(error);
     }
   })
 
   // Create new user
   // Only allowed if supplied with a valid Google JWT and doesn't exist
-  .post(async (req: Request, res: Response) => {
+  .post(async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Get details of user trying to sign up
       const decoded = await validateGJwt(req);
@@ -78,12 +78,12 @@ router
       };
 
       const result = await Users.insertOne(document);
-      res.status(200).json({ result, document });
+      res.status(201).json({ result, document });
+      next();
     } catch (error: any) {
-      if (error.message.startsWith("Invalid token signature"))
+      if (error.message.startsWith("Invalid Google JWT"))
         return res.sendStatus(401);
-      log.error(error);
-      res.sendStatus(500);
+      next(error);
     }
   });
 
