@@ -14,7 +14,7 @@ pipeline {
         stage("SonarQube Analysis") {
             agent any
             steps {
-              withSonarQubeEnv('My SonarQube Server') {
+              withSonarQubeEnv('sonarqube') {
                 echo "Running analysis"
               }
             }
@@ -37,7 +37,7 @@ pipeline {
                 }
             }
         }
-        stage("Docker Compose Up") {
+        stage("Deploy changes") {
             when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
             steps {
                 dir("bdlist-backend/") {
