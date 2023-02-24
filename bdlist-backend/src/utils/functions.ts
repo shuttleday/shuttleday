@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request } from "express";
 import { S3Client } from "@aws-sdk/client-s3";
 import { OAuth2Client } from "google-auth-library";
 import fileUpload, { UploadedFile } from "express-fileupload";

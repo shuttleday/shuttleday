@@ -58,7 +58,7 @@ router
 router.get(
   "/:sessionId",
   async (req: Request, res: Response, next: NextFunction) => {
-    const sessionId = req.params.sessionId as string;
+    const sessionId = req.params.sessionId;
 
     let gameSession;
     try {
