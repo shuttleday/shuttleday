@@ -35,6 +35,7 @@ router.post(
         return res.status(404).json({ error: "No user with that email" });
 
       res.status(201).json({ accessToken, refreshToken });
+      next();
     } catch (error: any) {
       if (error.message.startsWith("Invalid Google JWT"))
         return res.sendStatus(401);
@@ -43,6 +44,8 @@ router.post(
   }
 );
 
+// Get new access token from refresh token
+// Updates db with new hash
 router.post(
   "/refreshToken",
   async (req: Request, res: Response, next: NextFunction) => {
@@ -77,6 +80,7 @@ router.post(
 
       // Return new access token
       res.status(201).json({ accessToken: newAccessToken });
+      next();
     } catch (error) {
       next(error);
     }

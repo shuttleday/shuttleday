@@ -9,6 +9,7 @@ import authenticate from "./middleware/authenticate";
 import { validateBody } from "./middleware/validateRequest";
 import connectDb from "./db/connect";
 import errorHandler from "./middleware/errorHandler";
+import requestLogger from "./middleware/logger";
 
 const port = process.env.SERVER_PORT as string;
 export const app = express();
@@ -28,6 +29,9 @@ app.use(validateBody);
 
 // Load routes
 routes(app);
+
+// Load request logger
+app.use(requestLogger);
 
 // Load error handler
 app.use(errorHandler);

@@ -50,6 +50,7 @@ router.get(
       });
 
       res.status(200).json({ signedUrls: urlObjs });
+      next();
     } catch (err) {
       next(err);
     }

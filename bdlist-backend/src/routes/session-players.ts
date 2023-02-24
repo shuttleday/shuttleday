@@ -30,6 +30,7 @@ router
         return res.status(409).json({ error: "Already added to this session" });
 
       res.status(201).json({ players: result.value?.players });
+      next();
     } catch (error) {
       next(error);
     }
@@ -56,6 +57,7 @@ router
         return res.status(404).json({ error: "User is not in this session" });
 
       res.status(200).json({ players: result.value?.players });
+      next();
     } catch (error) {
       next(error);
     }

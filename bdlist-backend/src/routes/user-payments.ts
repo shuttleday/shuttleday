@@ -70,6 +70,7 @@ router.post(
         throw new Error("Could not upload to S3");
       }
       res.status(201).json({ result: modified });
+      next();
     } catch (error) {
       next(error);
     }

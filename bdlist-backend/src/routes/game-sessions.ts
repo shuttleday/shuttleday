@@ -24,6 +24,7 @@ router
       const gameSessions = await GameSessions.find(query).toArray();
 
       res.status(200).json({ gameSessions });
+      next();
     } catch (error) {
       next(error);
     }
@@ -46,6 +47,7 @@ router
       try {
         const result = await GameSessions.insertOne(document);
         res.status(201).json({ result, document });
+        next();
       } catch (error) {
         next(error);
       }
@@ -73,6 +75,7 @@ router.get(
         .json({ error: "Game session with that id does not exist." });
 
     res.status(200).json(gameSession);
+    next();
   }
 );
 

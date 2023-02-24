@@ -24,6 +24,7 @@ router.get(
       delete user.refreshToken;
 
       res.status(200).json(user);
+      next();
     } catch (error) {
       next(error);
     }
@@ -45,6 +46,7 @@ router
       });
 
       res.status(200).json({ result });
+      next();
     } catch (error) {
       next(error);
     }
@@ -77,6 +79,7 @@ router
 
       const result = await Users.insertOne(document);
       res.status(201).json({ result, document });
+      next();
     } catch (error: any) {
       if (error.message.startsWith("Invalid Google JWT"))
         return res.sendStatus(401);
