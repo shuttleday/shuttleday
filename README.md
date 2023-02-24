@@ -83,5 +83,8 @@
 
 # Read More
 
-<a href="./docs/BACKEND_DEV.md"><h2>BACKEND_DEV.md</h2></a>
-<a href="./docs/FRONTEND_DEV.md"><h2>FRONTEND_DEV.md</h2></a>
+[BACKEND_DEV.md](./BACKEND_DEV.md)
+
+[FRONTEND_DEV.md](./FRONTEND_DEV.md)
+
+[DEPLOYMENT.md](./DEPLOYMENT.md)
