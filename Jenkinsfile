@@ -8,25 +8,20 @@ pipeline {
 
     environment {
         ENV_VARS     = credentials('shuttleday-env-file')
+        scannerHome = tool 'SonarQubeScanner'
     }
 
     stages {
         stage("SonarQube Analysis") {
-            agent any
             steps {
-              withSonarQubeEnv('sonarqube') {
-                echo "Running analysis"
-              }
-            }
-          }
-
-        stage("Quality Gate") {
-            steps {
-                timeout(time: 30, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
+                script {
+                    def scannerHome = tool 'SonarScanner';
+                    withSonarQubeEnv() {
+                        sh "${scannerHome}/bin/sonar-scanner"
+                    }
                 }
             }
-        }
+          }
         
         stage ("Build Backend") {
             when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
