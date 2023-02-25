@@ -54,6 +54,7 @@ async function googleSignIn() {
   }
 }
 
+//Get the list of players that are joining the session
 async function getSession() {
   try {
     const today = dayjs();
@@ -71,6 +72,23 @@ async function getSession() {
   }
 }
 
+async function joinSession(sessionId) {
+  try {
+    const data = {
+      sessionId: sessionId,
+    };
+    const response = await axios.post(
+      process.env.REACT_APP_API_LINK + '/session-players',
+      data
+    );
+    console.log(response.data);
+    return response.data.players;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
 //Intercepts all request to the server and attaches the token to the header
 axios.interceptors.request.use(function (config) {
   const token = sessionStorage.getItem('jwtToken_Login');
@@ -78,4 +96,11 @@ axios.interceptors.request.use(function (config) {
   return config;
 });
 
-export { getUsers, createAccount, googleSignIn, userCheck, getSession };
+export {
+  getUsers,
+  createAccount,
+  googleSignIn,
+  userCheck,
+  getSession,
+  joinSession,
+};

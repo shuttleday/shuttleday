@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import {
+  userCheck,
+  createAccount,
+  getSession,
+  joinSession,
+} from '../data/repository';
+
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { Fragment } from 'react';
 import Stack from '@mui/material/Stack';
@@ -36,10 +41,12 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import InfoIcon from '@mui/icons-material/Info';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import jwt_decode from 'jwt-decode';
-import { userCheck, createAccount, getSession } from '../data/repository';
+
 import { useLocation } from 'react-router-dom';
 
 const Home = () => {
+  const ERROR = 'error';
+  const SUCCESS = 'success';
   const location = useLocation();
   let navigate = useNavigate();
 
@@ -77,6 +84,7 @@ const Home = () => {
   };
 
   const [playerList, setPlayerList] = useState(null);
+  const [sessionID, setSessionID] = useState('');
   const amount = 'This session is $4.50 Per person';
 
   //Control logic for tabs----------------------------------------------------------
@@ -109,9 +117,10 @@ const Home = () => {
       const googleToken = jwt_decode(location.state.googleToken);
       async function getSessionData() {
         getSession().then((res) => {
-          console.log(res.gameSessions[0].players);
+          console.log(res.gameSessions[0]._id);
           if (res.gameSessions[0].players.length !== 0) {
             setPlayerList(res.gameSessions[0].players);
+            setSessionID(res.gameSessions[0]._id);
           }
         });
       }
@@ -143,9 +152,18 @@ const Home = () => {
     setActiveTab(newValue);
   };
 
-  const onJoin = () => {
-    setAlertMsg('Joined successfully!');
-    setOpen(true);
+  const onJoin = async () => {
+    const newPlayerList = await joinSession(sessionID);
+    console.log(newPlayerList);
+    if (newPlayerList) {
+      setPlayerList(newPlayerList);
+      setCondition(SUCCESS);
+      setAlertMsg('Joined successfully!');
+      setOpen(true);
+    } else {
+      setCondition(ERROR);
+      setAlertMsg('Something went wrong..');
+    }
   };
   const handleClose = () => {
     setOpen(false);
@@ -166,12 +184,12 @@ const Home = () => {
     console.log(username);
     sessionStorage.setItem('jwtToken_Login', location.state.googleToken);
     const res = await createAccount(username);
-    if (res === 'error') {
-      setCondition(res);
+    if (res === ERROR) {
+      setCondition(ERROR);
       setAlertMsg('Username has been taken!');
       setOpen(true);
     } else {
-      setCondition('success');
+      setCondition(SUCCESS);
       setAlertMsg('Username has been taken!');
       handleCloseModal();
     }
@@ -183,7 +201,7 @@ const Home = () => {
   const [render, setRender] = useState(false);
 
   //For setting alert condition---------------------------------------------------------------
-  const [condition, setCondition] = useState('success');
+  const [condition, setCondition] = useState(SUCCESS);
 
   const style = {
     position: 'absolute',
@@ -248,7 +266,7 @@ const Home = () => {
                   />
                   <ImageIcon />
                 </IconButton>
-                <Button variant='contained' color='success' disabled={buttonOn}>
+                <Button variant='contained' color={SUCCESS} disabled={buttonOn}>
                   Success
                 </Button>
               </Stack>
@@ -278,7 +296,7 @@ const Home = () => {
               <Box textAlign='center'>
                 <Button
                   variant='contained'
-                  color='success'
+                  color={SUCCESS}
                   maxwidth='100%'
                   onClick={handleSubmit}
                 >
@@ -388,7 +406,7 @@ const Home = () => {
                 <br />
                 <Button
                   variant='contained'
-                  color='success'
+                  color={SUCCESS}
                   size='large'
                   onClick={onJoin}
                 >
