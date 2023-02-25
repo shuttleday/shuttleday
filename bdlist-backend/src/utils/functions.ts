@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 
 import * as dotenv from "dotenv";
 import { Users } from "../db/collections";
+import { User } from "../db/interfaces";
 dotenv.config();
 
 const CLIENT_ID = process.env.G_AUTH_CLIENT_ID;
@@ -56,15 +57,28 @@ export function validateDates(req: Request) {
   return { fromDate, toDate };
 }
 
-export function genAccessToken(userEmail: string) {
-  return jwt.sign({ userEmail }, process.env.ACCESS_TOKEN_SECRET!, {
-    expiresIn: "7d",
+// Massage user data for use in JWT
+function filterUserData(userObj: User) {
+  return {
+    email: userObj.email,
+    firstName: userObj.firstName,
+    lastName: userObj.lastName,
+    username: userObj.username,
+    userType: userObj.userType,
+  };
+}
+
+export function genAccessToken(userObj: User) {
+  const userData = filterUserData(userObj);
+  return jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET!, {
+    expiresIn: "30d",
   });
 }
 
-export function genRefreshToken(userEmail: string) {
-  return jwt.sign({ userEmail }, process.env.REFRESH_TOKEN_SECRET!, {
-    expiresIn: "120d",
+export function genRefreshToken(userObj: User) {
+  const userData = filterUserData(userObj);
+  return jwt.sign(userData, process.env.REFRESH_TOKEN_SECRET!, {
+    expiresIn: "180d",
   });
 }
 

@@ -15,13 +15,21 @@ router.post(
   "/signin",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      // Validate and get email from G JWT
       const decoded = await validateGJwt(req);
-
       const userEmail = decoded?.email!;
-      const accessToken = genAccessToken(userEmail);
-      const refreshToken = genRefreshToken(userEmail);
 
-      const found = await Users.updateOne(
+      // Get user information in JWT
+      const result = await Users.findOne({ email: userEmail });
+
+      if (!result)
+        return res.status(404).json({ error: "No user with that email" });
+
+      const accessToken = genAccessToken(result);
+      const refreshToken = genRefreshToken(result);
+
+      // Update db with latest hashed tokens
+      await Users.updateOne(
         { email: userEmail },
         {
           $set: {
@@ -30,9 +38,6 @@ router.post(
           },
         }
       );
-
-      if (found.modifiedCount === 0)
-        return res.status(404).json({ error: "No user with that email" });
 
       res.status(201).json({ accessToken, refreshToken });
       next();
