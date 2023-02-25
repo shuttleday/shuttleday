@@ -27,9 +27,9 @@ const authenticate = async (
 
     if (!token) return res.status(401);
 
-    const decoded = verifyAccessToken(token);
+    const decodedUser = verifyAccessToken(token);
 
-    const found = await Users.findOne({ email: decoded.userEmail });
+    const found = await Users.findOne({ email: decodedUser.email });
 
     if (!found) return res.status(404).json({ error: "Invalid JWT" });
 
