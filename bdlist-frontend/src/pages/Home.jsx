@@ -4,6 +4,7 @@ import {
   createAccount,
   getSession,
   joinSession,
+  removeFromSession,
 } from '../data/repository';
 
 import List from '@mui/material/List';
@@ -85,6 +86,7 @@ const Home = () => {
 
   const [playerList, setPlayerList] = useState(null);
   const [sessionID, setSessionID] = useState('');
+  const [playerStat, setPlayerStat] = useState(true);
   const amount = 'This session is $4.50 Per person';
 
   //Control logic for tabs----------------------------------------------------------
@@ -113,6 +115,7 @@ const Home = () => {
     if (sessionStorage.getItem('jwtToken_Login') === null) {
       navigate('/GLogin');
     } else {
+      const user = jwt_decode(sessionStorage.getItem('jwtToken_Login'));
       console.log(sessionStorage.getItem('jwtToken_Login'));
       const googleToken = jwt_decode(location.state.googleToken);
       async function getSessionData() {
@@ -121,6 +124,15 @@ const Home = () => {
           if (res.gameSessions[0].players.length !== 0) {
             setPlayerList(res.gameSessions[0].players);
             setSessionID(res.gameSessions[0]._id);
+          }
+          if (
+            res.gameSessions[0].players.find(
+              (item) => item.userEmail === user.email
+            )
+          ) {
+            setPlayerStat(false);
+          } else {
+            setPlayerStat(true);
           }
         });
       }
@@ -160,6 +172,21 @@ const Home = () => {
       setCondition(SUCCESS);
       setAlertMsg('Joined successfully!');
       setOpen(true);
+      setPlayerStat(false);
+    } else {
+      setCondition(ERROR);
+      setAlertMsg('Something went wrong..');
+    }
+  };
+  const onRemove = async () => {
+    const newPlayerList = await removeFromSession(sessionID);
+    console.log(newPlayerList);
+    if (newPlayerList) {
+      setPlayerList(newPlayerList);
+      setCondition(SUCCESS);
+      setAlertMsg('Removed successfully!');
+      setOpen(true);
+      setPlayerStat(true);
     } else {
       setCondition(ERROR);
       setAlertMsg('Something went wrong..');
@@ -404,14 +431,25 @@ const Home = () => {
                   )}
                 </List>
                 <br />
-                <Button
-                  variant='contained'
-                  color={SUCCESS}
-                  size='large'
-                  onClick={onJoin}
-                >
-                  Join
-                </Button>
+                {playerStat ? (
+                  <Button
+                    variant='contained'
+                    color={SUCCESS}
+                    size='large'
+                    onClick={onJoin}
+                  >
+                    Join
+                  </Button>
+                ) : (
+                  <Button
+                    variant='contained'
+                    color={ERROR}
+                    size='large'
+                    onClick={onRemove}
+                  >
+                    Remove
+                  </Button>
+                )}
               </Stack>
               <Snackbar
                 open={open}

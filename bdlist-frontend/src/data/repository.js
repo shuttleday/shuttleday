@@ -72,6 +72,7 @@ async function getSession() {
   }
 }
 
+//Adds current user to the existing session
 async function joinSession(sessionId) {
   try {
     const data = {
@@ -89,6 +90,22 @@ async function joinSession(sessionId) {
   }
 }
 
+//Removes user from the existing session
+//Delete requests with a body need it to be set under a data key
+//https://stackoverflow.com/questions/51069552/axios-delete-request-with-request-body-and-headers
+async function removeFromSession(sessionId) {
+  try {
+    const response = await axios.delete(
+      process.env.REACT_APP_API_LINK + '/session-players',
+      { data: { sessionId: sessionId } }
+    );
+    console.log(response.data);
+    return response.data.players;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
 //Intercepts all request to the server and attaches the token to the header
 axios.interceptors.request.use(function (config) {
   const token = sessionStorage.getItem('jwtToken_Login');
@@ -103,4 +120,5 @@ export {
   userCheck,
   getSession,
   joinSession,
+  removeFromSession,
 };
