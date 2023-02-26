@@ -106,6 +106,22 @@ async function removeFromSession(sessionId) {
     return null;
   }
 }
+
+async function uploadReceipt(image, sessionId) {
+  const formData = new FormData();
+  formData.append('receipt', image);
+  formData.append('sessionId', sessionId);
+  try {
+    const response = await axios.post(
+      process.env.REACT_APP_API_LINK + '/user-payments'
+    );
+    console.log(response.data);
+    return response.data.players;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
 //Intercepts all request to the server and attaches the token to the header
 axios.interceptors.request.use(function (config) {
   const token = sessionStorage.getItem('jwtToken_Login');
@@ -121,4 +137,5 @@ export {
   getSession,
   joinSession,
   removeFromSession,
+  uploadReceipt,
 };

@@ -5,6 +5,7 @@ import {
   getSession,
   joinSession,
   removeFromSession,
+  uploadReceipt,
 } from '../data/repository';
 
 import List from '@mui/material/List';
@@ -48,6 +49,7 @@ import { useLocation } from 'react-router-dom';
 const Home = () => {
   const ERROR = 'error';
   const SUCCESS = 'success';
+  const WARNING = 'warning';
   const location = useLocation();
   let navigate = useNavigate();
 
@@ -108,7 +110,17 @@ const Home = () => {
     setButtonON(false);
     setImage(e.target.files[0]);
   };
-  // const onUpload = () => {};
+  const onUpload = async () => {
+    if (image) {
+      const res = uploadReceipt(image, sessionID);
+      console.log(res);
+      setCondition(SUCCESS);
+      setAlertMsg('Receipt uploaded!');
+    } else {
+      setCondition(WARNING);
+      setAlertMsg('No image chosen.');
+    }
+  };
   //--------------------------------------------------------------------------------
 
   useEffect(() => {
@@ -451,23 +463,8 @@ const Home = () => {
                   </Button>
                 )}
               </Stack>
-              <Snackbar
-                open={open}
-                autoHideDuration={2000}
-                onClose={handleClose}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-              >
-                <Alert
-                  onClose={handleClose}
-                  severity={condition}
-                  sx={{ width: '100%' }}
-                >
-                  {alertMsg}
-                </Alert>
-              </Snackbar>
             </TabPanel>
             {/* ---------------------------------------------------------------------------------------------------------------------------- */}
-
             <TabPanel value='2'>
               <Stack
                 spacing={2}
@@ -496,6 +493,20 @@ const Home = () => {
             </TabPanel>
           </TabContext>
         </Box>
+        <Snackbar
+          open={open}
+          autoHideDuration={2000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert
+            onClose={handleClose}
+            severity={condition}
+            sx={{ width: '100%' }}
+          >
+            {alertMsg}
+          </Alert>
+        </Snackbar>
       </Stack>
       {render ?? (
         <Box
