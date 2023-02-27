@@ -22,7 +22,7 @@ export async function adminCheck(
   next: NextFunction
 ) {
   if (req.user.userType !== "admin")
-    res
+    return res
       .status(403)
       .json({ error: "You must be an admin to access this resource" });
   next();
