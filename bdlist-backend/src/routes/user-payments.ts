@@ -22,9 +22,13 @@ router.post(
       const result = await GameSessions.findOneAndUpdate(
         {
           _id: new ObjectId(req.body.sessionId),
-          "players.userEmail": req.user.email,
-          "players.paidAt": null,
-          "players.paid": false,
+          players: {
+            $elemMatch: {
+              userEmail: req.user.email,
+              paidAt: null,
+              paid: false,
+            },
+          },
         },
         {
           $set: {
