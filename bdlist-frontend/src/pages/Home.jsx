@@ -111,14 +111,17 @@ const Home = () => {
     setImage(e.target.files[0]);
   };
   const onUpload = async () => {
-    if (image) {
-      const res = uploadReceipt(image, sessionID);
+    const res = await uploadReceipt(image, sessionID);
+    if (res) {
       console.log(res);
       setCondition(SUCCESS);
       setAlertMsg('Receipt uploaded!');
+      setOpen(true);
+      handleCloseModalImage();
     } else {
-      setCondition(WARNING);
-      setAlertMsg('No image chosen.');
+      setCondition(ERROR);
+      setAlertMsg('Something went wrong..');
+      setOpen(true);
     }
   };
   //--------------------------------------------------------------------------------
@@ -188,6 +191,7 @@ const Home = () => {
     } else {
       setCondition(ERROR);
       setAlertMsg('Something went wrong..');
+      setOpen(true);
     }
   };
   const onRemove = async () => {
@@ -305,8 +309,13 @@ const Home = () => {
                   />
                   <ImageIcon />
                 </IconButton>
-                <Button variant='contained' color={SUCCESS} disabled={buttonOn}>
-                  Success
+                <Button
+                  variant='contained'
+                  color={SUCCESS}
+                  disabled={buttonOn}
+                  onClick={onUpload}
+                >
+                  Upload
                 </Button>
               </Stack>
             </Box>

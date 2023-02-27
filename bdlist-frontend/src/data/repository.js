@@ -113,10 +113,11 @@ async function uploadReceipt(image, sessionId) {
   formData.append('sessionId', sessionId);
   try {
     const response = await axios.post(
-      process.env.REACT_APP_API_LINK + '/user-payments'
+      process.env.REACT_APP_API_LINK + '/user-payments',
+      formData
     );
     console.log(response.data);
-    return response.data.players;
+    return response.data;
   } catch (error) {
     console.log(error);
     return null;
