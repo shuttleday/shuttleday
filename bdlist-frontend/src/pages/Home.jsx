@@ -156,10 +156,10 @@ const Home = () => {
           sessionStorage.setItem('jwtToken_Login', location.state.googleToken);
           setUsername(googleToken.name);
           handleOpen();
-        } else {
-          if (user.data.userType === 'admin') {
-            setRender(true);
-          }
+        }
+
+        if (user.data.userType === 'admin') {
+          setRender(true);
         }
       });
     }
@@ -508,7 +508,7 @@ const Home = () => {
           </Alert>
         </Snackbar>
       </Stack>
-      {render ?? (
+      {render && (
         <Box
           sx={{
             transform: 'translateZ(0px)',
