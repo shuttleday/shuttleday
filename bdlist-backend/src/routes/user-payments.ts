@@ -22,7 +22,9 @@ router.post(
       const result = await GameSessions.findOneAndUpdate(
         {
           _id: new ObjectId(req.body.sessionId),
-          players: { userEmail: req.user.email, paid: false, paidAt: null },
+          "players.userEmail": req.user.email,
+          "players.paidAt": null,
+          "players.paid": false,
         },
         {
           $set: {
@@ -44,9 +46,7 @@ router.post(
 
       // Upload files to S3
       const file = processUploadedFiles(req.files!);
-      const filename = `${result.value.start.toUTCString()}-${
-        req.user.username
-      }.${file.name.split(".")[1]}`;
+      const filename = `${result.value.payTo}/${result.value._id}/${req.user.username}.jpg`;
 
       const bucketParams = {
         Bucket: process.env.AWS_S3_BUCKET_NAME!,

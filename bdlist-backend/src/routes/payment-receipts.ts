@@ -1,8 +1,10 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { ListObjectsCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { s3, validateDates } from "../utils/functions";
+import { s3 } from "../utils/functions";
 import { adminCheck } from "../middleware/validateRequest";
+import { GameSessions } from "../db/collections";
+import { ObjectId } from "mongodb";
 
 const router = Router();
 
@@ -11,42 +13,45 @@ router.get(
   adminCheck,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { fromDate, toDate } = validateDates(req);
-
-      // Fetch first 1000 objects in S3
-      const bucketParams = { Bucket: process.env.AWS_S3_BUCKET_NAME };
-      const getListObjects = async () => {
-        const data = await s3.send(new ListObjectsCommand(bucketParams));
-        if (data.$metadata.httpStatusCode === 200) return data.Contents;
-      };
-      const objects = await getListObjects();
-
-      // Filter ListObjects by date
-      const filteredObjects = objects?.filter((obj) => {
-        return fromDate <= obj.LastModified! && obj.LastModified! <= toDate;
+      // Get session
+      const gameSession = await GameSessions.findOne({
+        _id: new ObjectId(req.query.sessionId as string),
       });
 
-      // Exit early if no match
-      if (!filteredObjects) return res.status(200).json({ signedUrls: [] });
+      if (!gameSession)
+        return res.status(404).json({ error: "No session with that ID" });
+
+      // Get only players that paid for that session
+      const players = gameSession.players.filter((player) => {
+        return player.paid === true && player.paidAt !== null;
+      });
+
+      // Ensure there are players that paid
+      if (!players)
+        return res
+          .status(404)
+          .json({ error: "No players have paid for that session" });
 
       // Construct promises
-      const promises = filteredObjects.map((obj) => {
+      const promises = players.map((player) => {
         const command = new GetObjectCommand({
           Bucket: process.env.AWS_S3_BUCKET_NAME,
-          Key: obj.Key,
+          Key: `${req.user.email}/${gameSession._id}/${player.username}.jpg`,
         });
         return getSignedUrl(s3, command, { expiresIn: 3600 });
       });
 
-      // Get urls asynchronously
+      // Get presigned urls asynchronously
       const urls = await Promise.all(promises);
 
-      // Parse key names from URLs
+      // Parse filenames from URLs
       const urlObjs = urls.map((signedUrl) => {
-        const filename = decodeURIComponent(new URL(signedUrl).pathname).slice(
-          1
-        );
-        return { key: filename, signedUrl };
+        const url = new URL(signedUrl);
+        const pathname = url.pathname;
+        const decodedPath = decodeURIComponent(pathname);
+        const filename = decodedPath.split("/")[3];
+        const username = filename.split(".")[0];
+        return { payer: username, signedUrl };
       });
 
       res.status(200).json({ signedUrls: urlObjs });
