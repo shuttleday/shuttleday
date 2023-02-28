@@ -51,17 +51,17 @@ async function googleSignIn() {
 async function getSession() {
   try {
     const today = dayjs();
+    const past = today.subtract(7, 'day');
     const future = today.add(7, 'day');
-    console.log(today.toISOString());
-    console.log(future.toISOString());
 
     const response = await axios.get(
       process.env.REACT_APP_API_LINK + '/game-sessions',
       {
-        params: { fromDate: today.toISOString(), toDate: future.toISOString() },
+        params: { fromDate: past.toISOString(), toDate: future.toISOString() },
       }
     );
     const user = response.data;
+    console.log(user);
     return user;
   } catch (error) {
     console.log(error);

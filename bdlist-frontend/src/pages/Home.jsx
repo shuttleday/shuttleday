@@ -22,7 +22,6 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Toolbar from '@mui/material/Toolbar';
 import AppBar from '@mui/material/AppBar';
-import MoreIcon from '@mui/icons-material/MoreVert';
 import IconButton from '@mui/material/IconButton';
 import { Button } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
@@ -43,6 +42,11 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import InfoIcon from '@mui/icons-material/Info';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import jwt_decode from 'jwt-decode';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import dayjs from 'dayjs';
 
 import { useLocation } from 'react-router-dom';
 
@@ -86,8 +90,8 @@ const Home = () => {
     p: 4,
   };
 
-  const [playerList, setPlayerList] = useState(null);
-  const [sessionID, setSessionID] = useState('');
+  const [sessionInfo, setSessionInfo] = useState(null);
+  const [selected, setSelected] = useState(0);
   const [playerStat, setPlayerStat] = useState(true);
   const amount = 'This session is $4.50 Per person';
 
@@ -111,7 +115,7 @@ const Home = () => {
     setImage(e.target.files[0]);
   };
   const onUpload = async () => {
-    const res = await uploadReceipt(image, sessionID);
+    const res = await uploadReceipt(image, sessionInfo[selected]._id);
     if (res) {
       setCondition(SUCCESS);
       setAlertMsg('Receipt uploaded!');
@@ -136,12 +140,11 @@ const Home = () => {
       async function getSessionData() {
         getSession().then((res) => {
           console.log(res.gameSessions[0]._id);
-          if (res.gameSessions[0].players.length !== 0) {
-            setPlayerList(res.gameSessions[0].players);
-            setSessionID(res.gameSessions[0]._id);
+          if (res.gameSessions !== null) {
+            setSessionInfo(res.gameSessions);
           }
           if (
-            res.gameSessions[0].players.find(
+            res.gameSessions[selected].players.find(
               (item) => item.userEmail === user.email
             )
           ) {
@@ -181,10 +184,10 @@ const Home = () => {
   };
 
   const onJoin = async () => {
-    const newPlayerList = await joinSession(sessionID);
+    const newPlayerList = await joinSession(sessionInfo[selected]._id);
     console.log(newPlayerList);
     if (newPlayerList) {
-      setPlayerList(newPlayerList);
+      setSessionInfo(newPlayerList);
       setCondition(SUCCESS);
       setAlertMsg('Joined successfully!');
       setOpen(true);
@@ -196,10 +199,10 @@ const Home = () => {
     }
   };
   const onRemove = async () => {
-    const newPlayerList = await removeFromSession(sessionID);
+    const newPlayerList = await removeFromSession(sessionInfo[selected]._id);
     console.log(newPlayerList);
     if (newPlayerList) {
-      setPlayerList(newPlayerList);
+      setSessionInfo(newPlayerList);
       setCondition(SUCCESS);
       setAlertMsg('Removed successfully!');
       setOpen(true);
@@ -259,6 +262,19 @@ const Home = () => {
     p: 4,
   };
 
+  const handleSelect = (event) => {
+    setSelected(event.target.value);
+    const user = jwt_decode(sessionStorage.getItem('jwtToken_Login'));
+    if (
+      sessionInfo[selected].players.find(
+        (item) => item.userEmail === user.email
+      )
+    ) {
+      setPlayerStat(false);
+    } else {
+      setPlayerStat(true);
+    }
+  };
   return (
     <div>
       <Stack
@@ -321,7 +337,6 @@ const Home = () => {
               </Stack>
             </Box>
           </Modal>
-          <Button onClick={handleOpen}>Open modal</Button>
           <Modal
             open={openModal}
             aria-labelledby='modal-modal-title'
@@ -382,27 +397,36 @@ const Home = () => {
                     }}
                   >
                     <Toolbar>
-                      <Typography
-                        variant='h7'
-                        component='div'
-                        sx={{ flexGrow: 1 }}
+                      <FormControl
+                        sx={{ m: 1, minWidth: { xs: 150, sm: 180, md: 200 } }}
                       >
-                        10 Feb (Sat)
-                      </Typography>
-                      <IconButton
-                        size='large'
-                        edge='start'
-                        color='inherit'
-                        aria-label='menu'
-                      >
-                        <MoreIcon />
-                      </IconButton>
+                        <InputLabel id='demo-simple-select-helper-label'>
+                          Sessions
+                        </InputLabel>
+                        <Select
+                          id='demo-simple-select-helper'
+                          value={selected}
+                          label='Sessions'
+                          color='primary'
+                          onChange={handleSelect}
+                        >
+                          {sessionInfo === null ? (
+                            <div></div>
+                          ) : (
+                            sessionInfo.map((date, index) => (
+                              <MenuItem value={index}>
+                                {dayjs(date.end).format('DD/MM/YYYY ddd')}
+                              </MenuItem>
+                            ))
+                          )}
+                        </Select>
+                      </FormControl>
                     </Toolbar>
                   </AppBar>
                 </Box>
                 <List
                   sx={{
-                    width: { xm: 300, sm: 452, lg: 452 },
+                    width: { xs: 300, sm: 452, lg: 452 },
                     maxwidth: 660,
                     minHeight: 300,
                     bgcolor: 'background.paper',
@@ -412,45 +436,49 @@ const Home = () => {
                   alignItems='center'
                   justifycontent='center'
                 >
-                  {playerList === null ? (
-                    <div>
-                      <Typography
-                        sx={{ display: 'flex', justifyContent: 'center' }}
-                        component='span'
-                        variant='h5'
-                        color='text.primary'
-                      >
-                        No player present yet
-                      </Typography>
-                    </div>
-                  ) : (
-                    playerList.map((player) => (
-                      <div key={player.username}>
-                        <ListItem alignitems='center'>
-                          <ListItemText
-                            style={{
-                              display: 'flex',
-                              justifyContent: 'center',
-                              size: 30,
-                            }}
-                            primary={
-                              <Fragment>
-                                <Typography
-                                  sx={{ display: 'inline' }}
-                                  component='span'
-                                  variant='h5'
-                                  color='text.primary'
-                                >
-                                  {player.username}
-                                </Typography>
-                              </Fragment>
-                            }
-                          />
-                        </ListItem>
-                        <Divider variant='middle' />
-                      </div>
-                    ))
-                  )}
+                  {sessionInfo !== null &&
+                    (sessionInfo[selected].players.length === 0 ? (
+                      <Box textAlign='center' mr={2}>
+                        <Typography
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                          }}
+                          component='span'
+                          variant='h6'
+                          color='text.primary'
+                        >
+                          No player present yet
+                        </Typography>
+                      </Box>
+                    ) : (
+                      sessionInfo[selected].players.map((player) => (
+                        <div key={player.username}>
+                          <ListItem alignitems='center'>
+                            <ListItemText
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                size: 30,
+                              }}
+                              primary={
+                                <Fragment>
+                                  <Typography
+                                    sx={{ display: 'inline' }}
+                                    component='span'
+                                    variant='h5'
+                                    color='text.primary'
+                                  >
+                                    {player.username}
+                                  </Typography>
+                                </Fragment>
+                              }
+                            />
+                          </ListItem>
+                          <Divider variant='middle' />
+                        </div>
+                      ))
+                    ))}
                 </List>
                 <br />
                 {playerStat ? (
