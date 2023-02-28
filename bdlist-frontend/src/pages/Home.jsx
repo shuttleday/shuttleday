@@ -113,7 +113,6 @@ const Home = () => {
   const onUpload = async () => {
     const res = await uploadReceipt(image, sessionID);
     if (res) {
-      console.log(res);
       setCondition(SUCCESS);
       setAlertMsg('Receipt uploaded!');
       setOpen(true);
@@ -131,8 +130,9 @@ const Home = () => {
       navigate('/GLogin');
     } else {
       const user = jwt_decode(sessionStorage.getItem('jwtToken_Login'));
+      console.log(user);
       console.log(sessionStorage.getItem('jwtToken_Login'));
-      const googleToken = jwt_decode(location.state.googleToken);
+
       async function getSessionData() {
         getSession().then((res) => {
           console.log(res.gameSessions[0]._id);
@@ -154,8 +154,9 @@ const Home = () => {
 
       getSessionData();
 
-      userCheck(googleToken.email).then((user) => {
+      userCheck(user.email).then((user) => {
         if (!user) {
+          const googleToken = jwt_decode(location.state.googleToken);
           sessionStorage.setItem('jwtToken_Login', location.state.googleToken);
           setUsername(googleToken.name);
           handleOpen();
@@ -336,7 +337,7 @@ const Home = () => {
                   label='Name'
                   id='fullWidth'
                   color='secondary'
-                  defaultValue={jwt_decode(location.state.googleToken).name}
+                  defaultValue={username}
                   onChange={onChange}
                 />
               </Typography>
@@ -537,7 +538,6 @@ const Home = () => {
               <SpeedDialAction
                 key={action.name}
                 onClick={(e) => {
-                  console.log(action.operation);
                   handleSpeedDial(action.operation);
                 }}
                 icon={action.icon}

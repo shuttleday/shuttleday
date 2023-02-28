@@ -1,13 +1,6 @@
 import axios from 'axios';
 import dayjs from 'dayjs';
 
-async function getUsers() {
-  const response = await axios.get(process.env.REACT_APP_API_LINK + '/users');
-  const user = response.data;
-  console.log(user);
-  return user;
-}
-
 //Checks if an user exist in the db
 async function userCheck(email) {
   try {
@@ -59,6 +52,9 @@ async function getSession() {
   try {
     const today = dayjs();
     const future = today.add(7, 'day');
+    console.log(today.toISOString());
+    console.log(future.toISOString());
+
     const response = await axios.get(
       process.env.REACT_APP_API_LINK + '/game-sessions',
       {
@@ -123,6 +119,18 @@ async function uploadReceipt(image, sessionId) {
     return null;
   }
 }
+
+async function getUsers() {
+  try {
+    const response = await axios.get(process.env.REACT_APP_API_LINK + '/users');
+    const users = response.data;
+    console.log(users);
+    return users;
+  } catch (error) {
+    return null;
+  }
+}
+
 //Intercepts all request to the server and attaches the token to the header
 axios.interceptors.request.use(function (config) {
   const token = sessionStorage.getItem('jwtToken_Login');
@@ -130,6 +138,7 @@ axios.interceptors.request.use(function (config) {
   return config;
 });
 
+// axios.interceptors.response.use(function (config))
 export {
   getUsers,
   createAccount,
