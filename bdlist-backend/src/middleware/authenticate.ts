@@ -30,13 +30,12 @@ const authenticate = async (
 
     const found = await Users.findOne({ email: decodedUser.email });
 
-    if (!found) return res.status(404).json({ error: "Invalid JWT" });
+    if (!found) throw new ApiError(401, "Invalid JWT");
 
-    if (!found.accessToken)
-      return res.status(401).json({ error: "Please sign in first." });
+    if (!found.accessToken) throw new ApiError(401, "Please sign in first");
 
     if (!(await argon2.verify(found.accessToken, token)))
-      return res.sendStatus(401);
+      throw new ApiError(401, "Invalid JWT");
 
     // Remove tokens for safety
     delete found.accessToken;
@@ -46,7 +45,7 @@ const authenticate = async (
     next();
   } catch (error) {
     if (error instanceof JsonWebTokenError)
-      throw new ApiError(401, "Invalid JWT signature");
+      throw new ApiError(401, "Invalid JWT");
     next(error);
   }
 };
