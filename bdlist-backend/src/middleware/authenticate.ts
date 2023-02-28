@@ -3,8 +3,6 @@ import * as argon2 from "argon2";
 import { JsonWebTokenError } from "jsonwebtoken";
 import { verifyAccessToken } from "../utils/functions";
 import { Users } from "../db/collections";
-
-import log from "../utils/logger";
 import { ApiError } from "../utils/error-util";
 
 const excludedPaths = [
