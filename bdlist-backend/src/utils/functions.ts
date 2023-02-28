@@ -52,7 +52,7 @@ export function validateDates(req: Request) {
     : new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // 7 days ago
   const toDate: Date = req.query.toDate
     ? new Date(req.query.toDate as string)
-    : new Date(); // current date
+    : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days ahead
 
   return { fromDate, toDate };
 }
