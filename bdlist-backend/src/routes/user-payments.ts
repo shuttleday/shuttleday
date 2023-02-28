@@ -8,6 +8,7 @@ import {
   fileSizeLimiter,
   validateFileUpload,
 } from "../middleware/validateRequest";
+import { ApiError } from "../utils/error-util";
 
 const router = Router();
 
@@ -40,9 +41,10 @@ router.post(
       );
 
       if (result.value === null)
-        return res.status(409).json({
-          error: "Either already paid for this session or not in session",
-        });
+        throw new ApiError(
+          409,
+          "Either already paid for this session or not in session"
+        );
 
       const modified = result.value.players?.find(
         (user) => user.userEmail === req.user.email

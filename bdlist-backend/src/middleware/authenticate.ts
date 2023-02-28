@@ -5,6 +5,7 @@ import { verifyAccessToken } from "../utils/functions";
 import { Users } from "../db/collections";
 
 import log from "../utils/logger";
+import { ApiError } from "../utils/error-util";
 
 const excludedPaths = [
   "/healthcheck",
@@ -46,10 +47,9 @@ const authenticate = async (
     req.user = found;
     next();
   } catch (error) {
-    log.error(req, error);
     if (error instanceof JsonWebTokenError)
-      return res.status(401).json({ error: "Invalid JWT signature" });
-    else res.sendStatus(500);
+      throw new ApiError(401, "Invalid JWT signature");
+    next(error);
   }
 };
 

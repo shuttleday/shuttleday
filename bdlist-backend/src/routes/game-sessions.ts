@@ -4,6 +4,7 @@ import { GameSessions } from "../db/collections";
 import { validateNewGameSessionDate } from "../middleware/validateRequest";
 import { GameSession } from "../db/interfaces";
 import { validateDates } from "../utils/functions";
+import { ApiError } from "../utils/error-util";
 
 const router = Router();
 
@@ -58,24 +59,22 @@ router
 router.get(
   "/:sessionId",
   async (req: Request, res: Response, next: NextFunction) => {
-    const sessionId = req.params.sessionId;
-
-    let gameSession;
     try {
+      const sessionId = req.params.sessionId;
+
+      let gameSession;
       gameSession = await GameSessions.findOne({
         _id: new ObjectId(sessionId),
       });
+
+      if (!gameSession)
+        throw new ApiError(404, "Game session with that id does not exist");
+
+      res.status(200).json(gameSession);
+      next();
     } catch (error) {
       next(error);
     }
-
-    if (!gameSession)
-      return res
-        .status(404)
-        .json({ error: "Game session with that id does not exist." });
-
-    res.status(200).json(gameSession);
-    next();
   }
 );
 

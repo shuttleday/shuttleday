@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { ObjectId, PullOperator, PushOperator } from "mongodb";
 import { GameSessions } from "../db/collections";
+import { ApiError } from "../utils/error-util";
 
 const router = Router();
 
@@ -28,7 +29,7 @@ router
       );
 
       if (result.value === null)
-        return res.status(409).json({ error: "Already added to this session" });
+        throw new ApiError(409, "Already added to this session");
 
       res.status(201).json({ players: result.value?.players });
       next();
@@ -55,7 +56,7 @@ router
       );
 
       if (result.value === null)
-        return res.status(404).json({ error: "User is not in this session" });
+        throw new ApiError(404, "User is not in this session");
 
       res.status(200).json({ players: result.value?.players });
       next();

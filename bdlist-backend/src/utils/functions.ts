@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { Request, Response } from "express";
 import { S3Client } from "@aws-sdk/client-s3";
 import { OAuth2Client } from "google-auth-library";
 import fileUpload, { UploadedFile } from "express-fileupload";
@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import { Users } from "../db/collections";
 import { User } from "../db/interfaces";
+import { ApiError } from "./error-util";
 dotenv.config();
 
 const CLIENT_ID = process.env.G_AUTH_CLIENT_ID;
@@ -39,7 +40,7 @@ export async function validateGJwt(req: Request) {
   }
 
   const payload = verify().catch(() => {
-    throw new Error("Invalid Google JWT");
+    throw new ApiError(400, "Invalid Google JWT");
   });
 
   return payload;
@@ -54,7 +55,9 @@ export function validateDates(req: Request) {
     ? new Date(req.query.toDate as string)
     : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days ahead
 
-  return { fromDate, toDate };
+  if (toDate < fromDate)
+    throw new ApiError(400, "toDate cannot be before fromDate");
+  else return { fromDate, toDate };
 }
 
 // Massage user data for use in JWT

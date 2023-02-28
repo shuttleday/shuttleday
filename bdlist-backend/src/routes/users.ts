@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import { Users } from "../db/collections";
 import { User } from "../db/interfaces";
 import { userExists, validateGJwt } from "../utils/functions";
+import { ApiError } from "../utils/error-util";
 
 const router = Router();
 
@@ -14,10 +15,7 @@ router.get(
       const email = req.params.email;
       const user = await Users.findOne({ email });
 
-      if (!user)
-        return res
-          .status(404)
-          .json({ error: "User with that email does not exist." });
+      if (!user) throw new ApiError(404, "User with that email does not exist");
 
       // Don't show hashed tokens
       delete user.accessToken;
@@ -61,9 +59,7 @@ router
 
       // Ensure user with that email doesn't already exist
       if (await userExists(decoded?.email!))
-        return res
-          .status(409)
-          .json({ error: "User with that email already exists" });
+        throw new ApiError(409, "User with that email already exists");
 
       const document: User = {
         _id: new ObjectId(),

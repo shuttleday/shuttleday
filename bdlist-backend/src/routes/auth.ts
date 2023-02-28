@@ -7,6 +7,7 @@ import {
   validateGJwt,
   verifyRefreshToken,
 } from "../utils/functions";
+import { ApiError } from "../utils/error-util";
 
 const router = Router();
 
@@ -22,8 +23,7 @@ router.post(
       // Get user information in JWT
       const result = await Users.findOne({ email: userEmail });
 
-      if (!result)
-        return res.status(404).json({ error: "No user with that email" });
+      if (!result) throw new ApiError(404, "No user with that email");
 
       const accessToken = genAccessToken(result);
       const refreshToken = genRefreshToken(result);
@@ -43,7 +43,7 @@ router.post(
       next();
     } catch (error: any) {
       if (error.message.startsWith("Invalid Google JWT"))
-        return res.sendStatus(401);
+        throw new ApiError(401, "Invalid Google JWT");
       next(error);
     }
   }
@@ -63,11 +63,9 @@ router.post(
       // Validate token is identical to db token
       const found = await Users.findOne({ email: decoded.userEmail });
 
-      if (!found)
-        return res.status(404).json({ error: "No user with that email" });
+      if (!found) throw new ApiError(404, "No user with that email");
 
-      if (!found.refreshToken)
-        return res.status(401).json({ error: "Please sign in first" });
+      if (!found.refreshToken) throw new ApiError(404, "Please sign in first");
 
       if (!(await argon2.verify(found.refreshToken, candidateToken)))
         return res.sendStatus(401);
@@ -81,7 +79,7 @@ router.post(
         { $set: { accessToken: await argon2.hash(newAccessToken) } }
       );
 
-      if (result.modifiedCount === 0) return res.sendStatus(500);
+      if (result.modifiedCount === 0) throw new Error();
 
       // Return new access token
       res.status(201).json({ accessToken: newAccessToken });

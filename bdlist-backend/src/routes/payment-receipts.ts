@@ -5,6 +5,7 @@ import { s3 } from "../utils/functions";
 import { adminCheck, validateQuery } from "../middleware/validateRequest";
 import { GameSessions } from "../db/collections";
 import { ObjectId } from "mongodb";
+import { ApiError } from "../utils/error-util";
 
 const router = Router();
 
@@ -19,8 +20,7 @@ router.get(
         _id: new ObjectId(req.query.sessionId as string),
       });
 
-      if (!gameSession)
-        return res.status(404).json({ error: "No session with that ID" });
+      if (!gameSession) throw new ApiError(404, "No session with that ID");
 
       // Get only players that paid for that session
       const players = gameSession.players.filter((player) => {
@@ -29,9 +29,7 @@ router.get(
 
       // Ensure there are players that paid
       if (!players)
-        return res
-          .status(404)
-          .json({ error: "No players have paid for that session" });
+        throw new ApiError(404, "No players have paid for that session");
 
       // Construct promises
       const promises = players.map((player) => {
