@@ -24,7 +24,7 @@ const authenticate = async (
     if (!req.headers.authorization) return res.sendStatus(401);
     const token = req.headers.authorization?.split(" ")[1]; // Expects { Authorization: Bearer TOKEN } format
 
-    if (!token) return res.status(401);
+    if (!token) throw new ApiError(401, "Invalid JWT");
 
     const decodedUser = verifyAccessToken(token);
 

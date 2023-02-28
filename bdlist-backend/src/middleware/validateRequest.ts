@@ -158,6 +158,7 @@ function getTargetKeys(requiredKeys: { [s: string]: string[] }, req: Request) {
   switch (req.method) {
     case "GET":
       endpoint = req.baseUrl;
+      break;
     default:
       endpoint = req.path;
       break;
