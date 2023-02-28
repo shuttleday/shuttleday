@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { processUploadedFiles } from "../utils/functions";
-import { requiredBody, requiredQuery } from "./validation";
+import { requiredPOST, requiredGET, requiredPATCH } from "./validation";
 import { ApiError } from "../utils/error-util";
 const MB = 5;
 const FILE_SIZE_LIMIT = MB * 1024 * 1024;
@@ -70,17 +70,17 @@ export function fileSizeLimiter(
   }
 }
 
-export async function validateBody(
+export async function validatePOST(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    // Return early if a GET method
-    if (req.method === "GET") return next();
+    // Return early if not a POST method
+    if (req.method !== "POST") return next();
 
     // Get required req.body keys
-    const required = Object.entries(requiredBody);
+    const required = Object.entries(requiredPOST);
 
     const tmp = required.find((path) => path[0] === req.path);
 
@@ -105,7 +105,7 @@ export async function validateBody(
   }
 }
 
-export async function validateQuery(
+export async function validateGET(
   req: Request,
   res: Response,
   next: NextFunction
@@ -115,7 +115,7 @@ export async function validateQuery(
     if (req.method !== "GET") return next();
 
     // Get required req.query keys
-    const required = Object.entries(requiredQuery);
+    const required = Object.entries(requiredGET);
 
     const tmp = required.find((path) => path[0] === req.baseUrl);
 
@@ -124,6 +124,41 @@ export async function validateQuery(
 
     // Get supplied req.query keys
     const supplied = Object.keys(req.query);
+
+    // Check if all target keys are in supplied keys
+    const missing: string[] = getMissingKeys(target, supplied);
+
+    // Return 400 with dynamic error message if there are missing keys
+    if (missing.length > 0) {
+      const missingKeys = formatError(missing);
+      throw new ApiError(400, `Missing keys:${missingKeys}`);
+    }
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function validatePATCH(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    // Return early if not a PATCH method
+    if (req.method !== "PATCH") return next();
+
+    // Get required req.query keys
+    const required = Object.entries(requiredPATCH);
+
+    const tmp = required.find((path) => path[0] === req.path);
+
+    if (!tmp) return next(); // Return early if there are no targets
+    const target = tmp[1];
+
+    // Get supplied req.query keys
+    const supplied = Object.keys(req.body);
 
     // Check if all target keys are in supplied keys
     const missing: string[] = getMissingKeys(target, supplied);

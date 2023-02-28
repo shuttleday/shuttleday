@@ -53,7 +53,39 @@ router
         next(error);
       }
     }
-  );
+  )
+  .patch(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Validate courts key
+      if (!(req.body.courts instanceof Array))
+        throw new ApiError(400, "courts key must be of type string[]");
+      for (const elem of req.body.courts) {
+        if (typeof elem !== "string")
+          throw new ApiError(400, "courts key must be of type string[]");
+      }
+
+      // Update and return new document
+      const result = await GameSessions.findOneAndUpdate(
+        { _id: new ObjectId(req.body.sessionId) },
+        {
+          $set: {
+            start: new Date(req.body.start),
+            end: new Date(req.body.end),
+            cost: req.body.cost as number,
+            payTo: req.body.payTo,
+            courts: req.body.courts as string[],
+          },
+        },
+        { returnDocument: "after" }
+      );
+
+      res.status(200).json({ result: result.value });
+      if (result.value === null)
+        throw new ApiError(404, "No session with that id");
+    } catch (error) {
+      next(error);
+    }
+  });
 
 // Get game session by id
 router.get(
@@ -62,8 +94,7 @@ router.get(
     try {
       const sessionId = req.params.sessionId;
 
-      let gameSession;
-      gameSession = await GameSessions.findOne({
+      const gameSession = await GameSessions.findOne({
         _id: new ObjectId(sessionId),
       });
 

@@ -8,12 +8,14 @@ import {
   verifyRefreshToken,
 } from "../utils/functions";
 import { ApiError } from "../utils/error-util";
+import { validatePOST } from "../middleware/validateRequest";
 
 const router = Router();
 
 // Get Shuttleday JWT
 router.post(
   "/signin",
+  validatePOST,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Validate and get email from G JWT

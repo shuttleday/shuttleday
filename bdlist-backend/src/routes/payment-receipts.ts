@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from "express";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3 } from "../utils/functions";
-import { adminCheck, validateQuery } from "../middleware/validateRequest";
+import { adminCheck } from "../middleware/validateRequest";
 import { GameSessions } from "../db/collections";
 import { ObjectId } from "mongodb";
 import { ApiError } from "../utils/error-util";
@@ -12,7 +12,6 @@ const router = Router();
 router.get(
   "/",
   adminCheck,
-  validateQuery,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Get session
