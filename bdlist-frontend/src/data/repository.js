@@ -124,8 +124,7 @@ async function getUsers() {
   try {
     const response = await axios.get(process.env.REACT_APP_API_LINK + '/users');
     const users = response.data;
-    console.log(users);
-    return users;
+    return users.result;
   } catch (error) {
     return null;
   }
