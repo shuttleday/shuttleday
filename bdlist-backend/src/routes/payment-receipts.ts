@@ -17,9 +17,11 @@ router.get(
       // Get session
       const gameSession = await GameSessions.findOne({
         _id: new ObjectId(req.query.sessionId as string),
+        payTo: req.user.email,
       });
 
-      if (!gameSession) throw new ApiError(404, "No session with that ID");
+      if (!gameSession)
+        throw new ApiError(404, "No session under your account with that ID");
 
       // Get only players that paid for that session
       const players = gameSession.players.filter((player) => {

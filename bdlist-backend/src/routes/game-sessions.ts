@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { ObjectId, Filter } from "mongodb";
 import { GameSessions } from "../db/collections";
-import { validateNewGameSessionDate } from "../middleware/validateRequest";
+import {
+  adminCheck,
+  validateNewGameSessionDate,
+} from "../middleware/validateRequest";
 import { GameSession } from "../db/interfaces";
 import { validateDates } from "../utils/functions";
 import { ApiError } from "../utils/error-util";
@@ -32,6 +35,7 @@ router
   })
   // Create new game session
   .post(
+    adminCheck,
     validateNewGameSessionDate,
     async (req: Request, res: Response, next: NextFunction) => {
       const document: GameSession = {
