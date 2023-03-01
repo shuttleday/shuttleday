@@ -69,7 +69,7 @@ const Home = () => {
 
   function handleSpeedDial(operation) {
     if (operation === 'payment') {
-      console.log('payments');
+      navigate('/payment');
     } else if (operation === 'details') {
       navigate('/details');
     } else if (operation === 'management') {
@@ -270,9 +270,10 @@ const Home = () => {
         (item) => item.userEmail === user.email
       )
     ) {
-      setPlayerStat(false);
-    } else {
       setPlayerStat(true);
+    } else {
+      console.log('here');
+      setPlayerStat(false);
     }
   };
   return (
@@ -414,7 +415,7 @@ const Home = () => {
                             <div></div>
                           ) : (
                             sessionInfo.map((date, index) => (
-                              <MenuItem value={index}>
+                              <MenuItem key={index} value={index}>
                                 {dayjs(date.end).format('DD/MM/YYYY ddd')}
                               </MenuItem>
                             ))

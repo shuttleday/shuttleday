@@ -48,7 +48,7 @@ function App() {
                 {/* <Route path='/auth' element={<Authentication />} /> */}
                 <Route path='/Glogin' element={<GLogin />} />
                 <Route path='*' element={<NotFound />} />
-                <Route path='payment' element={<PaymentHistory />} />
+                <Route path='/payment' element={<PaymentHistory />} />
                 <Route path='/details' element={<Details />} />
               </Routes>
             </>
