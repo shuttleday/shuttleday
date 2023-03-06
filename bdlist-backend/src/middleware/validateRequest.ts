@@ -1,6 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { processUploadedFiles } from "../utils/functions";
-import { requiredPOST, requiredGET, requiredPATCH } from "./validation";
+import {
+  requiredPOST,
+  requiredGET,
+  requiredPATCH,
+  requiredMETHOD,
+} from "./validation";
 import { ApiError } from "../utils/error-util";
 const MB = 5;
 const FILE_SIZE_LIMIT = MB * 1024 * 1024;
@@ -70,17 +75,21 @@ export function fileSizeLimiter(
   }
 }
 
-export async function validatePOST(
+type ValidateMethod = "POST" | "GET" | "PATCH";
+
+async function validateMethod(
+  method: ValidateMethod,
+  requiredKeys: requiredMETHOD,
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    // Return early if not a POST method
-    if (req.method !== "POST") return next();
+    // Return early if not the expected method
+    if (req.method !== method) return next();
 
     // Get required keys
-    const target = getTargetKeys(requiredPOST, req);
+    const target = getTargetKeys(requiredKeys, req);
     if (!target) return next(); // Return early if there are no targets
 
     // Get missing keys
@@ -93,6 +102,14 @@ export async function validatePOST(
   } catch (error) {
     next(error);
   }
+}
+
+export async function validatePOST(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  await validateMethod("POST", requiredPOST, req, res, next);
 }
 
 export async function validateGET(
@@ -100,24 +117,7 @@ export async function validateGET(
   res: Response,
   next: NextFunction
 ) {
-  try {
-    // Return early if not a GET method
-    if (req.method !== "GET") return next();
-
-    // Get required keys
-    const target = getTargetKeys(requiredGET, req);
-    if (!target) return next(); // Return early if there are no targets
-
-    // Get missing keys
-    const missing: string[] = getMissingKeys(target[1], req);
-
-    // Return 400 with dynamic error message if there are missing keys
-    if (missing.length > 0) throwMissingKeysError(missing);
-
-    next();
-  } catch (error) {
-    next(error);
-  }
+  await validateMethod("GET", requiredGET, req, res, next);
 }
 
 export async function validatePATCH(
@@ -125,24 +125,7 @@ export async function validatePATCH(
   res: Response,
   next: NextFunction
 ) {
-  try {
-    // Return early if not a PATCH method
-    if (req.method !== "PATCH") return next();
-
-    // Get required keys
-    const target = getTargetKeys(requiredPATCH, req);
-    if (!target) return next(); // Return early if there are no targets
-
-    // Get missing keys
-    const missing: string[] = getMissingKeys(target[1], req);
-
-    // Return 400 with dynamic error message if there are missing keys
-    if (missing.length > 0) throwMissingKeysError(missing);
-
-    next();
-  } catch (error) {
-    next(error);
-  }
+  await validateMethod("PATCH", requiredPATCH, req, res, next);
 }
 
 function throwMissingKeysError(missing: string[]) {
