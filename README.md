@@ -6,7 +6,7 @@
   <img src="docs/shuttlecock.webp" width=300>
 </p>
 <p>
-  <a href="https://github.com/PScoriae/PCPartsTool/blob/main/LICENSE.md">
+  <a href="https://github.com/shuttleday/shuttleday/blob/main/LICENSE.md">
     <img src="https://img.shields.io/badge/license-WTFPL-brightgreen">
   </a>
 </p>
@@ -34,26 +34,17 @@
     <li>
       <a href="#about">About</a>
       <ol>
+        <li><a href="#background">Background</a></li>
+        <li><a href="#tech-stack">Tech Stack</a></li>
         <li><a href="#features">Features</a></li>
-        <li><a href="#cloud-architecture">Cloud Architecture</a></li>
       </ol>
     </li>
-    <li><a href="#installation">Installation</a></li>
-    <li>
-      <a href="#developing">Developing</a>
-    </li>
-    <li>
-      <a href="#testing">Testing</a>
-    </li>
-    <li>
-      <a href="#building">Building</a>
-    </li>
-    <li>
-      <a href="#deployment">Deployment</a>
-      <ol>
-        <li><a href="#cloud-deployment">Cloud Deployment</a></li>
-        <li><a href="#local-deployment">Local Deployment</a></li>
-      </ol>
+    <li><a href="#read-more">Read More</a>
+    <ol>
+        <li><a href="./docs/BACKEND_DEV.md">Backend README</a></li>
+        <li><a href="./docs/FRONTEND_DEV.md">Frontend README</a></li>
+        <li><a href="./docs/DEPLOYMENT.md">Deployment README</a></li>
+    </ol>
     </li>
   </ol>
 </details>
