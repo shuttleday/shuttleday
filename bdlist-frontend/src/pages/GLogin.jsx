@@ -13,7 +13,8 @@ const GLogin = () => {
     sessionStorage.setItem('jwtToken_Login', response.credential);
     const res = await googleSignIn();
     sessionStorage.setItem('jwtToken_Login', res.accessToken);
-    sessionStorage.setItem('refreshToken', res.refreshToken);
+    console.log(res.refreshToken);
+    localStorage.setItem('refreshToken', res.refreshToken);
 
     navigate('/', {
       state: {

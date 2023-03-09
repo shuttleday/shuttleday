@@ -138,7 +138,7 @@ async function createSession(sessionData) {
       process.env.REACT_APP_API_LINK + '/game-sessions',
       sessionData
     );
-    const data = response.data;
+    const data = response;
     return data;
   } catch (error) {
     console.log(error);
@@ -152,7 +152,37 @@ axios.interceptors.request.use(function (config) {
   return config;
 });
 
-// axios.interceptors.response.use(function (config))
+axios.interceptors.response.use(
+  function (response) {
+    return response;
+  },
+  async function (error) {
+    console.log(error);
+    if (error.response.status === 401) {
+      const refreshToken = {
+        refreshToken: localStorage.getItem('refreshToken'),
+      };
+
+      try {
+        const newToken = await axios.post(
+          process.env.REACT_APP_API_LINK + '/auth/refreshToken',
+          refreshToken
+        );
+        sessionStorage.setItem('jwtToken_Login', newToken.data.accessToken);
+
+        const response = {
+          data: 'Refresh',
+        };
+        return response;
+      } catch (error) {
+        console.log(error);
+      }
+    } else if (error.response.status === 502) {
+      alert('server is down');
+    }
+    return Promise.reject(error);
+  }
+);
 export {
   getUsers,
   createAccount,

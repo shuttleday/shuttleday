@@ -164,6 +164,12 @@ const Home = () => {
       getSessionData();
 
       userCheck(user.email).then((user) => {
+        if (user.data === 'Refresh') {
+          setCondition(WARNING);
+          setAlertMsg('Refresh your page plz');
+          setOpen(true);
+        }
+
         if (!user) {
           const googleToken = jwt_decode(location.state.googleToken);
           sessionStorage.setItem('jwtToken_Login', location.state.googleToken);
