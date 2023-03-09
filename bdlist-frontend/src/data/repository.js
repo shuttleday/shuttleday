@@ -103,6 +103,7 @@ async function removeFromSession(sessionId) {
   }
 }
 
+//Uploads the receipt with formdata to the server
 async function uploadReceipt(image, sessionId) {
   const formData = new FormData();
   formData.append('receipt', image);
@@ -120,6 +121,7 @@ async function uploadReceipt(image, sessionId) {
   }
 }
 
+//Simple get all user function for admins to see
 async function getUsers() {
   try {
     const response = await axios.get(process.env.REACT_APP_API_LINK + '/users');
@@ -127,6 +129,19 @@ async function getUsers() {
     return users.result;
   } catch (error) {
     return null;
+  }
+}
+
+async function createSession(sessionData) {
+  try {
+    const response = await axios.post(
+      process.env.REACT_APP_API_LINK + '/game-sessions',
+      sessionData
+    );
+    const data = response.data;
+    return data;
+  } catch (error) {
+    console.log(error);
   }
 }
 
@@ -147,4 +162,5 @@ export {
   joinSession,
   removeFromSession,
   uploadReceipt,
+  createSession,
 };

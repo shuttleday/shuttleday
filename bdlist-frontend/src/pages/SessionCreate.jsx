@@ -11,6 +11,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { Typography } from '@mui/material';
+import { createSession } from '../data/repository';
 
 const SessionCreate = () => {
   const [open, setOpen] = useState(false);
@@ -25,6 +26,8 @@ const SessionCreate = () => {
   const [value, setValue] = useState(dayjs());
   const [courts, setCourts] = useState(null);
 
+  const [cost, setCost] = useState(0);
+
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
   });
@@ -34,14 +37,37 @@ const SessionCreate = () => {
     console.log(courts);
   };
 
-  const onCreate = () => {
+  const onCost = (event) => {
+    setCost(event.target.value);
+  };
+
+  const onCreate = async () => {
     if (!RE.test(courts)) {
       setAlertMsg('Format for courts not valid');
       setCondition('error');
       setOpen(true);
     }
 
-    console.log(courts);
+    const courtList = courts.split(',').map(String);
+
+    const sessionData = {
+      start: dayjs().toISOString(),
+      end: dayjs(value).toISOString(),
+      courts: courtList,
+      cost: cost,
+    };
+
+    const response = await createSession(sessionData);
+
+    if (response) {
+      setAlertMsg('Created session succesfully');
+      setCondition('success');
+      setOpen(true);
+    } else {
+      setAlertMsg('Something went wrong');
+      setCondition('error');
+      setOpen(true);
+    }
   };
   return (
     <div>
@@ -86,11 +112,11 @@ const SessionCreate = () => {
           </Typography>
           <TextField
             id='text-price'
-            label='price'
+            label='Price'
             defaultValue='0'
             helperText='Optional, can be added later in edit'
             variant='standard'
-            onChange={onChange}
+            onChange={onCost}
           />
         </Box>
 
