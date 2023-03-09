@@ -61,23 +61,25 @@ router.post(
 
       // Validate candidateToken
       const decoded = verifyRefreshToken(candidateToken);
+      const userEmail = decoded.email;
 
-      // Validate token is identical to db token
-      const found = await Users.findOne({ email: decoded.userEmail });
+      // Check if user exists
+      const found = await Users.findOne({ email: userEmail });
 
       if (!found) throw new ApiError(404, "No user with that email");
 
       if (!found.refreshToken) throw new ApiError(404, "Please sign in first");
 
+      // Validate token is identical to db token
       if (!(await argon2.verify(found.refreshToken, candidateToken)))
         return res.sendStatus(401);
 
       // Generate new access token
-      const newAccessToken = genAccessToken(decoded.userEmail);
+      const newAccessToken = genAccessToken(found);
 
       // Save new access token to db
       const result = await Users.updateOne(
-        { email: decoded.userEmail },
+        { email: userEmail },
         { $set: { accessToken: await argon2.hash(newAccessToken) } }
       );
 
