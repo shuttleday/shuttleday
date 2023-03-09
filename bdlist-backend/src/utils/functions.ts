@@ -74,7 +74,7 @@ function filterUserData(userObj: User) {
 export function genAccessToken(userObj: User) {
   const userData = filterUserData(userObj);
   return jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET!, {
-    expiresIn: "30d",
+    expiresIn: "60s",
   });
 }
 
