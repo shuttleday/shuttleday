@@ -45,7 +45,7 @@ const authenticate = async (
     next();
   } catch (error) {
     if (error instanceof JsonWebTokenError)
-      throw new ApiError(401, "Invalid JWT");
+      return res.status(401).json({ error: "Invalid JWT" });
     next(error);
   }
 };
