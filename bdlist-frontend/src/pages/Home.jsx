@@ -32,6 +32,7 @@ import Bank from '../img/BankQR.jpg';
 import Modal from '@mui/material/Modal';
 import Chip from '@mui/material/Chip';
 import ImageIcon from '@mui/icons-material/Image';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 import { useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import SpeedDial from '@mui/material/SpeedDial';
@@ -65,6 +66,7 @@ const Home = () => {
     },
     { icon: <ReceiptIcon />, name: 'Payment History', operation: 'payment' },
     { icon: <InfoIcon />, name: 'User Details', operation: 'details' },
+    { icon: <AddBoxIcon />, name: 'Create Session', operation: 'create' },
   ];
 
   function handleSpeedDial(operation) {
@@ -73,7 +75,11 @@ const Home = () => {
     } else if (operation === 'details') {
       navigate('/details');
     } else if (operation === 'management') {
-      navigate('/management');
+      setCondition(ERROR);
+      setAlertMsg('Not avaliable');
+      setOpen(true);
+    } else if (operation === 'create') {
+      navigate('/create');
     }
   }
 
