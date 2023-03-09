@@ -45,7 +45,7 @@ router.post(
       next();
     } catch (error: any) {
       if (error.message.startsWith("Invalid Google JWT"))
-        throw new ApiError(401, "Invalid Google JWT");
+        return res.status(401).json({ error: "Invalid Google JWT" });
       next(error);
     }
   }
