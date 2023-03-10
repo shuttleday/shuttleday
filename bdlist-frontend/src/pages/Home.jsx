@@ -161,8 +161,6 @@ const Home = () => {
         });
       }
 
-      getSessionData();
-
       userCheck(user.email).then((user) => {
         if (user.data === 'Refresh') {
           setCondition(WARNING);
@@ -181,6 +179,8 @@ const Home = () => {
           setRender(true);
         }
       });
+
+      getSessionData();
     }
     // eslint-disable-next-line
   }, []);
@@ -220,8 +220,10 @@ const Home = () => {
       setOpen(true);
       setPlayerStat(true);
     } else {
+      console.log('here');
       setCondition(ERROR);
-      setAlertMsg('Something went wrong..');
+      setAlertMsg('Something went wrong... Try refreshing the');
+      setOpen(true);
     }
   };
   const handleClose = () => {
