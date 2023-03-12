@@ -15,6 +15,6 @@ export function apiErrorHandler(error: ApiError, res: Response) {
   res.status(error.statusCode).json({ error: error.message });
 }
 
-export function throwInternalServerError(error: ApiError, res: Response) {
+export function throwInternalServerError(res: Response) {
   res.status(500).json({ error: "Internal server error" });
 }

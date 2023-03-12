@@ -15,7 +15,7 @@ const errorHandler = async (
 ) => {
   log.error({ req, err });
   if (err instanceof ApiError) apiErrorHandler(err, res);
-  else throwInternalServerError(err, res);
+  else throwInternalServerError(res);
 };
 
 export default errorHandler;
