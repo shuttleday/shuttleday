@@ -148,6 +148,7 @@ const Home = () => {
           console.log(res.gameSessions[0]._id);
           if (res.gameSessions !== null) {
             setSessionInfo(res.gameSessions);
+            setSelected(0);
           }
           if (
             res.gameSessions[selected].players.find(
@@ -426,7 +427,7 @@ const Home = () => {
                           onChange={handleSelect}
                         >
                           {sessionInfo === null ? (
-                            <div></div>
+                            <MenuItem value={0}>N/A</MenuItem>
                           ) : (
                             sessionInfo.map((date, index) => (
                               <MenuItem key={index} value={index}>
