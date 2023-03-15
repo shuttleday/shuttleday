@@ -200,7 +200,10 @@ const Home = () => {
     const newPlayerList = await joinSession(sessionInfo[selected]._id);
     console.log(newPlayerList);
     if (newPlayerList) {
-      setSessionInfo(newPlayerList);
+      let oldData = sessionInfo;
+      oldData[selected].players = newPlayerList;
+
+      setSessionInfo(oldData);
       setCondition(SUCCESS);
       setAlertMsg('Joined successfully!');
       setOpen(true);
@@ -210,12 +213,15 @@ const Home = () => {
       setAlertMsg('Something went wrong..');
       setOpen(true);
     }
+    console.log(sessionInfo);
   };
   const onRemove = async () => {
     const newPlayerList = await removeFromSession(sessionInfo[selected]._id);
     console.log(newPlayerList);
     if (newPlayerList) {
-      setSessionInfo(newPlayerList);
+      let oldData = sessionInfo;
+      oldData[selected].players = newPlayerList;
+      setSessionInfo(oldData);
       setCondition(SUCCESS);
       setAlertMsg('Removed successfully!');
       setOpen(true);
@@ -281,14 +287,13 @@ const Home = () => {
     setSelected(event.target.value);
     const user = jwt_decode(sessionStorage.getItem('jwtToken_Login'));
     if (
-      sessionInfo[selected].players.find(
+      sessionInfo[event.target.value].players.find(
         (item) => item.userEmail === user.email
       )
     ) {
-      setPlayerStat(true);
-    } else {
-      console.log('here');
       setPlayerStat(false);
+    } else {
+      setPlayerStat(true);
     }
   };
   return (
@@ -534,7 +539,40 @@ const Home = () => {
                 >
                   <CardMedia component='img' image={Bank} alt='Paella dish' />
                 </Card>
-                <Chip label={amount} color='success' variant='outlined' />
+                <FormControl
+                  sx={{ m: 1, minWidth: { xs: 150, sm: 180, md: 200 } }}
+                >
+                  <InputLabel id='demo-simple-select-helper-label'>
+                    Sessions
+                  </InputLabel>
+                  <Select
+                    id='Session-payment'
+                    value={selected}
+                    label='Sessions'
+                    color='primary'
+                    onChange={handleSelect}
+                  >
+                    {sessionInfo === null ? (
+                      <MenuItem value={0}>N/A</MenuItem>
+                    ) : (
+                      sessionInfo.map((date, index) => (
+                        <MenuItem key={index} value={index}>
+                          {dayjs(date.end).format('DD/MM/YYYY ddd')}
+                        </MenuItem>
+                      ))
+                    )}
+                  </Select>
+                </FormControl>
+
+                <Chip
+                  label={
+                    sessionInfo !== null
+                      ? '$' + sessionInfo[selected].cost + ' Per person.'
+                      : 'Not Avaliable'
+                  }
+                  color='success'
+                  variant='outlined'
+                />
                 <Button
                   variant='contained'
                   color='success'
