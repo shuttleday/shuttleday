@@ -145,6 +145,19 @@ async function createSession(sessionData) {
   }
 }
 
+async function editSession(sessionData) {
+  try {
+    const response = await axios.patch(
+      process.env.REACT_APP_API_LINK + '/game-sessions',
+      sessionData
+    );
+    const data = response;
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 //Intercepts all request to the server and attaches the token to the header
 axios.interceptors.request.use(function (config) {
   const token = sessionStorage.getItem('jwtToken_Login');
@@ -193,4 +206,5 @@ export {
   removeFromSession,
   uploadReceipt,
   createSession,
+  editSession,
 };

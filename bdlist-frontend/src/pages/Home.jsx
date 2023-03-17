@@ -32,6 +32,7 @@ import Bank from '../img/BankQR.jpg';
 import Modal from '@mui/material/Modal';
 import Chip from '@mui/material/Chip';
 import ImageIcon from '@mui/icons-material/Image';
+import EditIcon from '@mui/icons-material/Edit';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import { useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
@@ -67,6 +68,7 @@ const Home = () => {
     { icon: <ReceiptIcon />, name: 'Payment History', operation: 'payment' },
     { icon: <InfoIcon />, name: 'User Details', operation: 'details' },
     { icon: <AddBoxIcon />, name: 'Create Session', operation: 'create' },
+    { icon: <EditIcon />, name: 'Edit Session', operation: 'edit' },
   ];
 
   function handleSpeedDial(operation) {
@@ -80,6 +82,12 @@ const Home = () => {
       setOpen(true);
     } else if (operation === 'create') {
       navigate('/create');
+    } else if (operation === 'edit') {
+      navigate('/edit', {
+        state: {
+          sessionInfo: sessionInfo,
+        },
+      });
     }
   }
 
@@ -99,7 +107,6 @@ const Home = () => {
   const [sessionInfo, setSessionInfo] = useState(null);
   const [selected, setSelected] = useState(0);
   const [playerStat, setPlayerStat] = useState(true);
-  const amount = 'This session is $4.50 Per person';
 
   //Control logic for tabs----------------------------------------------------------
   const [activeTab, setActiveTab] = useState('1');
