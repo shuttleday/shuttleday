@@ -1,6 +1,6 @@
 import app from "./setup";
-import log from "./utils/logger";
-import { connectDb } from "./db/connect";
+import log from "utils/logger";
+import { connectDb } from "db/connect";
 
 const port = process.env.SERVER_PORT as string;
 

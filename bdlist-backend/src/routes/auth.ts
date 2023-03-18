@@ -1,14 +1,14 @@
 import { NextFunction, Request, Response, Router } from "express";
 import * as argon2 from "argon2";
-import { Users } from "../db/collections";
+import { Users } from "db/collections";
 import {
   genAccessToken,
   genRefreshToken,
   validateGJwt,
   verifyRefreshToken,
-} from "../utils/functions";
-import { ApiError } from "../utils/error-util";
-import { validatePOST } from "../middleware/validateRequest";
+} from "utils/functions";
+import { ApiError } from "utils/error-util";
+import { validatePOST } from "middleware/validateRequest";
 
 const router = Router();
 

@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import * as argon2 from "argon2";
 import { JsonWebTokenError } from "jsonwebtoken";
-import { verifyAccessToken } from "../utils/functions";
-import { Users } from "../db/collections";
-import { ApiError } from "../utils/error-util";
+import { verifyAccessToken } from "utils/functions";
+import { Users } from "db/collections";
+import { ApiError } from "utils/error-util";
 
 const excludedPaths = [
   "/healthcheck",

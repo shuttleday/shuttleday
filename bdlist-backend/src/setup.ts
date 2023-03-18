@@ -3,15 +3,15 @@ import cors from "cors";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-import routes from "./routes/index";
-import { authenticate } from "./middleware/authenticate";
-import errorHandler from "./middleware/errorHandler";
-import requestLogger from "./middleware/logger";
+import routes from "routes/index";
+import { authenticate } from "middleware/authenticate";
+import errorHandler from "middleware/errorHandler";
+import requestLogger from "middleware/logger";
 import {
   validateGET,
   validatePATCH,
   validatePOST,
-} from "./middleware/validateRequest";
+} from "middleware/validateRequest";
 
 export const app = express();
 
