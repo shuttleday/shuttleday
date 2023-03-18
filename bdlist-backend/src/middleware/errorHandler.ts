@@ -1,15 +1,21 @@
 import { Request, Response, NextFunction } from "express";
 
+import {
+  ApiError,
+  apiErrorHandler,
+  throwInternalServerError,
+} from "../utils/error-util";
 import log from "../utils/logger";
 
 const errorHandler = async (
-  err: Error,
+  err: ApiError,
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   log.error({ req, err });
-  res.sendStatus(500);
+  if (err instanceof ApiError) apiErrorHandler(err, res);
+  else throwInternalServerError(res);
 };
 
 export default errorHandler;

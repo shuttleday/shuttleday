@@ -1,11 +1,18 @@
-export const requiredBody = {
+export interface requiredMETHOD {
+  [s: string]: string[];
+}
+
+export const requiredPOST: requiredMETHOD = {
   "/users": ["username"],
-  "/game-sessions": ["start", "end", "cost", "courts", "group", "payTo"],
+  "/game-sessions": ["start", "end", "cost", "courts"],
   "/session-players": ["sessionId"],
   "/refreshToken": ["refreshToken"],
 };
 
-// For future use
-// export const requiredQuery = {
-//   "/users": ["email", "firstName", "lastName", "username"],
-// };
+export const requiredGET: requiredMETHOD = {
+  "/payment-receipts": ["sessionId"],
+};
+
+export const requiredPATCH: requiredMETHOD = {
+  "/game-sessions": ["sessionId", "start", "end", "cost", "payTo", "courts"],
+};

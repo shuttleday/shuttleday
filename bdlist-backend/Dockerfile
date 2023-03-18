@@ -1,5 +1,14 @@
 FROM docker.io/library/node:19-alpine
 
+RUN addgroup -S nonroot \
+    && adduser -S nonroot -G nonroot
+
+# give user write access for pnpm install
+RUN chown nonroot /usr/local/lib/node_modules/
+RUN chown nonroot /usr/local/bin/
+
+USER nonroot
+
 # setup directory for app
 WORKDIR /app
 

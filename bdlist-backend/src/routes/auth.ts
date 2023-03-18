@@ -7,21 +7,31 @@ import {
   validateGJwt,
   verifyRefreshToken,
 } from "../utils/functions";
+import { ApiError } from "../utils/error-util";
+import { validatePOST } from "../middleware/validateRequest";
 
 const router = Router();
 
 // Get Shuttleday JWT
 router.post(
   "/signin",
+  validatePOST,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      // Validate and get email from G JWT
       const decoded = await validateGJwt(req);
-
       const userEmail = decoded?.email!;
-      const accessToken = genAccessToken(userEmail);
-      const refreshToken = genRefreshToken(userEmail);
 
-      const found = await Users.updateOne(
+      // Get user information in JWT
+      const result = await Users.findOne({ email: userEmail });
+
+      if (!result) throw new ApiError(404, "No user with that email");
+
+      const accessToken = genAccessToken(result);
+      const refreshToken = genRefreshToken(result);
+
+      // Update db with latest hashed tokens
+      await Users.updateOne(
         { email: userEmail },
         {
           $set: {
@@ -31,14 +41,11 @@ router.post(
         }
       );
 
-      if (found.modifiedCount === 0)
-        return res.status(404).json({ error: "No user with that email" });
-
       res.status(201).json({ accessToken, refreshToken });
       next();
     } catch (error: any) {
       if (error.message.startsWith("Invalid Google JWT"))
-        return res.sendStatus(401);
+        return res.status(401).json({ error: "Invalid Google JWT" });
       next(error);
     }
   }
@@ -54,29 +61,29 @@ router.post(
 
       // Validate candidateToken
       const decoded = verifyRefreshToken(candidateToken);
+      const userEmail = decoded.email;
+
+      // Check if user exists
+      const found = await Users.findOne({ email: userEmail });
+
+      if (!found) throw new ApiError(404, "No user with that email");
+
+      if (!found.refreshToken) throw new ApiError(404, "Please sign in first");
 
       // Validate token is identical to db token
-      const found = await Users.findOne({ email: decoded.userEmail });
-
-      if (!found)
-        return res.status(404).json({ error: "No user with that email" });
-
-      if (!found.refreshToken)
-        return res.status(401).json({ error: "Please sign in first" });
-
       if (!(await argon2.verify(found.refreshToken, candidateToken)))
         return res.sendStatus(401);
 
       // Generate new access token
-      const newAccessToken = genAccessToken(decoded.userEmail);
+      const newAccessToken = genAccessToken(found);
 
       // Save new access token to db
       const result = await Users.updateOne(
-        { email: decoded.userEmail },
+        { email: userEmail },
         { $set: { accessToken: await argon2.hash(newAccessToken) } }
       );
 
-      if (result.modifiedCount === 0) return res.sendStatus(500);
+      if (result.modifiedCount === 0) throw new Error();
 
       // Return new access token
       res.status(201).json({ accessToken: newAccessToken });

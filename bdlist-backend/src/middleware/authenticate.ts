@@ -3,8 +3,7 @@ import * as argon2 from "argon2";
 import { JsonWebTokenError } from "jsonwebtoken";
 import { verifyAccessToken } from "../utils/functions";
 import { Users } from "../db/collections";
-
-import log from "../utils/logger";
+import { ApiError } from "../utils/error-util";
 
 const excludedPaths = [
   "/healthcheck",
@@ -25,19 +24,18 @@ const authenticate = async (
     if (!req.headers.authorization) return res.sendStatus(401);
     const token = req.headers.authorization?.split(" ")[1]; // Expects { Authorization: Bearer TOKEN } format
 
-    if (!token) return res.status(401);
+    if (!token) throw new ApiError(401, "Invalid JWT");
 
-    const decoded = verifyAccessToken(token);
+    const decodedUser = verifyAccessToken(token);
 
-    const found = await Users.findOne({ email: decoded.userEmail });
+    const found = await Users.findOne({ email: decodedUser.email });
 
-    if (!found) return res.status(404).json({ error: "Invalid JWT" });
+    if (!found) throw new ApiError(401, "Invalid JWT");
 
-    if (!found.accessToken)
-      return res.status(401).json({ error: "Please sign in first." });
+    if (!found.accessToken) throw new ApiError(401, "Please sign in first");
 
     if (!(await argon2.verify(found.accessToken, token)))
-      return res.sendStatus(401);
+      throw new ApiError(401, "Invalid JWT");
 
     // Remove tokens for safety
     delete found.accessToken;
@@ -46,10 +44,9 @@ const authenticate = async (
     req.user = found;
     next();
   } catch (error) {
-    log.error(req, error);
     if (error instanceof JsonWebTokenError)
-      return res.status(401).json({ error: "Invalid JWT signature" });
-    else res.sendStatus(500);
+      return res.status(401).json({ error: "Invalid JWT" });
+    next(error);
   }
 };
 

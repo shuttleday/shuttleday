@@ -1,9 +1,13 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { ObjectId, Filter } from "mongodb";
 import { GameSessions } from "../db/collections";
-import { validateNewGameSessionDate } from "../middleware/validateRequest";
+import {
+  adminCheck,
+  validateNewGameSessionDate,
+} from "../middleware/validateRequest";
 import { GameSession } from "../db/interfaces";
 import { validateDates } from "../utils/functions";
+import { ApiError } from "../utils/error-util";
 
 const router = Router();
 
@@ -31,6 +35,7 @@ router
   })
   // Create new game session
   .post(
+    adminCheck,
     validateNewGameSessionDate,
     async (req: Request, res: Response, next: NextFunction) => {
       const document: GameSession = {
@@ -52,30 +57,59 @@ router
         next(error);
       }
     }
-  );
+  )
+  .patch(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Validate courts key
+      if (!(req.body.courts instanceof Array))
+        throw new ApiError(400, "courts key must be of type string[]");
+      for (const elem of req.body.courts) {
+        if (typeof elem !== "string")
+          throw new ApiError(400, "courts key must be of type string[]");
+      }
+
+      // Update and return new document
+      const result = await GameSessions.findOneAndUpdate(
+        { _id: new ObjectId(req.body.sessionId) },
+        {
+          $set: {
+            start: new Date(req.body.start),
+            end: new Date(req.body.end),
+            cost: req.body.cost as number,
+            payTo: req.body.payTo,
+            courts: req.body.courts as string[],
+          },
+        },
+        { returnDocument: "after" }
+      );
+
+      res.status(200).json({ result: result.value });
+      if (result.value === null)
+        throw new ApiError(404, "No session with that id");
+    } catch (error) {
+      next(error);
+    }
+  });
 
 // Get game session by id
 router.get(
   "/:sessionId",
   async (req: Request, res: Response, next: NextFunction) => {
-    const sessionId = req.params.sessionId as string;
-
-    let gameSession;
     try {
-      gameSession = await GameSessions.findOne({
+      const sessionId = req.params.sessionId;
+
+      const gameSession = await GameSessions.findOne({
         _id: new ObjectId(sessionId),
       });
+
+      if (!gameSession)
+        throw new ApiError(404, "Game session with that id does not exist");
+
+      res.status(200).json(gameSession);
+      next();
     } catch (error) {
       next(error);
     }
-
-    if (!gameSession)
-      return res
-        .status(404)
-        .json({ error: "Game session with that id does not exist." });
-
-    res.status(200).json(gameSession);
-    next();
   }
 );
 

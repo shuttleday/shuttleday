@@ -13,20 +13,15 @@ pipeline {
     stages {
         stage("SonarQube Analysis") {
             steps {
-              withSonarQubeEnv('My SonarQube Server') {
-                echo "Running analysis"
-              }
+                script {
+                    def scannerHome = tool 'sonarqube';
+                    withSonarQubeEnv() {
+                        sh "${scannerHome}/bin/sonar-scanner"
+                    }
+                }
             }
           }
 
-        stage("Quality Gate") {
-            steps {
-                timeout(time: 30, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
-        
         stage ("Build Backend") {
             when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
             steps {
@@ -36,7 +31,8 @@ pipeline {
                 }
             }
         }
-        stage("Docker Compose Up") {
+          
+        stage("Build and deploy") {
             when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
             steps {
                 dir("bdlist-backend/") {
@@ -51,5 +47,12 @@ pipeline {
                 sh 'echo hi'
             }
         }
+    }
+
+    post {
+      cleanup {
+        // remove old builds
+        sh 'sudo docker system prune'
+      }
     }
 }
