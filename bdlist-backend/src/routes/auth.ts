@@ -1,14 +1,14 @@
 import { NextFunction, Request, Response, Router } from "express";
 import * as argon2 from "argon2";
-import { Users } from "../db/collections";
+import { Users } from "db/collections";
 import {
   genAccessToken,
   genRefreshToken,
   validateGJwt,
   verifyRefreshToken,
-} from "../utils/functions";
-import { ApiError } from "../utils/error-util";
-import { validatePOST } from "../middleware/validateRequest";
+} from "utils/functions";
+import { ApiError } from "utils/error-util";
+import { validatePOST } from "middleware/validateRequest";
 
 const router = Router();
 
@@ -44,8 +44,6 @@ router.post(
       res.status(201).json({ accessToken, refreshToken });
       next();
     } catch (error: any) {
-      if (error.message.startsWith("Invalid Google JWT"))
-        return res.status(401).json({ error: "Invalid Google JWT" });
       next(error);
     }
   }
@@ -72,8 +70,9 @@ router.post(
 
       // Validate token is identical to db token
       if (!(await argon2.verify(found.refreshToken, candidateToken)))
-        return res.sendStatus(401);
+        throw new ApiError(401, "Unauthorized");
 
+      console.log("heyyy");
       // Generate new access token
       const newAccessToken = genAccessToken(found);
 

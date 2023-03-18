@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { ObjectId } from "mongodb";
-import { Users } from "../db/collections";
-import { User } from "../db/interfaces";
-import { userExists, validateGJwt } from "../utils/functions";
-import { ApiError } from "../utils/error-util";
+import { Users } from "db/collections";
+import { User } from "db/interfaces";
+import { userExists, validateGJwt } from "utils/functions";
+import { ApiError } from "utils/error-util";
 
 const router = Router();
 
