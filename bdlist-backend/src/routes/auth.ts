@@ -70,8 +70,9 @@ router.post(
 
       // Validate token is identical to db token
       if (!(await argon2.verify(found.refreshToken, candidateToken)))
-        return res.sendStatus(401);
+        throw new ApiError(401, "Unauthorized");
 
+      console.log("heyyy");
       // Generate new access token
       const newAccessToken = genAccessToken(found);
 

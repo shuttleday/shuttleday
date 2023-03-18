@@ -4,7 +4,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import routes from "./routes/index";
-import authenticate from "./middleware/authenticate";
+import { authenticate } from "./middleware/authenticate";
 import errorHandler from "./middleware/errorHandler";
 import requestLogger from "./middleware/logger";
 import {

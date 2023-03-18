@@ -13,7 +13,7 @@ const excludedPaths = [
 ];
 
 // JWT Auth
-const authenticate = async (
+export const authenticate = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -49,5 +49,3 @@ const authenticate = async (
     next(error);
   }
 };
-
-export default authenticate;
