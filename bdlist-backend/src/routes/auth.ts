@@ -44,8 +44,6 @@ router.post(
       res.status(201).json({ accessToken, refreshToken });
       next();
     } catch (error: any) {
-      if (error.message.startsWith("Invalid Google JWT"))
-        return res.status(401).json({ error: "Invalid Google JWT" });
       next(error);
     }
   }
