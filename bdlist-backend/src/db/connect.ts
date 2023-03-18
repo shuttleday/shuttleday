@@ -25,4 +25,16 @@ async function connectDb() {
   }
 }
 
-export default connectDb;
+async function disconnectDb() {
+  try {
+    log.info(`Attempting to close connection to: ${uri}`);
+    await client.close();
+    log.info("Database disconnect successfully");
+  } catch (error) {
+    log.error("Failed to disconnect from db");
+    log.error(error);
+    process.exit(1);
+  }
+}
+
+export { connectDb, disconnectDb };
