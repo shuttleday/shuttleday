@@ -11,6 +11,14 @@ pipeline {
     }
 
     stages {
+        stage("Jest Unit Test") {
+            when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
+            steps {
+                dir("bdlist-backend/") {
+                    sh 'pnpm test'
+                }
+            }
+        }
         stage("SonarQube Analysis") {
             steps {
                 script {
