@@ -5,8 +5,8 @@ import fileUpload, { UploadedFile } from "express-fileupload";
 import jwt from "jsonwebtoken";
 
 import * as dotenv from "dotenv";
-import { Users } from "db/collections";
-import { User } from "db/interfaces";
+import { Users } from "../db/collections";
+import { User } from "../db/interfaces";
 import { ApiError } from "./error-util";
 dotenv.config();
 

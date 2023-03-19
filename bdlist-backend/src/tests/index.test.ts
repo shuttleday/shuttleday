@@ -1,6 +1,6 @@
 import request from "supertest";
 import app from "../setup";
-import { disconnectDb } from "db/connect";
+import { disconnectDb } from "../db/connect";
 import { Request, Response, NextFunction } from "express";
 const api = request(app);
 

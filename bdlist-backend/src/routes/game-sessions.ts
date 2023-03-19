@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { ObjectId, Filter } from "mongodb";
-import { GameSessions } from "db/collections";
+import { GameSessions } from "../db/collections";
 import {
   adminCheck,
   validateNewGameSessionDate,
-} from "middleware/validateRequest";
-import { GameSession } from "db/interfaces";
-import { validateDates } from "utils/functions";
-import { ApiError } from "utils/error-util";
+} from "../middleware/validateRequest";
+import { GameSession } from "../db/interfaces";
+import { validateDates } from "../utils/functions";
+import { ApiError } from "../utils/error-util";
 
 const router = Router();
 
