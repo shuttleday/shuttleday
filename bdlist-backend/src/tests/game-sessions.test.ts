@@ -57,6 +57,38 @@ const gameSessions = [
   },
 ];
 
+const gameSessions2 = [
+  {
+    _id: "63f873eb06409eab241847ed",
+    start: "2023-03-11T06:35:46.000Z",
+    end: "2023-03-11T08:35:46.000Z",
+    players: [
+      {
+        userEmail: "tehyeuhaw@gmail.com",
+        username: "Kirix",
+        paid: true,
+        paidAt: "2023-02-27T15:58:14.987Z",
+      },
+      {
+        userEmail: "contact@pierreccesario.com",
+        username: "PScoriae",
+        paid: false,
+        paidAt: null,
+      },
+      {
+        userEmail: "yunjin@huh.com",
+        username: "jenaissante",
+        paid: false,
+        paidAt: null,
+      },
+    ],
+    cost: 26,
+    courts: ["1", "2"],
+    createdAt: "2023-02-24T08:23:07.856Z",
+    payTo: "yunjin@huh.com",
+  },
+];
+
 // DB teardown so that Jest exits gracefully
 afterAll(async () => await disconnectDb());
 
@@ -175,37 +207,7 @@ describe("GET /game-sessions", () => {
     // validation
     expect(res.statusCode).toBe(200);
     expect(res.body).toMatchObject({
-      gameSessions: [
-        {
-          _id: "63f873eb06409eab241847ed",
-          start: "2023-03-11T06:35:46.000Z",
-          end: "2023-03-11T08:35:46.000Z",
-          players: [
-            {
-              userEmail: "tehyeuhaw@gmail.com",
-              username: "Kirix",
-              paid: true,
-              paidAt: "2023-02-27T15:58:14.987Z",
-            },
-            {
-              userEmail: "contact@pierreccesario.com",
-              username: "PScoriae",
-              paid: false,
-              paidAt: null,
-            },
-            {
-              userEmail: "yunjin@huh.com",
-              username: "jenaissante",
-              paid: false,
-              paidAt: null,
-            },
-          ],
-          cost: 26,
-          courts: ["1", "2"],
-          createdAt: "2023-02-24T08:23:07.856Z",
-          payTo: "yunjin@huh.com",
-        },
-      ],
+      gameSessions: gameSessions2,
     });
     expect(validateDatesMock).toHaveBeenCalled();
   });
@@ -231,37 +233,7 @@ describe("GET /game-sessions", () => {
     // validation
     expect(res.statusCode).toBe(200);
     expect(res.body).toMatchObject({
-      gameSessions: [
-        {
-          _id: "63f873eb06409eab241847ed",
-          start: "2023-03-11T06:35:46.000Z",
-          end: "2023-03-11T08:35:46.000Z",
-          players: [
-            {
-              userEmail: "tehyeuhaw@gmail.com",
-              username: "Kirix",
-              paid: true,
-              paidAt: "2023-02-27T15:58:14.987Z",
-            },
-            {
-              userEmail: "contact@pierreccesario.com",
-              username: "PScoriae",
-              paid: false,
-              paidAt: null,
-            },
-            {
-              userEmail: "yunjin@huh.com",
-              username: "jenaissante",
-              paid: false,
-              paidAt: null,
-            },
-          ],
-          cost: 26,
-          courts: ["1", "2"],
-          createdAt: "2023-02-24T08:23:07.856Z",
-          payTo: "yunjin@huh.com",
-        },
-      ],
+      gameSessions: gameSessions2,
     });
     expect(validateDatesMock).toHaveBeenCalled();
   });
