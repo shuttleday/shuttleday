@@ -10,7 +10,8 @@
     "test": "pnpm run startTestDb; jest; pnpm run stopTestDb",
     "test:jestonly": "jest",
     "startTestDb": "docker compose -f src/seedDb/docker-compose.yml up -d --build",
-    "stopTestDb": "docker compose -f src/seedDb/docker-compose.yml down"
+    "stopTestDb": "docker compose -f src/seedDb/docker-compose.yml down",
+    "ci:test": "jest --maxWorkers 2"
   },
   "keywords": [],
   "author": "",

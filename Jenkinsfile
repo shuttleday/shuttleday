@@ -16,7 +16,7 @@ pipeline {
             steps {
                 dir("bdlist-backend/") {
                     sh 'docker compose -f src/seedDb/docker-compose.yml up -d --build'
-                    sh 'pnpm test:jestonly'
+                    sh 'pnpm ci:test'
                     sh 'docker compose -f src/seedDb/docker-compose.yml down'
                 }
             }
