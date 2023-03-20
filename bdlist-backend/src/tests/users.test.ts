@@ -49,7 +49,7 @@ const userYunjin = {
 };
 
 // DB teardown so that Jest exits gracefully
-afterAll(() => disconnectDb());
+afterAll(async () => await disconnectDb());
 
 describe("POST /users", () => {
   it("returns a newly created user", async () => {

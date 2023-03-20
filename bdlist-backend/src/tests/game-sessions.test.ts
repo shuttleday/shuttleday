@@ -58,7 +58,7 @@ const gameSessions = [
 ];
 
 // DB teardown so that Jest exits gracefully
-afterAll(() => disconnectDb());
+afterAll(async () => await disconnectDb());
 
 describe("GET /game-sessions", () => {
   it("returns appropriate game sessions in the default range for fromDate and toDate", async () => {
