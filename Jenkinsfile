@@ -17,7 +17,6 @@ pipeline {
                 dir("bdlist-backend/") {
                     sh 'docker compose -f src/seedDb/docker-compose.yml up -d --build'
                     sh 'pnpm ci:test'
-                    sh 'docker compose -f src/seedDb/docker-compose.yml down'
                 }
             }
         }
@@ -60,6 +59,11 @@ pipeline {
     }
 
     post {
+        always {
+            dir('bdlist-backend/') {
+            sh 'docker compose -f src/seedDb/docker-compose.yml down'
+            }
+        }
       cleanup {
         // remove old builds
         sh 'sudo docker system prune'
