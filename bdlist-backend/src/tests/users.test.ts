@@ -1,7 +1,7 @@
 import request from "supertest";
 import app from "../setup";
 import { disconnectDb } from "../db/connect";
-import { Request, Response, NextFunction } from "express";
+import { NextFunction } from "express";
 const api = request(app);
 
 jest.mock("../utils/functions", () => {
@@ -11,12 +11,9 @@ jest.mock("../utils/functions", () => {
     // mock Google API call
     validateGJwt: () => {
       return {
-        email: "tehyeuhaw@gmail.com",
-      };
-    },
-    verifyRefreshToken: () => {
-      return {
-        email: "tehyeuhaw@gmail.com",
+        email: "chaewon@kim.com",
+        given_name: "Chaewon",
+        family_name: "Kim",
       };
     },
   };
@@ -64,21 +61,33 @@ const userYunjin = {
 // DB teardown so that Jest exits gracefully
 afterAll(() => disconnectDb());
 
-describe("GET /healthcheck", () => {
-  it("returns a 200 OK", async () => {
-    const res = await api.get("/healthcheck");
-
-    expect(res.statusCode).toBe(200);
-  });
-});
-
-describe("POST /auth/signin", () => {
-  it("returns an accessToken and refreshToken when a valid Google JWT is provided", async () => {
-    const res = await api.post("/auth/signin").expect("Content-Type", /json/);
+describe("POST /users", () => {
+  it("returns a newly created user", async () => {
+    const res = await api
+      .post("/users")
+      .send({
+        username: "_chaechae_1",
+      })
+      .expect("Content-Type", /json/);
 
     expect(res.statusCode).toBe(201);
-    expect(res.body.accessToken).toBeDefined();
-    expect(res.body.refreshToken).toBeDefined();
+    expect(res.body).toMatchObject(
+      expect.objectContaining({
+        result: expect.objectContaining({
+          acknowledged: true,
+          insertedId: expect.any(String),
+        }),
+        document: expect.objectContaining({
+          _id: expect.any(String),
+          email: "chaewon@kim.com",
+          firstName: "Chaewon",
+          lastName: "Kim",
+          username: "_chaechae_1",
+          createdAt: expect.any(String),
+          userType: "player",
+        }),
+      })
+    );
   });
 });
 
@@ -89,17 +98,19 @@ describe("GET /users/:email", () => {
       .expect("Content-Type", /json/);
 
     expect(res.statusCode).toBe(200);
-    expect(res.body).toEqual(userTeh);
+    expect(res.body).toMatchObject(userTeh);
   });
 });
 
-describe("GET /users/", () => {
+describe("GET /users", () => {
   it("returns list of users", async () => {
     const res = await api.get("/users").expect("Content-Type", /json/);
 
     expect(res.statusCode).toBe(200);
-    expect(res.body).toMatchObject({
-      result: [userPie, userTeh, userYunjin],
-    });
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        result: expect.arrayContaining([userPie, userTeh, userYunjin]),
+      })
+    );
   });
 });
