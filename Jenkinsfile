@@ -8,6 +8,8 @@ pipeline {
 
     environment {
         ENV_VARS     = credentials('shuttleday-env-file')
+        AT_SECRET = credentials('ACCESS_TOKEN_SECRET')
+        RT_SECRET = credentials('REFRESH_TOKEN_SECRET')
     }
 
     stages {
@@ -24,7 +26,7 @@ pipeline {
             steps {
                 dir("bdlist-backend/") {
                     sh 'docker compose -f src/seedDb/docker-compose.yml up -d --build'
-                    sh 'pnpm ci:test'
+                    sh 'ACCESS_TOKEN_SECRET=$AT_SECRET REFRESH_TOKEN_SECRET=$RT_SECRET pnpm ci:test'
                 }
             }
         }
