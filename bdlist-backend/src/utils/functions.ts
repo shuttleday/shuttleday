@@ -5,8 +5,8 @@ import fileUpload, { UploadedFile } from "express-fileupload";
 import jwt from "jsonwebtoken";
 
 import * as dotenv from "dotenv";
-import { Users } from "db/collections";
-import { User } from "db/interfaces";
+import { Users } from "../db/collections";
+import { User } from "../db/interfaces";
 import { ApiError } from "./error-util";
 dotenv.config();
 
@@ -57,7 +57,7 @@ export function validateDates(req: Request) {
 
   if (toDate < fromDate)
     throw new ApiError(400, "toDate cannot be before fromDate");
-  else return { fromDate, toDate };
+  return { fromDate, toDate };
 }
 
 // Massage user data for use in JWT

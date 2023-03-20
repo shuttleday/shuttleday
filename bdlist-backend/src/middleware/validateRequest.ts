@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from "express";
-import { processUploadedFiles } from "utils/functions";
+import { processUploadedFiles } from "../utils/functions";
 import {
   requiredPOST,
   requiredGET,
   requiredPATCH,
   requiredMETHOD,
 } from "./validation";
-import { ApiError } from "utils/error-util";
+import { ApiError } from "../utils/error-util";
 const MB = 5;
 const FILE_SIZE_LIMIT = MB * 1024 * 1024;
 
