@@ -17,6 +17,10 @@
     <img src="https://sonarqube.pierreccesario.com/api/project_badges/measure?project=shuttleday_shuttleday_AYaC1XqOjJNBmqHJy_6N&metric=alert_status&token=sqb_9aeb7c71da525241c292560b8787ce67ff1a529c">
 </a>
 <a href="https://sonarqube.pierreccesario.com/dashboard?id=shuttleday_shuttleday_AYaC1XqOjJNBmqHJy_6N">
+    <img src="https://sonarqube.pierreccesario.com/api/project_badges/measure?project=shuttleday_shuttleday_AYaC1XqOjJNBmqHJy_6N&metric=coverage&token=sqb_9aeb7c71da525241c292560b8787ce67ff1a529c">
+</a>
+
+<a href="https://sonarqube.pierreccesario.com/dashboard?id=shuttleday_shuttleday_AYaC1XqOjJNBmqHJy_6N">
     <img src="https://sonarqube.pierreccesario.com/api/project_badges/measure?project=shuttleday_shuttleday_AYaC1XqOjJNBmqHJy_6N&metric=security_rating&token=sqb_9aeb7c71da525241c292560b8787ce67ff1a529c">
 </a>
 <a href="https://sonarqube.pierreccesario.com/dashboard?id=shuttleday_shuttleday_AYaC1XqOjJNBmqHJy_6N">
