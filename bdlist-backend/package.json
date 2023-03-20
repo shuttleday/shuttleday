@@ -11,7 +11,7 @@
     "test:jestonly": "jest",
     "startTestDb": "docker compose -f src/seedDb/docker-compose.yml up -d --build",
     "stopTestDb": "docker compose -f src/seedDb/docker-compose.yml down",
-    "ci:test": "jest --maxWorkers 2"
+    "ci:test": "NODE_ENV=test jest --maxWorkers 2"
   },
   "keywords": [],
   "author": "",
