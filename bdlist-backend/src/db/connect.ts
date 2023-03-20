@@ -46,7 +46,7 @@ async function disconnectDb() {
   try {
     log.info(`Attempting to close connection to: ${uri}`);
     await client.close();
-    log.info("Database disconnect successfully");
+    log.info("Database disconnected successfully");
   } catch (error) {
     log.error("Failed to disconnect from db");
     log.error(error);
