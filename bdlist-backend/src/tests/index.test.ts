@@ -32,22 +32,32 @@ jest.mock("../middleware/authenticate", () => {
 });
 
 const userTeh = {
-  _id: "6409e4e951c746ea65dbbdb2",
+  _id: "6416dfe71b2a978617f9c27f",
   email: "tehyeuhaw@gmail.com",
-  firstName: "Teh",
-  lastName: "Yeu Haw",
-  username: "mikelu2",
-  createdAt: "2023-03-09T13:53:45.712Z",
+  firstName: "Yeu Haw",
+  lastName: "Teh",
+  username: "Kirix",
+  createdAt: "2023-03-19T10:11:51.693Z",
   userType: "player",
 };
 
 const userPie = {
-  _id: "63ff3dbc757fd747d400abc5",
-  email: "test@email.com",
-  firstName: "pie",
-  lastName: "tie",
-  username: "mikelu2",
-  createdAt: "2023-03-01T11:57:48.725Z",
+  _id: "6416dd3f1fa5f32e354bfc02",
+  email: "contact@pierreccesario.com",
+  firstName: "Pierre",
+  lastName: "Cesario",
+  username: "PScoriae",
+  createdAt: "2023-03-19T10:00:31.171Z",
+  userType: "player",
+};
+
+const userYunjin = {
+  _id: "6416e081090bb857e3384aa3",
+  email: "yunjin@huh.com",
+  firstName: "Yunjin",
+  lastName: "Huh",
+  username: "jenaissante",
+  createdAt: "2023-03-19T10:00:31.171Z",
   userType: "admin",
 };
 
@@ -89,7 +99,7 @@ describe("GET /users/", () => {
 
     expect(res.statusCode).toBe(200);
     expect(res.body).toMatchObject({
-      result: [userPie, userTeh],
+      result: [userPie, userTeh, userYunjin],
     });
   });
 });
