@@ -3,9 +3,26 @@ import log from "../utils/logger";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-const username = encodeURIComponent(process.env.MONGO_USER!);
-const password = encodeURIComponent(process.env.MONGO_PW!);
-const dbUri = process.env.MONGO_URL as string;
+let username: string;
+let password: string;
+let dbUri: string;
+switch (process.env.NODE_ENV) {
+  case "test":
+    dbUri = process.env.TEST_MONGO_URL!;
+    username = encodeURIComponent(process.env.TEST_MONGO_USER!);
+    password = encodeURIComponent(process.env.TEST_MONGO_PW!);
+    break;
+  case "production" || "development":
+    dbUri = process.env.MONGO_URL!;
+    username = encodeURIComponent(process.env.MONGO_USER!);
+    password = encodeURIComponent(process.env.MONGO_PW!);
+    break;
+  default:
+    dbUri = process.env.MONGO_URL!;
+    username = encodeURIComponent(process.env.MONGO_USER!);
+    password = encodeURIComponent(process.env.MONGO_PW!);
+    break;
+}
 
 const uri = `mongodb://${username}:${password}@${dbUri}`;
 
