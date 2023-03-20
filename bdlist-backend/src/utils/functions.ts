@@ -57,7 +57,7 @@ export function validateDates(req: Request) {
 
   if (toDate < fromDate)
     throw new ApiError(400, "toDate cannot be before fromDate");
-  else return { fromDate, toDate };
+  return { fromDate, toDate };
 }
 
 // Massage user data for use in JWT
