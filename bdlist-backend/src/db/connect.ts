@@ -8,11 +8,11 @@ let password: string;
 let dbUri: string;
 switch (process.env.NODE_ENV) {
   case "test":
-    dbUri = process.env.TEST_MONGO_URL!;
-    username = encodeURIComponent(process.env.TEST_MONGO_USER!);
-    password = encodeURIComponent(process.env.TEST_MONGO_PW!);
+    dbUri = "localhost:2400/?authSource=shuttleday-prod";
+    username = encodeURIComponent("user");
+    password = encodeURIComponent("password");
     break;
-  case "production" || "development":
+  case "production":
     dbUri = process.env.MONGO_URL!;
     username = encodeURIComponent(process.env.MONGO_USER!);
     password = encodeURIComponent(process.env.MONGO_PW!);
@@ -46,7 +46,7 @@ async function disconnectDb() {
   try {
     log.info(`Attempting to close connection to: ${uri}`);
     await client.close();
-    log.info("Database disconnect successfully");
+    log.info("Database disconnected successfully");
   } catch (error) {
     log.error("Failed to disconnect from db");
     log.error(error);

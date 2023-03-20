@@ -8,15 +8,25 @@ pipeline {
 
     environment {
         ENV_VARS     = credentials('shuttleday-env-file')
+        AT_SECRET = credentials('ACCESS_TOKEN_SECRET')
+        RT_SECRET = credentials('REFRESH_TOKEN_SECRET')
     }
 
     stages {
+        stage("Install Dev Deps") {
+            when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} } 
+            steps {
+                dir("bdlist-backend/") {
+                    sh 'pnpm i'
+                }
+            }
+        }
         stage("Jest Unit Test") {
             when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
             steps {
                 dir("bdlist-backend/") {
                     sh 'docker compose -f src/seedDb/docker-compose.yml up -d --build'
-                    sh 'pnpm ci:test'
+                    sh 'ACCESS_TOKEN_SECRET=$AT_SECRET REFRESH_TOKEN_SECRET=$RT_SECRET pnpm ci:test'
                 }
             }
         }
@@ -35,7 +45,6 @@ pipeline {
             when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
             steps {
                 dir("bdlist-backend/") {
-                    sh 'pnpm i'
                     sh 'pnpm build'
                 }
             }
@@ -61,12 +70,12 @@ pipeline {
     post {
         always {
             dir('bdlist-backend/') {
-            sh 'docker compose -f src/seedDb/docker-compose.yml down'
+                sh 'docker compose -f src/seedDb/docker-compose.yml down'
             }
         }
-      cleanup {
-        // remove old builds
-        sh 'sudo docker system prune'
-      }
+        cleanup {
+            // remove old builds
+            sh 'sudo docker system prune'
+        }
     }
 }

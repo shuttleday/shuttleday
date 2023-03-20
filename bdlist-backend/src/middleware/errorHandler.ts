@@ -13,7 +13,7 @@ const errorHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  log.error({ req, err });
+  log.error(err);
   if (err instanceof ApiError) apiErrorHandler(err, res);
   else throwInternalServerError(res);
 };

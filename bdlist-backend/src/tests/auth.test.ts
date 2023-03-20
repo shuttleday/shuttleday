@@ -32,7 +32,7 @@ jest.mock("../middleware/authenticate", () => {
 });
 
 // DB teardown so that Jest exits gracefully
-afterAll(() => disconnectDb());
+afterAll(async () => await disconnectDb());
 
 describe("POST /auth/signin", () => {
   it("returns an accessToken and refreshToken when a valid Google JWT is provided", async () => {
