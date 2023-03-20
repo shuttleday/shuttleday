@@ -54,8 +54,8 @@ db["users"].insertMany([
 db["game-sessions"].insertMany([
   {
     _id: ObjectId("63f873eb06409eab241847ed"),
-    start: new Date(1677566146000),
-    end: new Date(1677573346000),
+    start: new Date("2023-03-11T06:35:46.000Z"),
+    end: new Date("2023-03-11T08:35:46.000Z"),
     players: [
       {
         userEmail: "tehyeuhaw@gmail.com",
@@ -83,8 +83,8 @@ db["game-sessions"].insertMany([
   },
   {
     _id: ObjectId("63fa27430e3ade06b7a244eb"),
-    start: new Date(1679029749127),
-    end: new Date(1679128546000),
+    start: new Date("2023-03-15T10:35:46.000Z"),
+    end: new Date("2023-03-15T12:35:46.000Z"),
     players: [],
     cost: 60,
     courts: ["5", "6"],
@@ -93,8 +93,8 @@ db["game-sessions"].insertMany([
   },
   {
     _id: ObjectId("640972e1ab208acdf081d294"),
-    start: new Date(1678340833147),
-    end: new Date(1678513611000),
+    start: new Date("2023-03-29T06:35:46.000Z"),
+    end: new Date("2023-03-29T07:35:46.000Z"),
     players: [
       {
         userEmail: "contact@pierreccesario.com",
