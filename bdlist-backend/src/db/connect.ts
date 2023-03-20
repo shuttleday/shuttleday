@@ -8,9 +8,9 @@ let password: string;
 let dbUri: string;
 switch (process.env.NODE_ENV) {
   case "test":
-    dbUri = process.env.TEST_MONGO_URL!;
-    username = encodeURIComponent(process.env.TEST_MONGO_USER!);
-    password = encodeURIComponent(process.env.TEST_MONGO_PW!);
+    dbUri = "localhost:2400/?authSource=shuttleday-prod";
+    username = encodeURIComponent("user");
+    password = encodeURIComponent("password");
     break;
   case "production":
     dbUri = process.env.MONGO_URL!;
