@@ -61,12 +61,12 @@ pipeline {
     post {
         always {
             dir('bdlist-backend/') {
-            sh 'docker compose -f src/seedDb/docker-compose.yml down'
+                sh 'docker compose -f src/seedDb/docker-compose.yml down'
             }
         }
-      cleanup {
-        // remove old builds
-        sh 'sudo docker system prune'
-      }
+        cleanup {
+            // remove old builds
+            sh 'sudo docker system prune'
+        }
     }
 }
