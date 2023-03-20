@@ -138,8 +138,7 @@ async function createSession(sessionData) {
       process.env.REACT_APP_API_LINK + '/game-sessions',
       sessionData
     );
-    const data = response;
-    return data;
+    return response;
   } catch (error) {
     console.log(error);
   }
@@ -151,8 +150,39 @@ async function editSession(sessionData) {
       process.env.REACT_APP_API_LINK + '/game-sessions',
       sessionData
     );
-    const data = response;
-    return data;
+
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getReceipts(ids) {
+  try {
+    console.log(ids);
+    let list = [];
+    for (var i = 0; i < ids.length; i++) {
+      const response = await axios.get(
+        process.env.REACT_APP_API_LINK + '/payment-receipts',
+        {
+          params: { sessionId: ids[i]._id },
+        }
+      );
+
+      let images = [];
+      for (var j = 0; j < response.data.signedUrls.length; j++) {
+        images.push(response.data.signedUrls[j].signedUrl);
+      }
+      const dataObj = {
+        id: ids[i]._id,
+        urls: response.data.signedUrls,
+        date: ids[i].end,
+        viewableImage: images,
+      };
+      list.push(dataObj);
+    }
+    console.log(list);
+    return list;
   } catch (error) {
     console.log(error);
   }
@@ -207,4 +237,5 @@ export {
   uploadReceipt,
   createSession,
   editSession,
+  getReceipts,
 };
