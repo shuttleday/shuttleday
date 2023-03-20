@@ -214,6 +214,8 @@ axios.interceptors.response.use(
         const response = {
           data: 'Refresh',
         };
+        alert('Refresh the page');
+
         return response;
       } catch (error) {
         console.log(error);

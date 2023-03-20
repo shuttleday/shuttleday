@@ -41,7 +41,7 @@ function App() {
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <div justifyContent='center' alignItems='center'>
+          <div justify='center'>
             <Header />
             <>
               <Routes>

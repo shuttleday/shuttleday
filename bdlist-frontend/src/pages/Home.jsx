@@ -6,6 +6,7 @@ import {
   joinSession,
   removeFromSession,
   uploadReceipt,
+  googleSignIn,
 } from '../data/repository';
 
 import List from '@mui/material/List';
@@ -145,6 +146,12 @@ const Home = () => {
   useEffect(() => {
     if (sessionStorage.getItem('jwtToken_Login') === null) {
       navigate('/GLogin');
+    } else if (sessionStorage.getItem('jwtToken_Login') === 'USER NOT FOUND') {
+      console.log('here');
+      const googleToken = jwt_decode(location.state.googleToken);
+      sessionStorage.setItem('jwtToken_Login', location.state.googleToken);
+      setUsername(googleToken.name);
+      handleOpen();
     } else {
       // console.log(location.state.googleToken);
       const user = jwt_decode(sessionStorage.getItem('jwtToken_Login'));
@@ -177,12 +184,12 @@ const Home = () => {
           setOpen(true);
         }
 
-        if (!user) {
-          const googleToken = jwt_decode(location.state.googleToken);
-          sessionStorage.setItem('jwtToken_Login', location.state.googleToken);
-          setUsername(googleToken.name);
-          handleOpen();
-        }
+        // if (!user) {
+        //   const googleToken = jwt_decode(location.state.googleToken);
+        //   sessionStorage.setItem('jwtToken_Login', location.state.googleToken);
+        //   setUsername(googleToken.name);
+        //   handleOpen();
+        // }
 
         if (user.data.userType === 'admin') {
           setRender(true);
@@ -256,20 +263,25 @@ const Home = () => {
   };
 
   const handleSubmit = async () => {
-    const accessToken = sessionStorage.getItem('jwtToken_Login');
-    console.log(username);
     sessionStorage.setItem('jwtToken_Login', location.state.googleToken);
     const res = await createAccount(username);
     if (res === ERROR) {
       setCondition(ERROR);
       setAlertMsg('Username has been taken!');
       setOpen(true);
+      return;
     } else {
       setCondition(SUCCESS);
-      setAlertMsg('Username has been taken!');
+      setAlertMsg('Your account has been created.');
       handleCloseModal();
     }
-    sessionStorage.setItem('jwtToken_Login', accessToken);
+
+    const tokens = await googleSignIn();
+    if (tokens !== null) {
+      sessionStorage.setItem('jwtToken_Login', tokens.accessToken);
+      localStorage.setItem('refreshToken', tokens.refreshToken);
+      window.location.reload();
+    }
   };
   // -----------------------------------------------------------------------------------------
 

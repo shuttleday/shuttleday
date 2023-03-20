@@ -46,6 +46,7 @@ const SessionCreate = () => {
       setAlertMsg('Format for courts not valid');
       setCondition('error');
       setOpen(true);
+      return;
     }
 
     const courtList = courts.split(',').map(String);

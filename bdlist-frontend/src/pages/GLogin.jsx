@@ -12,9 +12,13 @@ const GLogin = () => {
   async function onResponse(response) {
     sessionStorage.setItem('jwtToken_Login', response.credential);
     const res = await googleSignIn();
-    sessionStorage.setItem('jwtToken_Login', res.accessToken);
-    console.log(res.refreshToken);
-    localStorage.setItem('refreshToken', res.refreshToken);
+    if (res === null) {
+      sessionStorage.setItem('jwtToken_Login', 'USER NOT FOUND');
+    } else {
+      sessionStorage.setItem('jwtToken_Login', res.accessToken);
+      console.log(res.refreshToken);
+      localStorage.setItem('refreshToken', res.refreshToken);
+    }
 
     navigate('/', {
       state: {

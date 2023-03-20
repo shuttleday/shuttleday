@@ -16,7 +16,7 @@ const ReceiptProof = () => {
   const [currentImage, setCurrentImage] = useState(0);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const openImageViewer = useCallback((index, infoIndex) => {
-    console.log(images[infoIndex].viewableImage);
+    console.log(images[infoIndex]);
     setSelectedImages(images[infoIndex].viewableImage);
     setCurrentImage(index);
     setIsViewerOpen(true);
