@@ -15,9 +15,7 @@ pipeline {
             when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
             steps {
                 dir("bdlist-backend/") {
-                    sh 'docker compose up --build -d'
                     sh 'pnpm test'
-                    sh 'docker compose down'
                 }
             }
         }
