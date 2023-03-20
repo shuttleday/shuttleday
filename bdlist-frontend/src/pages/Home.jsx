@@ -73,7 +73,7 @@ const Home = () => {
 
   function handleSpeedDial(operation) {
     if (operation === 'payment') {
-      navigate('/payment');
+      navigate('/receipt');
     } else if (operation === 'details') {
       navigate('/details');
     } else if (operation === 'management') {
@@ -136,7 +136,7 @@ const Home = () => {
       handleCloseModalImage();
     } else {
       setCondition(ERROR);
-      setAlertMsg('Something went wrong..');
+      setAlertMsg('You have uploaded your receipt.');
       setOpen(true);
     }
   };
@@ -146,6 +146,7 @@ const Home = () => {
     if (sessionStorage.getItem('jwtToken_Login') === null) {
       navigate('/GLogin');
     } else {
+      console.log(location.state.googleToken);
       const user = jwt_decode(sessionStorage.getItem('jwtToken_Login'));
       console.log(user);
       console.log(sessionStorage.getItem('jwtToken_Login'));
