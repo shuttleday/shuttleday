@@ -86,7 +86,7 @@ const Edit = () => {
       start: dayjs().toISOString(),
       end: dayjs(value).toISOString(),
       courts: courtList,
-      cost: cost,
+      cost: parseInt(cost),
       payTo: sessionInfo[selected].payTo,
       sessionId: sessionInfo[selected]._id,
     };

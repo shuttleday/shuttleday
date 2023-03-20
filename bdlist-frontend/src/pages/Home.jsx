@@ -146,7 +146,7 @@ const Home = () => {
     if (sessionStorage.getItem('jwtToken_Login') === null) {
       navigate('/GLogin');
     } else {
-      console.log(location.state.googleToken);
+      // console.log(location.state.googleToken);
       const user = jwt_decode(sessionStorage.getItem('jwtToken_Login'));
       console.log(user);
       console.log(sessionStorage.getItem('jwtToken_Login'));

@@ -29,7 +29,6 @@ const ReceiptProof = () => {
     setIsViewerOpen(false);
   };
 
-  //Gets information on avaliable sessions
   useEffect(() => {
     async function getData() {
       getSession().then((res) => {
@@ -39,7 +38,7 @@ const ReceiptProof = () => {
             setImages(res);
           });
         } else {
-          alert('No data found.');
+          alert('No data found');
         }
       });
     }

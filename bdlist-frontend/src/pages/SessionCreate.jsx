@@ -54,7 +54,7 @@ const SessionCreate = () => {
       start: dayjs().toISOString(),
       end: dayjs(value).toISOString(),
       courts: courtList,
-      cost: cost,
+      cost: parseInt(cost),
     };
 
     const response = await createSession(sessionData);
