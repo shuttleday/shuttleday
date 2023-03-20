@@ -11,14 +11,16 @@ pipeline {
     }
 
     stages {
-        // stage("Jest Unit Test") {
-        //     when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
-        //     steps {
-        //         dir("bdlist-backend/") {
-        //             sh 'pnpm test'
-        //         }
-        //     }
-        // }
+        stage("Jest Unit Test") {
+            when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
+            steps {
+                dir("bdlist-backend/") {
+                    sh 'docker compose up --build -d'
+                    sh 'pnpm test'
+                    sh 'docker compose down'
+                }
+            }
+        }
         stage("SonarQube Analysis") {
             steps {
                 script {
