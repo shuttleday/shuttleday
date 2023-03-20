@@ -13,13 +13,6 @@ const ReceiptProof = () => {
   const [images, setImages] = useState([]);
   const [selectedImages, setSelectedImages] = useState(null);
 
-  const imagess = [
-    'http://placeimg.com/1200/800/nature',
-    'http://placeimg.com/800/1200/nature',
-    'http://placeimg.com/1920/1080/nature',
-    'http://placeimg.com/1500/500/nature',
-  ];
-
   const [currentImage, setCurrentImage] = useState(0);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const openImageViewer = useCallback((index, infoIndex) => {
@@ -36,6 +29,7 @@ const ReceiptProof = () => {
     setIsViewerOpen(false);
   };
 
+  //Gets information on avaliable sessions
   useEffect(() => {
     async function getData() {
       getSession().then((res) => {
@@ -92,34 +86,6 @@ const ReceiptProof = () => {
                     <ImageListItemBar title={image.payer} subtitle={''} />
                   </ImageListItem>
                 ))}
-
-                <ImageListItem>
-                  <img
-                    src={`https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=248&fit=crop&auto=format`}
-                    srcSet={`https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=248&fit=crop&auto=format&dpr=2 2x`}
-                    alt={'hellow'}
-                    loading='lazy'
-                  />
-                  <ImageListItemBar title={'hello'} subtitle={'this'} />
-                </ImageListItem>
-                <ImageListItem>
-                  <img
-                    src={`https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=248&fit=crop&auto=format`}
-                    srcSet={`https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=248&fit=crop&auto=format&dpr=2 2x`}
-                    alt={'hellow'}
-                    loading='lazy'
-                  />
-                  <ImageListItemBar title={'hello'} subtitle={'this'} />
-                </ImageListItem>
-                <ImageListItem>
-                  <img
-                    src={`https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=248&fit=crop&auto=format`}
-                    srcSet={`https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=248&fit=crop&auto=format&dpr=2 2x`}
-                    alt={'hellow'}
-                    loading='lazy'
-                  />
-                  <ImageListItemBar title={'hello'} subtitle={'this'} />
-                </ImageListItem>
               </ImageList>
             </Box>
           ))

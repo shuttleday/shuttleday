@@ -159,7 +159,6 @@ async function editSession(sessionData) {
 
 async function getReceipts(ids) {
   try {
-    console.log(ids);
     let list = [];
     for (var i = 0; i < ids.length; i++) {
       const response = await axios.get(
@@ -200,7 +199,6 @@ axios.interceptors.response.use(
     return response;
   },
   async function (error) {
-    console.log(error);
     if (error.response.status === 401) {
       const refreshToken = {
         refreshToken: localStorage.getItem('refreshToken'),
