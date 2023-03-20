@@ -27,10 +27,10 @@ module.exports = {
 
   // An array of regexp pattern strings used to skip coverage collection
   coveragePathIgnorePatterns: [
-    "/node_modules/",
-    "/tests/",
-    "/dist/",
-    "/seedDb/",
+    "<rootDir>/node_modules/",
+    "<rootDir>/dist/",
+    "<rootDir>/src/tests/",
+    "<rootDir>/src/seedDb/",
   ],
 
   // Indicates which provider should be used to instrument code for coverage
