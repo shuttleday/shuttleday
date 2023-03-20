@@ -4,20 +4,11 @@ import { disconnectDb } from "../db/connect";
 import { NextFunction } from "express";
 const api = request(app);
 
-jest.mock("../utils/functions", () => {
-  return {
-    // use existing definitions for other functions
-    ...jest.requireActual("../utils/functions"),
-    // mock Google API call
-    validateGJwt: () => {
-      return {
-        email: "chaewon@kim.com",
-        given_name: "Chaewon",
-        family_name: "Kim",
-      };
-    },
-  };
-});
+// mock validateGJwt on a per test basis
+// https://dev.to/wolfhoundjesse/comment/lj50
+import { validateGJwt } from "../utils/functions";
+jest.mock("../utils/functions");
+const mockValidateGJwt = validateGJwt as jest.Mock;
 
 jest.mock("../middleware/authenticate", () => {
   return {
@@ -63,6 +54,14 @@ afterAll(() => disconnectDb());
 
 describe("POST /users", () => {
   it("returns a newly created user", async () => {
+    // mock return value for this specific test
+    mockValidateGJwt.mockReturnValue({
+      email: "chaewon@kim.com",
+      given_name: "Chaewon",
+      family_name: "Kim",
+    });
+
+    // perform request
     const res = await api
       .post("/users")
       .send({
@@ -70,6 +69,7 @@ describe("POST /users", () => {
       })
       .expect("Content-Type", /json/);
 
+    // validation
     expect(res.statusCode).toBe(201);
     expect(res.body).toMatchObject(
       expect.objectContaining({
@@ -99,6 +99,17 @@ describe("GET /users/:email", () => {
 
     expect(res.statusCode).toBe(200);
     expect(res.body).toMatchObject(userTeh);
+  });
+
+  it("returns 404 if user with that email does not exist", async () => {
+    const res = await api
+      .get("/users/sakura@miyawaki.com")
+      .expect("Content-Type", /json/);
+
+    expect(res.statusCode).toBe(404);
+    expect(res.body).toMatchObject({
+      error: "User with that email does not exist",
+    });
   });
 });
 
