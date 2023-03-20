@@ -12,11 +12,6 @@ switch (process.env.NODE_ENV) {
     username = encodeURIComponent("user");
     password = encodeURIComponent("password");
     break;
-  case "production":
-    dbUri = process.env.MONGO_URL!;
-    username = encodeURIComponent(process.env.MONGO_USER!);
-    password = encodeURIComponent(process.env.MONGO_PW!);
-    break;
   default:
     dbUri = process.env.MONGO_URL!;
     username = encodeURIComponent(process.env.MONGO_USER!);
