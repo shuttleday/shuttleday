@@ -7,7 +7,6 @@ async function userCheck(email) {
     const user = await axios.get(
       `${process.env.REACT_APP_API_LINK}/users/${email}`
     );
-    console.log(user);
     return user;
   } catch (error) {
     console.log(error);
@@ -60,9 +59,8 @@ async function getSession() {
         params: { fromDate: past.toISOString(), toDate: future.toISOString() },
       }
     );
-    const user = response.data;
-    console.log(user);
-    return user;
+
+    return response.data;
   } catch (error) {
     console.log(error);
   }
@@ -78,7 +76,6 @@ async function joinSession(sessionId) {
       process.env.REACT_APP_API_LINK + '/session-players',
       data
     );
-    console.log(response.data);
     return response.data.players;
   } catch (error) {
     console.log(error);
@@ -95,7 +92,6 @@ async function removeFromSession(sessionId) {
       process.env.REACT_APP_API_LINK + '/session-players',
       { data: { sessionId: sessionId } }
     );
-    console.log(response.data);
     return response.data.players;
   } catch (error) {
     console.log(error);
@@ -113,7 +109,6 @@ async function uploadReceipt(image, sessionId) {
       process.env.REACT_APP_API_LINK + '/user-payments',
       formData
     );
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.log(error);
@@ -180,7 +175,6 @@ async function getReceipts(ids) {
       };
       list.push(dataObj);
     }
-    console.log(list);
     return list;
   } catch (error) {
     console.log(error);
