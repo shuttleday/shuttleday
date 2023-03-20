@@ -6,10 +6,9 @@ const api = request(app);
 
 // mock validateGJwt on a per test basis
 // https://dev.to/wolfhoundjesse/comment/lj50
-import { validateGJwt } from "../utils/functions";
-jest.mock("../utils/functions");
-const mockValidateGJwt = validateGJwt as jest.Mock;
+import * as functions from "../utils/functions";
 
+// globally mock authenticate middleware
 jest.mock("../middleware/authenticate", () => {
   return {
     // use existing definitions for other functions
@@ -55,11 +54,18 @@ afterAll(() => disconnectDb());
 describe("POST /users", () => {
   it("returns a newly created user", async () => {
     // mock return value for this specific test
-    mockValidateGJwt.mockReturnValue({
-      email: "chaewon@kim.com",
-      given_name: "Chaewon",
-      family_name: "Kim",
-    });
+    const validateGJwtMock = jest
+      .spyOn(functions, "validateGJwt")
+      .mockResolvedValueOnce({
+        email: "chaewon@kim.com",
+        given_name: "Chaewon",
+        family_name: "Kim",
+        iss: "hi",
+        sub: "sldfjds",
+        exp: 239480392843,
+        aud: "sldfj;sdf",
+        iat: 230480234,
+      });
 
     // perform request
     const res = await api
@@ -88,6 +94,7 @@ describe("POST /users", () => {
         }),
       })
     );
+    expect(validateGJwtMock).toHaveBeenCalled();
   });
 });
 
