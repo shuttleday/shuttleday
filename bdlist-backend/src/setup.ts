@@ -6,7 +6,6 @@ dotenv.config();
 import routes from "./routes/index";
 import { authenticate } from "./middleware/authenticate";
 import errorHandler from "./middleware/errorHandler";
-import requestLogger from "./middleware/logger";
 import {
   validateGET,
   validatePATCH,
@@ -31,9 +30,6 @@ app.use(validatePATCH);
 
 // Load routes
 routes(app);
-
-// Load request logger
-app.use(requestLogger);
 
 // Load error handler
 app.use(errorHandler);
