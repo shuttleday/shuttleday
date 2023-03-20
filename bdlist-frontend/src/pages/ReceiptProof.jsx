@@ -15,26 +15,26 @@ const ReceiptProof = () => {
 
   const [currentImage, setCurrentImage] = useState(0);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
-  const openImageViewer = useCallback((index, infoIndex) => {
-    console.log(images[infoIndex]);
-    setSelectedImages(images[infoIndex].viewableImage);
-    setCurrentImage(index);
-    setIsViewerOpen(true);
-    // eslint-disable-next-line
-  }, []);
+  const openImageViewer = useCallback(
+    (index, infoIndex) => {
+      setSelectedImages(images[infoIndex].viewableImage);
+      setCurrentImage(index);
+      setIsViewerOpen(true);
+      // eslint-disable-next-line
+    },
+    [images]
+  );
 
   const closeImageViewer = () => {
-    console.log(selectedImages);
     setCurrentImage(0);
     setIsViewerOpen(false);
   };
 
   useEffect(() => {
     async function getData() {
-      getSession().then((res) => {
-        console.log(res.gameSessions[0]._id);
-        if (res.gameSessions !== null) {
-          getReceipts(res.gameSessions).then((res) => {
+      getSession().then((resData) => {
+        if (resData.gameSessions !== null) {
+          getReceipts(resData.gameSessions).then((res) => {
             setImages(res);
           });
         } else {
