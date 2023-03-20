@@ -38,6 +38,9 @@ router
     adminCheck,
     validateNewGameSessionDate,
     async (req: Request, res: Response, next: NextFunction) => {
+      if (!(req.body.cost instanceof Number))
+        throw new ApiError(400, "cost key must be of type number");
+
       const document: GameSession = {
         _id: new ObjectId(),
         start: new Date(req.body.start as string),
@@ -67,6 +70,9 @@ router
         if (typeof elem !== "string")
           throw new ApiError(400, "courts key must be of type string[]");
       }
+
+      if (!(req.body.cost instanceof Number))
+        throw new ApiError(400, "cost key must be of type number");
 
       // Update and return new document
       const result = await GameSessions.findOneAndUpdate(
