@@ -15,7 +15,7 @@ pipeline {
             when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
             steps {
                 dir("bdlist-backend/") {
-                    sh 'pnpm test'
+                    sh 'sudo pnpm test'
                 }
             }
         }
