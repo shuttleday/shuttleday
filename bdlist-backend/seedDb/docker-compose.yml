@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  mongo:
+    container_name: shuttleday-test-db
+    image: mongo:latest
+    ports:
+      - "2400:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: shuttleday-prod
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
