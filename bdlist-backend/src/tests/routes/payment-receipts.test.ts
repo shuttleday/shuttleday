@@ -10,7 +10,7 @@ jest.mock("@aws-sdk/s3-request-presigner", () => {
   return {
     ...jest.requireActual("@aws-sdk/s3-request-presigner"),
     getSignedUrl: () =>
-      "https://shuttleday-payments.s3.ap-southeast-1.amazonaws.com/sakura%40miyawaki.com/640972e1ab208acdf081d525/_chaechae_1.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIA2MSHQPHJL55QB4FP%2F20230321%2Fap-southeast-1%2Fs3%2Faws4_request&X-Amz-Date=20230321T110813Z&X-Amz-Expires=3600&X-Amz-Signature=12e99a2fa4ff9c308de65202c892754a2d0c89e21d3ee2cadea1f78d60854f0c&X-Amz-SignedHeaders=host&x-id=GetObject",
+      "https://shuttleday-payments.s3.ap-southeast-1.amazonaws.com/sakura%40miyawaki.com/640972e1ab208acdf081d525/_chaechae_1.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=%2F20230321%2Fap-southeast-1%2Fs3%2Faws4_request&X-Amz-Date=20230321T110813Z&X-Amz-Expires=3600&X-Amz-Signature=12e99a2fa4ff9c308de65202c892754a2d0c89e21d3ee2cadea1f78d60854f0c&X-Amz-SignedHeaders=host&x-id=GetObject",
   };
 });
 // globally mock authenticate middleware
@@ -48,7 +48,7 @@ describe("GET /payment-receipts", () => {
         {
           payer: "_chaechae_1",
           signedUrl:
-            "https://shuttleday-payments.s3.ap-southeast-1.amazonaws.com/sakura%40miyawaki.com/640972e1ab208acdf081d525/_chaechae_1.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIA2MSHQPHJL55QB4FP%2F20230321%2Fap-southeast-1%2Fs3%2Faws4_request&X-Amz-Date=20230321T110813Z&X-Amz-Expires=3600&X-Amz-Signature=12e99a2fa4ff9c308de65202c892754a2d0c89e21d3ee2cadea1f78d60854f0c&X-Amz-SignedHeaders=host&x-id=GetObject",
+            "https://shuttleday-payments.s3.ap-southeast-1.amazonaws.com/sakura%40miyawaki.com/640972e1ab208acdf081d525/_chaechae_1.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=%2F20230321%2Fap-southeast-1%2Fs3%2Faws4_request&X-Amz-Date=20230321T110813Z&X-Amz-Expires=3600&X-Amz-Signature=12e99a2fa4ff9c308de65202c892754a2d0c89e21d3ee2cadea1f78d60854f0c&X-Amz-SignedHeaders=host&x-id=GetObject",
         },
       ],
     });
