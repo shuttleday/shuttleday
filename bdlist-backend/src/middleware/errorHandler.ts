@@ -8,7 +8,7 @@ import {
 import log from "../utils/logger";
 
 const errorHandler = async (
-  err: ApiError,
+  err: Error,
   req: Request,
   res: Response,
   next: NextFunction
