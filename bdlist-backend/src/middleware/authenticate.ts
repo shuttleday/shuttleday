@@ -44,8 +44,6 @@ export const authenticate = async (
     req.user = found;
     next();
   } catch (error) {
-    if (error instanceof JsonWebTokenError)
-      return res.status(401).json({ error: "Invalid JWT" });
     next(error);
   }
 };
