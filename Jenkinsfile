@@ -75,7 +75,8 @@ pipeline {
         }
         cleanup {
             // remove old builds
-            sh 'sudo docker system prune'
+            sh 'docker system prune'
+            sh 'docker volume prune -f'
         }
     }
 }
