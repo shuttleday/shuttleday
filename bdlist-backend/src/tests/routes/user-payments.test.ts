@@ -5,7 +5,6 @@ import { NextFunction, Request, Response } from "express";
 const api = request(app);
 
 import { User } from "../../db/interfaces";
-import path from "path";
 
 // globally mock authenticate middleware
 jest.mock("../../middleware/authenticate", () => {
