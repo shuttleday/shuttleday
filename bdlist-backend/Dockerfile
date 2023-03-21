@@ -1,4 +1,4 @@
-FROM docker.io/library/node:19-alpine
+FROM docker.io/library/node:18-alpine
 
 RUN addgroup -S nonroot \
     && adduser -S nonroot -G nonroot
@@ -26,6 +26,6 @@ ENV NODE_ENV=production
 # install deps
 RUN pnpm i
 
-COPY . .
+COPY dist/ ./dist/
 
 CMD node ./dist/index.js
