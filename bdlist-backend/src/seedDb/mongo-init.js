@@ -7,6 +7,9 @@ db.createUser({
   roles: [{ role: "readWrite", db: "shuttleday-prod" }],
 });
 
+db["users"].drop();
+db["game-sessions"].drop();
+
 // Seed test users
 db["users"].insertMany([
   {
