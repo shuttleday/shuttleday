@@ -159,8 +159,8 @@ db["game-sessions"].insertMany([
       {
         userEmail: "yunjin@huh.com",
         username: "jenaissante",
-        paid: false,
-        paidAt: null,
+        paid: true,
+        paidAt: new Date("2023-02-27T15:58:14.987Z"),
       },
     ],
     cost: 25,
@@ -224,5 +224,32 @@ db["game-sessions"].insertMany([
     courts: ["1", "5"],
     createdAt: new Date("2021-10-10T05:47:13.786Z"),
     payTo: "sakura@miyawaki.com",
+  },
+  {
+    _id: ObjectId("640972e1ab208acdf081d155"),
+    start: new Date("2023-12-30T10:35:46.000Z"),
+    end: new Date("2023-12-30T11:35:46.000Z"),
+    players: [
+      {
+        userEmail: "yunjin@huh.com",
+        username: "jenaissante",
+        paid: false,
+        paidAt: null,
+      },
+    ],
+    cost: 10,
+    courts: ["1", "5"],
+    createdAt: new Date("2023-11-10T05:47:13.786Z"),
+    payTo: "eunchae@hong.com",
+  },
+  {
+    _id: ObjectId("640972e1ab208acdf081d203"),
+    start: new Date("2023-12-30T10:35:46.000Z"),
+    end: new Date("2023-12-30T11:35:46.000Z"),
+    players: [],
+    cost: 10,
+    courts: ["1", "5"],
+    createdAt: new Date("2023-11-10T05:47:13.786Z"),
+    payTo: "eunchae@hong.com",
   },
 ]);
