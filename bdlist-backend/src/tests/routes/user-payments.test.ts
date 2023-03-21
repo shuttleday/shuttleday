@@ -20,14 +20,14 @@ jest.mock("../../middleware/authenticate", () => {
 });
 
 jest.mock("@aws-sdk/client-s3", () => {
-  class mockS3 {
+  class MockS3 {
     send(_: any) {
       return { $metadata: { httpStatusCode: 200 } };
     }
   }
   return {
     ...jest.requireActual("@aws-sdk/client-s3"),
-    S3Client: mockS3,
+    S3Client: MockS3,
   };
 });
 
