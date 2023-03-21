@@ -4,9 +4,6 @@ import { disconnectDb } from "../../db/connect";
 import { NextFunction, Request, Response } from "express";
 const api = request(app);
 
-// mock validateGJwt on a per test basis
-// https://dev.to/wolfhoundjesse/comment/lj50
-import * as functions from "../../utils/functions";
 import { User } from "../../db/interfaces";
 
 // globally mock authenticate middleware
