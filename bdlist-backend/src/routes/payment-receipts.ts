@@ -29,7 +29,7 @@ router.get(
       });
 
       // Ensure there are players that paid
-      if (!players)
+      if (players.length === 0)
         throw new ApiError(404, "No players have paid for that session");
 
       // Construct promises
