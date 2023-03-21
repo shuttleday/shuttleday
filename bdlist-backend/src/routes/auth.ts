@@ -72,7 +72,6 @@ router.post(
       if (!(await argon2.verify(found.refreshToken, candidateToken)))
         throw new ApiError(401, "Unauthorized");
 
-      console.log("heyyy");
       // Generate new access token
       const newAccessToken = genAccessToken(found);
 
