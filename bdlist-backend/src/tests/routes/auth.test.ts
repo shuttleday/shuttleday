@@ -1,13 +1,13 @@
 import request from "supertest";
-import app from "../setup";
-import { disconnectDb } from "../db/connect";
+import app from "../../setup";
+import { disconnectDb } from "../../db/connect";
 import { Request, Response, NextFunction } from "express";
 const api = request(app);
 
-jest.mock("../utils/functions", () => {
+jest.mock("../../utils/functions", () => {
   return {
     // use existing definitions for other functions
-    ...jest.requireActual("../utils/functions"),
+    ...jest.requireActual("../../utils/functions"),
     // mock Google API call
     validateGJwt: () => {
       return {
@@ -22,10 +22,10 @@ jest.mock("../utils/functions", () => {
   };
 });
 
-jest.mock("../middleware/authenticate", () => {
+jest.mock("../../middleware/authenticate", () => {
   return {
     // use existing definitions for other functions
-    ...jest.requireActual("../middleware/authenticate"),
+    ...jest.requireActual("../../middleware/authenticate"),
     // skip JWT auth
     authenticate: (req: Request, res: Response, next: NextFunction) => next(),
   };

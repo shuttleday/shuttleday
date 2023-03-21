@@ -1,18 +1,18 @@
 import request from "supertest";
-import app from "../setup";
-import { disconnectDb } from "../db/connect";
+import app from "../../setup";
+import { disconnectDb } from "../../db/connect";
 import { NextFunction } from "express";
 const api = request(app);
 
 // mock validateGJwt on a per test basis
 // https://dev.to/wolfhoundjesse/comment/lj50
-import * as functions from "../utils/functions";
+import * as functions from "../../utils/functions";
 
 // globally mock authenticate middleware
-jest.mock("../middleware/authenticate", () => {
+jest.mock("../../middleware/authenticate", () => {
   return {
     // use existing definitions for other functions
-    ...jest.requireActual("../middleware/authenticate"),
+    ...jest.requireActual("../../middleware/authenticate"),
     // skip JWT auth
     authenticate: (req: Request, res: Response, next: NextFunction) => next(),
   };

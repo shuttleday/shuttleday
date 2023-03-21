@@ -1,5 +1,5 @@
 import request from "supertest";
-import app from "../setup";
+import app from "../../setup";
 const api = request(app);
 
 describe("GET /healthcheck", () => {

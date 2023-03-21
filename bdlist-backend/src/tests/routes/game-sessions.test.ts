@@ -1,17 +1,21 @@
 import request from "supertest";
-import app from "../setup";
-import { disconnectDb } from "../db/connect";
+import app from "../../setup";
+import { disconnectDb } from "../../db/connect";
 import { NextFunction, Request } from "express";
 const api = request(app);
 
-import * as functions from "../utils/functions";
+import * as functions from "../../utils/functions";
+import { User } from "../../db/interfaces";
 
-jest.mock("../middleware/authenticate", () => {
+jest.mock("../../middleware/authenticate", () => {
   return {
     // use existing definitions for other functions
-    ...jest.requireActual("../middleware/authenticate"),
+    ...jest.requireActual("../../middleware/authenticate"),
     // skip JWT auth
-    authenticate: (req: Request, res: Response, next: NextFunction) => next(),
+    authenticate: (req: Request, res: Response, next: NextFunction) => {
+      req.user = { userType: "admin" } as User;
+      next();
+    },
   };
 });
 
@@ -332,15 +336,34 @@ describe("PATCH /game-sessions", () => {
   });
 });
 
-// describe("POST /game-sessions", () => {
-//   it("returns list of users", async () => {
-//     const res = await api.get("/users").expect("Content-Type", /json/);
+describe("POST /game-sessions", () => {
+  it("returns the passed payload", async () => {
+    const payload = {
+      start: "2023-02-28T06:35:46Z",
+      end: "2023-02-28T08:35:46Z",
+      cost: 26,
+      courts: ["1", "2", "3"],
+    };
+    const res = await api
+      .post("/game-sessions")
+      .send(payload)
+      .expect("Content-Type", /json/);
 
-//     expect(res.statusCode).toBe(200);
-//     expect(res.body).toEqual(
-//       expect.objectContaining({
-//         result: expect.arrayContaining([userPie, userTeh, userYunjin]),
-//       })
-//     );
-//   });
-// });
+    expect(res.statusCode).toBe(201);
+    expect(res.body).toMatchObject({
+      result: {
+        acknowledged: true,
+        insertedId: expect.any(String),
+      },
+      document: {
+        _id: expect.any(String),
+        start: "2023-02-28T06:35:46.000Z",
+        end: "2023-02-28T08:35:46.000Z",
+        players: [],
+        cost: 26,
+        courts: ["1", "2", "3"],
+        createdAt: expect.any(String),
+      },
+    });
+  });
+});
