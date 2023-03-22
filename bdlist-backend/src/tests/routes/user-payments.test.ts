@@ -84,4 +84,18 @@ describe("POST /user-payments", () => {
       error: "Either already paid for this session or not in session",
     });
   });
+
+  it("returns a 401 if no image is attached", async () => {
+    // perform request
+    const res = await api
+      .post("/user-payments")
+      .field({ sessionId: "640972e1ab208acdf081d069" })
+      .expect("Content-Type", /json/);
+
+    // validation
+    expect(res.statusCode).toBe(401);
+    expect(res.body).toMatchObject({
+      error: "No image was uploaded",
+    });
+  });
 });
