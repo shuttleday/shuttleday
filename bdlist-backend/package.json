@@ -13,8 +13,8 @@
     "build": "rm -rf dist/ && tsc --build",
     "test": "pnpm run startTestDb; jest; pnpm run stopTestDb; docker volume prune -f",
     "test:jestonly": "jest",
-    "startTestDb": "docker compose -f src/seedDb/docker-compose.yml up -d --build",
-    "stopTestDb": "docker compose -f src/seedDb/docker-compose.yml down",
+    "startTestDb": "docker compose -f src/tests/seedDb/docker-compose.yml up -d --build",
+    "stopTestDb": "docker compose -f src/tests/seedDb/docker-compose.yml down",
     "ci:test": "NODE_ENV=test jest -i"
   },
   "keywords": [],
