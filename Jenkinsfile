@@ -25,7 +25,7 @@ pipeline {
             when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
             steps {
                 dir("bdlist-backend/") {
-                    sh 'docker compose -f src/seedDb/docker-compose.yml up -d --build'
+                    sh 'pnpm startTestDb'
                     sh 'ACCESS_TOKEN_SECRET=$AT_SECRET REFRESH_TOKEN_SECRET=$RT_SECRET pnpm ci:test'
                 }
             }
@@ -70,7 +70,7 @@ pipeline {
     post {
         always {
             dir('bdlist-backend/') {
-                sh 'docker compose -f src/seedDb/docker-compose.yml down'
+                sh 'pnpm stopTestDb'
             }
         }
         cleanup {
