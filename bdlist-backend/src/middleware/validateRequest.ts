@@ -16,7 +16,7 @@ export async function validateNewGameSessionDate(
   next: NextFunction
 ) {
   try {
-    const sessionDate = new Date(req.body.date);
+    const sessionDate = new Date(req.body.start);
     if (sessionDate < new Date())
       throw new ApiError(400, "Cannot create session in the past");
 
