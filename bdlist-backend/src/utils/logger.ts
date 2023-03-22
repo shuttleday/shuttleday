@@ -37,7 +37,7 @@ const dev = {
   ],
 };
 
-const pinoConfig = process.env.NODE_ENV === "production" ? prod : dev;
+const pinoConfig = process.env.NODE_ENV === "dev" ? dev : prod;
 const transport = pino.transport(pinoConfig);
 const log = pino(transport);
 
