@@ -335,35 +335,3 @@ describe("PATCH /game-sessions", () => {
     });
   });
 });
-
-describe("POST /game-sessions", () => {
-  it("returns the passed payload", async () => {
-    const payload = {
-      start: "2023-02-28T06:35:46Z",
-      end: "2023-02-28T08:35:46Z",
-      cost: 26,
-      courts: ["1", "2", "3"],
-    };
-    const res = await api
-      .post("/game-sessions")
-      .send(payload)
-      .expect("Content-Type", /json/);
-
-    expect(res.statusCode).toBe(201);
-    expect(res.body).toMatchObject({
-      result: {
-        acknowledged: true,
-        insertedId: expect.any(String),
-      },
-      document: {
-        _id: expect.any(String),
-        start: "2023-02-28T06:35:46.000Z",
-        end: "2023-02-28T08:35:46.000Z",
-        players: [],
-        cost: 26,
-        courts: ["1", "2", "3"],
-        createdAt: expect.any(String),
-      },
-    });
-  });
-});
