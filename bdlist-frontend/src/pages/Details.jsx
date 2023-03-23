@@ -51,8 +51,8 @@ const Details = () => {
         </Typography>
         <Box sx={{ width: { xs: 320, sm: 500 }, typography: 'body1' }}>
           {users !== null ? (
-            users.map((user) => (
-              <Accordion>
+            users.map((user, index) => (
+              <Accordion key={index}>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls='panel1a-content'

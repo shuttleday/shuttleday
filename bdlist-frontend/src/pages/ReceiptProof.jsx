@@ -6,7 +6,7 @@ import ImageListItemBar from '@mui/material/ImageListItemBar';
 import ListSubheader from '@mui/material/ListSubheader';
 import dayjs from 'dayjs';
 import ImageViewer from 'react-simple-image-viewer';
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { getSession, getReceipts } from '../data/repository';
 
 const ReceiptProof = () => {
@@ -56,6 +56,11 @@ const ReceiptProof = () => {
         justifyContent='center'
         alignItems='center'
       >
+        <Typography
+          id='modal-modal-title'
+          variant='h6'
+          component='h2'
+        ></Typography>
         {images === [] ? (
           <Box></Box>
         ) : (
@@ -69,7 +74,13 @@ const ReceiptProof = () => {
               >
                 <ImageListItem key='Subheader' cols={2}>
                   <ListSubheader component='div'>
-                    {dayjs(imageInfo.date).format('DD/MM/YYYY ddd')}
+                    <Typography
+                      id='modal-modal-title'
+                      variant='h6'
+                      component='h2'
+                    >
+                      {dayjs(imageInfo.date).format('DD/MM/YYYY ddd')}
+                    </Typography>
                   </ListSubheader>
                 </ImageListItem>
 
