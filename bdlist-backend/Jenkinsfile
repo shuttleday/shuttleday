@@ -28,8 +28,10 @@ pipeline {
             steps {
                 script {
                     def scannerHome = tool 'sonarqube';
-                    withSonarQubeEnv() {
-                        sh "${scannerHome}/bin/sonar-scanner"
+                    dir('../') {
+                        withSonarQubeEnv() {
+                            sh "${scannerHome}/bin/sonar-scanner"
+                        }
                     }
                 }
             }
