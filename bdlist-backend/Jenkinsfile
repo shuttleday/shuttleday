@@ -13,40 +13,43 @@ pipeline {
     }
 
         stages {
-            dir("bdlist-backend/") {
-                stage("Install Dependencies") {
-                    steps {
-                        sh 'pnpm i'
-                    }
+            stage("Change Working Directory") {
+                steps {
+                    sh 'cd bdlist-backend/'
                 }
-                stage("Jest Unit Test") {
-                    steps {
-                        sh 'pnpm startTestDb'
-                        sh 'ACCESS_TOKEN_SECRET=$AT_SECRET REFRESH_TOKEN_SECRET=$RT_SECRET pnpm ci:test'
-                    }
+            }
+            stage("Install Dependencies") {
+                steps {
+                    sh 'pnpm i'
                 }
+            }
+            stage("Jest Unit Test") {
+                steps {
+                    sh 'pnpm startTestDb'
+                    sh 'ACCESS_TOKEN_SECRET=$AT_SECRET REFRESH_TOKEN_SECRET=$RT_SECRET pnpm ci:test'
+                }
+            }
 
-                stage("SonarQube Analysis") {
-                    steps {
-                            script {
-                                def scannerHome = tool 'sonarqube';
-                                    withSonarQubeEnv() {
-                                        sh "${scannerHome}/bin/sonar-scanner"
-                                    }
-                            }
-                    }
+            stage("SonarQube Analysis") {
+                steps {
+                        script {
+                            def scannerHome = tool 'sonarqube';
+                                withSonarQubeEnv() {
+                                    sh "${scannerHome}/bin/sonar-scanner"
+                                }
+                        }
                 }
+            }
 
-                stage ("Transpile TypeScript to JavaScript") {
-                    steps {
-                        sh 'pnpm build'
-                    }
+            stage ("Transpile TypeScript to JavaScript") {
+                steps {
+                    sh 'pnpm build'
                 }
-                
-                stage("Build Docker Image and Deploy") {
-                    steps {
-                        sh 'sudo docker compose --env-file $ENV_VARS up --build -d'
-                    }
+            }
+            
+            stage("Build Docker Image and Deploy") {
+                steps {
+                    sh 'sudo docker compose --env-file $ENV_VARS up --build -d'
                 }
             }
         }
