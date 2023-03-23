@@ -13,8 +13,7 @@ pipeline {
     }
 
     stages {
-        stage("Install Dev Deps") {
-            when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} } 
+        stage("Install Dependencies") {
             steps {
                 dir("bdlist-backend/") {
                     sh 'pnpm i'
@@ -22,7 +21,6 @@ pipeline {
             }
         }
         stage("Jest Unit Test") {
-            when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
             steps {
                 dir("bdlist-backend/") {
                     sh 'pnpm startTestDb'
@@ -41,8 +39,7 @@ pipeline {
             }
           }
 
-        stage ("Build Backend") {
-            when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
+        stage ("Transpile TypeScript to JavaScript") {
             steps {
                 dir("bdlist-backend/") {
                     sh 'pnpm build'
@@ -50,8 +47,7 @@ pipeline {
             }
         }
           
-        stage("Build and deploy") {
-            when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
+        stage("Build Docker Image and Deploy") {
             steps {
                 dir("bdlist-backend/") {
                     sh 'sudo docker compose --env-file $ENV_VARS up --build -d'
@@ -59,12 +55,6 @@ pipeline {
             }
         }
         
-        stage ("Build Frontend") {
-            when { anyOf { changeset "bdlist-frontend/**/*"; changeset "Jenkinsfile"} }
-            steps {
-                sh 'echo hi'
-            }
-        }
     }
 
     post {
