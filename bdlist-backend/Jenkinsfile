@@ -12,50 +12,52 @@ pipeline {
         RT_SECRET = credentials('REFRESH_TOKEN_SECRET')
     }
 
-    stages {
-        stage("Install Dependencies") {
-            steps {
-                sh 'pnpm i'
+    ws('bdlist-backend/') {
+        stages {
+            stage("Install Dependencies") {
+                steps {
+                    sh 'pnpm i'
+                }
             }
-        }
-        stage("Jest Unit Test") {
-            steps {
-                sh 'pnpm startTestDb'
-                sh 'ACCESS_TOKEN_SECRET=$AT_SECRET REFRESH_TOKEN_SECRET=$RT_SECRET pnpm ci:test'
+            stage("Jest Unit Test") {
+                steps {
+                    sh 'pnpm startTestDb'
+                    sh 'ACCESS_TOKEN_SECRET=$AT_SECRET REFRESH_TOKEN_SECRET=$RT_SECRET pnpm ci:test'
+                }
+            }
+
+            stage("SonarQube Analysis") {
+                steps {
+                        script {
+                            def scannerHome = tool 'sonarqube';
+                                withSonarQubeEnv() {
+                                    sh "${scannerHome}/bin/sonar-scanner"
+                                }
+                        }
+                }
+            }
+
+            stage ("Transpile TypeScript to JavaScript") {
+                steps {
+                    sh 'pnpm build'
+                }
+            }
+            
+            stage("Build Docker Image and Deploy") {
+                steps {
+                    sh 'sudo docker compose --env-file $ENV_VARS up --build -d'
+                }
             }
         }
 
-        stage("SonarQube Analysis") {
-            steps {
-                    script {
-                        def scannerHome = tool 'sonarqube';
-                            withSonarQubeEnv() {
-                                sh "${scannerHome}/bin/sonar-scanner"
-                            }
-                    }
+        post {
+            always {
+                sh 'pnpm stopTestDb'
             }
-          }
-
-        stage ("Transpile TypeScript to JavaScript") {
-            steps {
-                sh 'pnpm build'
+            cleanup {
+                // remove old builds and volumes
+                sh 'docker system prune --volumes -f '
             }
-        }
-          
-        stage("Build Docker Image and Deploy") {
-            steps {
-                sh 'sudo docker compose --env-file $ENV_VARS up --build -d'
-            }
-        }
-    }
-
-    post {
-        always {
-            sh 'pnpm stopTestDb'
-        }
-        cleanup {
-            // remove old builds and volumes
-            sh 'docker system prune --volumes -f '
         }
     }
 }
