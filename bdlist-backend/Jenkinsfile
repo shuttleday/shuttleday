@@ -13,11 +13,6 @@ pipeline {
     }
 
         stages {
-            stage("Change Working Directory") {
-                steps {
-                    sh 'cd bdlist-backend/'
-                }
-            }
             stage("Install Dependencies") {
                 steps {
                     sh 'pnpm i'
