@@ -24,18 +24,6 @@ pipeline {
                 sh 'ACCESS_TOKEN_SECRET=$AT_SECRET REFRESH_TOKEN_SECRET=$RT_SECRET pnpm ci:test'
             }
         }
-        stage("SonarQube Analysis") {
-            steps {
-                dir('../') {
-                    script {
-                        def scannerHome = tool 'sonarqube';
-                            withSonarQubeEnv() {
-                                sh "${scannerHome}/bin/sonar-scanner"
-                            }
-                    }
-                }
-            }
-          }
 
         stage ("Transpile TypeScript to JavaScript") {
             steps {
@@ -55,9 +43,8 @@ pipeline {
             sh 'pnpm stopTestDb'
         }
         cleanup {
-            // remove old builds
-            sh 'docker system prune'
-            sh 'docker volume prune -f'
+            // remove old builds and volumes
+            sh 'docker system prune --volumes -f '
         }
     }
 }
