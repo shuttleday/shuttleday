@@ -50,7 +50,7 @@ pipeline {
         stage("Build Docker Image and Deploy") {
             steps {
                 dir("bdlist-backend/") {
-                    sh 'sudo docker compose --env-file $ENV_VARS up --build -d'
+                    sh 'docker compose --env-file $ENV_VARS up --build -d'
                 }
             }
         }
