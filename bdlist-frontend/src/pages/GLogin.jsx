@@ -1,6 +1,5 @@
 import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
-// import jwt_decode from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import Stack from '@mui/material/Stack';
@@ -10,10 +9,17 @@ import { googleSignIn } from '../data/repository';
 
 const GLogin = () => {
   let navigate = useNavigate();
-  function onResponse(response) {
-    console.log(response.credential);
-    sessionStorage.setItem('jwtToken_Login', 'Bearer ' + response.credential);
-    const res = googleSignIn();
+  async function onResponse(response) {
+    sessionStorage.setItem('jwtToken_Login', response.credential);
+    const res = await googleSignIn();
+    if (res === null) {
+      sessionStorage.setItem('jwtToken_Login', 'USER NOT FOUND');
+    } else {
+      sessionStorage.setItem('jwtToken_Login', res.accessToken);
+      console.log(res.refreshToken);
+      localStorage.setItem('refreshToken', res.refreshToken);
+    }
+
     navigate('/', {
       state: {
         googleToken: response.credential,

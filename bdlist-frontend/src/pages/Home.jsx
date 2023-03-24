@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import {
+  userCheck,
+  createAccount,
+  getSession,
+  joinSession,
+  removeFromSession,
+  uploadReceipt,
+  googleSignIn,
+} from '../data/repository';
+
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { Fragment } from 'react';
 import Stack from '@mui/material/Stack';
@@ -15,7 +23,6 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Toolbar from '@mui/material/Toolbar';
 import AppBar from '@mui/material/AppBar';
-import MoreIcon from '@mui/icons-material/MoreVert';
 import IconButton from '@mui/material/IconButton';
 import { Button } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
@@ -26,6 +33,8 @@ import Bank from '../img/BankQR.jpg';
 import Modal from '@mui/material/Modal';
 import Chip from '@mui/material/Chip';
 import ImageIcon from '@mui/icons-material/Image';
+import EditIcon from '@mui/icons-material/Edit';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 import { useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import SpeedDial from '@mui/material/SpeedDial';
@@ -35,8 +44,22 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import InfoIcon from '@mui/icons-material/Info';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import jwt_decode from 'jwt-decode';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import dayjs from 'dayjs';
+
+import { useLocation } from 'react-router-dom';
 
 const Home = () => {
+  const ERROR = 'error';
+  const SUCCESS = 'success';
+  const WARNING = 'warning';
+  const location = useLocation();
+  let navigate = useNavigate();
+
   const actions = [
     {
       icon: <ManageAccountsIcon />,
@@ -45,15 +68,27 @@ const Home = () => {
     },
     { icon: <ReceiptIcon />, name: 'Payment History', operation: 'payment' },
     { icon: <InfoIcon />, name: 'User Details', operation: 'details' },
+    { icon: <AddBoxIcon />, name: 'Create Session', operation: 'create' },
+    { icon: <EditIcon />, name: 'Edit Session', operation: 'edit' },
   ];
 
   function handleSpeedDial(operation) {
     if (operation === 'payment') {
-      console.log('payments');
+      navigate('/receipt');
     } else if (operation === 'details') {
       navigate('/details');
     } else if (operation === 'management') {
-      navigate('/management');
+      setCondition(ERROR);
+      setAlertMsg('Not avaliable');
+      setOpen(true);
+    } else if (operation === 'create') {
+      navigate('/create');
+    } else if (operation === 'edit') {
+      navigate('/edit', {
+        state: {
+          sessionInfo: sessionInfo,
+        },
+      });
     }
   }
 
@@ -70,20 +105,21 @@ const Home = () => {
     p: 4,
   };
 
-  let navigate = useNavigate();
+  const [sessionInfo, setSessionInfo] = useState(null);
+  const [selected, setSelected] = useState(0);
+  const [playerStat, setPlayerStat] = useState(true);
 
-  const amount = 'This session is $4.50 Per person';
+  //Control logic for tabs----------------------------------------------------------
+  const [activeTab, setActiveTab] = useState('1');
+  const [open, setOpen] = useState(false);
+  //--------------------------------------------------------------------------------
 
-  //Control logic for Modal
+  //Control logic for Modal---------------------------------------------------------
   const [openModalImage, setOpenModalImage] = useState(false);
   const handleOpenModalImage = () => setOpenModalImage(true);
   const handleCloseModalImage = () => setOpenModalImage(false);
 
-  //Control logic for tabs
-  const [activeTab, setActiveTab] = useState('1');
-  const [open, setOpen] = useState(false);
-
-  //Control logic for Images
+  //Control logic for Images--------------------------------------------------------
   const [image, setImage] = useState(null);
   const [buttonOn, setButtonON] = useState(true);
 
@@ -92,15 +128,76 @@ const Home = () => {
     setButtonON(false);
     setImage(e.target.files[0]);
   };
-
-  // const onUpload = () => {};
+  const onUpload = async () => {
+    const res = await uploadReceipt(image, sessionInfo[selected]._id);
+    if (res) {
+      setCondition(SUCCESS);
+      setAlertMsg('Receipt uploaded!');
+      setOpen(true);
+      handleCloseModalImage();
+    } else {
+      setCondition(ERROR);
+      setAlertMsg('You have uploaded your receipt.');
+      setOpen(true);
+    }
+  };
+  //--------------------------------------------------------------------------------
 
   useEffect(() => {
     if (sessionStorage.getItem('jwtToken_Login') === null) {
       navigate('/GLogin');
-    }
+    } else if (sessionStorage.getItem('jwtToken_Login') === 'USER NOT FOUND') {
+      console.log('here');
+      const googleToken = jwt_decode(location.state.googleToken);
+      sessionStorage.setItem('jwtToken_Login', location.state.googleToken);
+      setUsername(googleToken.name);
+      handleOpen();
+    } else {
+      // console.log(location.state.googleToken);
+      const user = jwt_decode(sessionStorage.getItem('jwtToken_Login'));
+      console.log(user);
+      console.log(sessionStorage.getItem('jwtToken_Login'));
 
-    // const token = verifyUser();
+      async function getSessionData() {
+        getSession().then((res) => {
+          console.log(res.gameSessions[0]._id);
+          if (res.gameSessions !== null) {
+            setSessionInfo(res.gameSessions);
+            setSelected(0);
+          }
+          if (
+            res.gameSessions[selected].players.find(
+              (item) => item.userEmail === user.email
+            )
+          ) {
+            setPlayerStat(false);
+          } else {
+            setPlayerStat(true);
+          }
+        });
+      }
+
+      userCheck(user.email).then((user) => {
+        if (user.data === 'Refresh') {
+          setCondition(WARNING);
+          setAlertMsg('Refresh your page plz');
+          setOpen(true);
+        }
+
+        // if (!user) {
+        //   const googleToken = jwt_decode(location.state.googleToken);
+        //   sessionStorage.setItem('jwtToken_Login', location.state.googleToken);
+        //   setUsername(googleToken.name);
+        //   handleOpen();
+        // }
+
+        if (user.data.userType === 'admin') {
+          setRender(true);
+        }
+      });
+
+      getSessionData();
+    }
     // eslint-disable-next-line
   }, []);
 
@@ -108,20 +205,91 @@ const Home = () => {
     return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
   });
 
+  const [alertMsg, setAlertMsg] = useState('');
+
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);
   };
 
-  const onJoin = () => {
-    setOpen(true);
+  const onJoin = async () => {
+    const newPlayerList = await joinSession(sessionInfo[selected]._id);
+    console.log(newPlayerList);
+    if (newPlayerList) {
+      let oldData = sessionInfo;
+      oldData[selected].players = newPlayerList;
+
+      setSessionInfo(oldData);
+      setCondition(SUCCESS);
+      setAlertMsg('Joined successfully!');
+      setOpen(true);
+      setPlayerStat(false);
+    } else {
+      setCondition(ERROR);
+      setAlertMsg('Something went wrong..');
+      setOpen(true);
+    }
+    console.log(sessionInfo);
+  };
+  const onRemove = async () => {
+    const newPlayerList = await removeFromSession(sessionInfo[selected]._id);
+    console.log(newPlayerList);
+    if (newPlayerList) {
+      let oldData = sessionInfo;
+      oldData[selected].players = newPlayerList;
+      setSessionInfo(oldData);
+      setCondition(SUCCESS);
+      setAlertMsg('Removed successfully!');
+      setOpen(true);
+      setPlayerStat(true);
+    } else {
+      console.log('here');
+      setCondition(ERROR);
+      setAlertMsg('Something went wrong... Try refreshing the');
+      setOpen(true);
+    }
   };
   const handleClose = () => {
     setOpen(false);
   };
 
+  //Modal for username -----------------------------------------------------------------------
   const [openModal, setOpenModal] = useState(false);
+  const [username, setUsername] = useState('');
+
   const handleOpen = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
+  const onChange = (event) => {
+    setUsername(event.target.value);
+  };
+
+  const handleSubmit = async () => {
+    sessionStorage.setItem('jwtToken_Login', location.state.googleToken);
+    const res = await createAccount(username);
+    if (res === ERROR) {
+      setCondition(ERROR);
+      setAlertMsg('Username has been taken!');
+      setOpen(true);
+      return;
+    } else {
+      setCondition(SUCCESS);
+      setAlertMsg('Your account has been created.');
+      handleCloseModal();
+    }
+
+    const tokens = await googleSignIn();
+    if (tokens !== null) {
+      sessionStorage.setItem('jwtToken_Login', tokens.accessToken);
+      localStorage.setItem('refreshToken', tokens.refreshToken);
+      window.location.reload();
+    }
+  };
+  // -----------------------------------------------------------------------------------------
+
+  // For rendering buttons only admins can access --------------------------------------------
+  const [render, setRender] = useState(false);
+
+  //For setting alert condition---------------------------------------------------------------
+  const [condition, setCondition] = useState(SUCCESS);
 
   const style = {
     position: 'absolute',
@@ -135,6 +303,19 @@ const Home = () => {
     p: 4,
   };
 
+  const handleSelect = (event) => {
+    setSelected(event.target.value);
+    const user = jwt_decode(sessionStorage.getItem('jwtToken_Login'));
+    if (
+      sessionInfo[event.target.value].players.find(
+        (item) => item.userEmail === user.email
+      )
+    ) {
+      setPlayerStat(false);
+    } else {
+      setPlayerStat(true);
+    }
+  };
   return (
     <div>
       <Stack
@@ -186,16 +367,19 @@ const Home = () => {
                   />
                   <ImageIcon />
                 </IconButton>
-                <Button variant='contained' color='success' disabled={buttonOn}>
-                  Success
+                <Button
+                  variant='contained'
+                  color={SUCCESS}
+                  disabled={buttonOn}
+                  onClick={onUpload}
+                >
+                  Upload
                 </Button>
               </Stack>
             </Box>
           </Modal>
-          <Button onClick={handleOpen}>Open modal</Button>
           <Modal
             open={openModal}
-            onClose={handleCloseModal}
             aria-labelledby='modal-modal-title'
             aria-describedby='modal-modal-description'
           >
@@ -209,12 +393,18 @@ const Home = () => {
                   label='Name'
                   id='fullWidth'
                   color='secondary'
-                  defaultValue='somethjing'
+                  defaultValue={username}
+                  onChange={onChange}
                 />
               </Typography>
               <br />
               <Box textAlign='center'>
-                <Button variant='contained' color='success' maxwidth='100%'>
+                <Button
+                  variant='contained'
+                  color={SUCCESS}
+                  maxwidth='100%'
+                  onClick={handleSubmit}
+                >
                   Enter
                 </Button>
               </Box>
@@ -248,28 +438,38 @@ const Home = () => {
                     }}
                   >
                     <Toolbar>
-                      <Typography
-                        variant='h7'
-                        component='div'
-                        sx={{ flexGrow: 1 }}
+                      <FormControl
+                        sx={{ m: 1, minWidth: { xs: 150, sm: 180, md: 200 } }}
                       >
-                        10 Feb (Sat)
-                      </Typography>
-                      <IconButton
-                        size='large'
-                        edge='start'
-                        color='inherit'
-                        aria-label='menu'
-                      >
-                        <MoreIcon />
-                      </IconButton>
+                        <InputLabel id='demo-simple-select-helper-label'>
+                          Sessions
+                        </InputLabel>
+                        <Select
+                          id='demo-simple-select-helper'
+                          value={selected}
+                          label='Sessions'
+                          color='primary'
+                          onChange={handleSelect}
+                        >
+                          {sessionInfo === null ? (
+                            <MenuItem value={0}>N/A</MenuItem>
+                          ) : (
+                            sessionInfo.map((date, index) => (
+                              <MenuItem key={index} value={index}>
+                                {dayjs(date.end).format('DD/MM/YYYY ddd')}
+                              </MenuItem>
+                            ))
+                          )}
+                        </Select>
+                      </FormControl>
                     </Toolbar>
                   </AppBar>
                 </Box>
                 <List
                   sx={{
-                    width: { xm: 300, sm: 452, lg: 452 },
+                    width: { xs: 300, sm: 452, lg: 452 },
                     maxwidth: 660,
+                    minHeight: 300,
                     bgcolor: 'background.paper',
                     maxHeight: 400,
                     overflow: 'auto',
@@ -277,320 +477,73 @@ const Home = () => {
                   alignItems='center'
                   justifycontent='center'
                 >
-                  <ListItem alignitems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Remy Sharp'
-                        src='/static/images/avatar/1.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Mikel Lu'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            Ali Connors
-                          </Typography>
-                          {
-                            " — I'll be in your neighborhood doing errands this…"
-                          }
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <Divider variant='inset' component='li' />
-                  <ListItem alignitems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Travis Howard'
-                        src='/static/images/avatar/2.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Summer BBQ'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            to Scott, Alex, Jennifer
-                          </Typography>
-                          {" — Wish I could come, but I'm out of town this…"}
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <Divider variant='inset' component='li' />
-                  <ListItem alignitems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Cindy Baker'
-                        src='/static/images/avatar/3.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Oui Oui'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            Sandra Adams
-                          </Typography>
-                          {
-                            ' — Do you have Paris recommendations? Have you ever…'
-                          }
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <ListItem alignitems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Cindy Baker'
-                        src='/static/images/avatar/3.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Oui Oui'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            Sandra Adams
-                          </Typography>
-                          {
-                            ' — Do you have Paris recommendations? Have you ever…'
-                          }
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <ListItem alignItems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Cindy Baker'
-                        src='/static/images/avatar/3.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Oui Oui'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            Sandra Adams
-                          </Typography>
-                          {
-                            ' — Do you have Paris recommendations? Have you ever…'
-                          }
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <ListItem alignItems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Cindy Baker'
-                        src='/static/images/avatar/3.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Oui Oui'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            Sandra Adams
-                          </Typography>
-                          {
-                            ' — Do you have Paris recommendations? Have you ever…'
-                          }
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <ListItem alignItems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Cindy Baker'
-                        src='/static/images/avatar/3.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Oui Oui'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            Sandra Adams
-                          </Typography>
-                          {
-                            ' — Do you have Paris recommendations? Have you ever…'
-                          }
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <ListItem alignItems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Cindy Baker'
-                        src='/static/images/avatar/3.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Oui Oui'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            Sandra Adams
-                          </Typography>
-                          {
-                            ' — Do you have Paris recommendations? Have you ever…'
-                          }
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <ListItem alignItems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Cindy Baker'
-                        src='/static/images/avatar/3.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Oui Oui'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            Sandra Adams
-                          </Typography>
-                          {
-                            ' — Do you have Paris recommendations? Have you ever…'
-                          }
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <ListItem alignItems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Cindy Baker'
-                        src='/static/images/avatar/3.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Oui Oui'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            Sandra Adams
-                          </Typography>
-                          {
-                            ' — Do you have Paris recommendations? Have you ever…'
-                          }
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <ListItem alignItems='flex-start'>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt='Cindy Baker'
-                        src='/static/images/avatar/3.jpg'
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary='Oui Oui'
-                      secondary={
-                        <Fragment>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component='span'
-                            variant='body2'
-                            color='text.primary'
-                          >
-                            Sandra Adams
-                          </Typography>
-                          {
-                            ' — Do you have Paris recommendations? Have you ever…'
-                          }
-                        </Fragment>
-                      }
-                    />
-                  </ListItem>
+                  {sessionInfo !== null &&
+                    (sessionInfo[selected].players.length === 0 ? (
+                      <Box textAlign='center' mr={2}>
+                        <Typography
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                          }}
+                          component='span'
+                          variant='h6'
+                          color='text.primary'
+                        >
+                          No player present yet
+                        </Typography>
+                      </Box>
+                    ) : (
+                      sessionInfo[selected].players.map((player) => (
+                        <div key={player.username}>
+                          <ListItem alignitems='center'>
+                            <ListItemText
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                size: 30,
+                              }}
+                              primary={
+                                <Fragment>
+                                  <Typography
+                                    sx={{ display: 'inline' }}
+                                    component='span'
+                                    variant='h5'
+                                    color='text.primary'
+                                  >
+                                    {player.username}
+                                  </Typography>
+                                </Fragment>
+                              }
+                            />
+                          </ListItem>
+                          <Divider variant='middle' />
+                        </div>
+                      ))
+                    ))}
                 </List>
                 <br />
-                <Button
-                  variant='contained'
-                  color='success'
-                  size='large'
-                  onClick={onJoin}
-                >
-                  Join
-                </Button>
+                {playerStat ? (
+                  <Button
+                    variant='contained'
+                    color={SUCCESS}
+                    size='large'
+                    onClick={onJoin}
+                  >
+                    Join
+                  </Button>
+                ) : (
+                  <Button
+                    variant='contained'
+                    color={ERROR}
+                    size='large'
+                    onClick={onRemove}
+                  >
+                    Remove
+                  </Button>
+                )}
               </Stack>
-              <Snackbar
-                open={open}
-                autoHideDuration={2000}
-                onClose={handleClose}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-              >
-                <Alert
-                  onClose={handleClose}
-                  severity='success'
-                  sx={{ width: '100%' }}
-                >
-                  Joined successfully!
-                </Alert>
-              </Snackbar>
             </TabPanel>
             {/* ---------------------------------------------------------------------------------------------------------------------------- */}
-
             <TabPanel value='2'>
               <Stack
                 spacing={2}
@@ -606,7 +559,40 @@ const Home = () => {
                 >
                   <CardMedia component='img' image={Bank} alt='Paella dish' />
                 </Card>
-                <Chip label={amount} color='success' variant='outlined' />
+                <FormControl
+                  sx={{ m: 1, minWidth: { xs: 150, sm: 180, md: 200 } }}
+                >
+                  <InputLabel id='demo-simple-select-helper-label'>
+                    Sessions
+                  </InputLabel>
+                  <Select
+                    id='Session-payment'
+                    value={selected}
+                    label='Sessions'
+                    color='primary'
+                    onChange={handleSelect}
+                  >
+                    {sessionInfo === null ? (
+                      <MenuItem value={0}>N/A</MenuItem>
+                    ) : (
+                      sessionInfo.map((date, index) => (
+                        <MenuItem key={index} value={index}>
+                          {dayjs(date.end).format('DD/MM/YYYY ddd')}
+                        </MenuItem>
+                      ))
+                    )}
+                  </Select>
+                </FormControl>
+
+                <Chip
+                  label={
+                    sessionInfo !== null
+                      ? '$' + sessionInfo[selected].cost + ' Per person.'
+                      : 'Not Avaliable'
+                  }
+                  color='success'
+                  variant='outlined'
+                />
                 <Button
                   variant='contained'
                   color='success'
@@ -619,8 +605,22 @@ const Home = () => {
             </TabPanel>
           </TabContext>
         </Box>
+        <Snackbar
+          open={open}
+          autoHideDuration={2000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert
+            onClose={handleClose}
+            severity={condition}
+            sx={{ width: '100%' }}
+          >
+            {alertMsg}
+          </Alert>
+        </Snackbar>
       </Stack>
-      {
+      {render && (
         <Box
           sx={{
             transform: 'translateZ(0px)',
@@ -640,7 +640,6 @@ const Home = () => {
               <SpeedDialAction
                 key={action.name}
                 onClick={(e) => {
-                  console.log(action.operation);
                   handleSpeedDial(action.operation);
                 }}
                 icon={action.icon}
@@ -649,7 +648,7 @@ const Home = () => {
             ))}
           </SpeedDial>
         </Box>
-      }
+      )}
     </div>
   );
 };

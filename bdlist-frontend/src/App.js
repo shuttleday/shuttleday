@@ -4,11 +4,13 @@ import Home from './pages/Home';
 import GLogin from './pages/GLogin';
 import NotFound from './pages/NotFound';
 import Details from './pages/Details';
-import PaymentHistory from './pages/PaymentHistory';
+import SessionCreate from './pages/SessionCreate';
 import { createContext, useMemo, useState } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Header from './components/header';
 import { CssBaseline } from '@mui/material';
+import Edit from './pages/Edit';
+import ReceiptProof from './pages/ReceiptProof';
 // import Authentication from './pages/authentication';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
@@ -39,7 +41,7 @@ function App() {
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <div justifyContent='center' alignItems='center'>
+          <div justify='center'>
             <Header />
             <>
               <Routes>
@@ -48,8 +50,10 @@ function App() {
                 {/* <Route path='/auth' element={<Authentication />} /> */}
                 <Route path='/Glogin' element={<GLogin />} />
                 <Route path='*' element={<NotFound />} />
-                <Route path='payment' element={<PaymentHistory />} />
                 <Route path='/details' element={<Details />} />
+                <Route path='/create' element={<SessionCreate />} />
+                <Route path='/edit' element={<Edit />} />
+                <Route path='/receipt' element={<ReceiptProof />} />
               </Routes>
             </>
           </div>
