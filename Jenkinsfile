@@ -14,6 +14,7 @@ pipeline {
 
     stages {
         stage("Install Dependencies") {
+            when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
             steps {
                 dir("bdlist-backend/") {
                     sh 'pnpm i'
@@ -21,6 +22,7 @@ pipeline {
             }
         }
         stage("Jest Unit Test") {
+            when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
             steps {
                 dir("bdlist-backend/") {
                     sh 'pnpm startTestDb'
@@ -29,6 +31,7 @@ pipeline {
             }
         }
         stage("SonarQube Analysis") {
+            when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
             steps {
                 script {
                     def scannerHome = tool 'sonarqube';
@@ -40,6 +43,7 @@ pipeline {
           }
 
         stage ("Transpile TypeScript to JavaScript") {
+            when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
             steps {
                 dir("bdlist-backend/") {
                     sh 'pnpm build'
@@ -48,6 +52,7 @@ pipeline {
         }
           
         stage("Build Docker Image and Deploy") {
+            when { anyOf { changeset "bdlist-backend/**/*"; changeset "Jenkinsfile"} }
             steps {
                 dir("bdlist-backend/") {
                     sh 'docker compose --env-file $ENV_VARS up --build -d'

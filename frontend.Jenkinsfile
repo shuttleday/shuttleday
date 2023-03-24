@@ -13,6 +13,7 @@ pipeline {
 
     stages {
         stage("Install Dependencies") {
+            when { anyOf { changeset "bdlist-frontend/**/*"; changeset "Jenkinsfile"} }
             steps {
                 dir("bdlist-frontend/") {
                     sh 'npm i'
@@ -20,6 +21,7 @@ pipeline {
             }
         }
         stage("Build Static Site") {
+            when { anyOf { changeset "bdlist-frontend/**/*"; changeset "Jenkinsfile"} }
             steps {
                 dir("bdlist-frontend/") {
                     sh 'REACT_APP_CLIENT_ID=$CLIENT_ID REACT_APP_API_LINK=$API_URL  npm run build'
@@ -27,6 +29,7 @@ pipeline {
             }
         }
         stage("Deploy to S3 Bucket") {
+            when { anyOf { changeset "bdlist-frontend/**/*"; changeset "Jenkinsfile"} }
             steps {
                 dir("bdlist-frontend/") {
                     sh 'aws s3 cp build s3://shuttleday.info --recursive'
