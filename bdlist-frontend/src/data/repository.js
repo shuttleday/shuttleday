@@ -184,7 +184,7 @@ async function getReceipts(ids) {
 
 //Intercepts all request to the server and attaches the token to the header
 axios.interceptors.request.use(function (config) {
-  const token = sessionStorage.getItem('jwtToken_Login');
+  const token = localStorage.getItem('jwtToken_Login');
   config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
@@ -204,7 +204,7 @@ axios.interceptors.response.use(
           process.env.REACT_APP_API_LINK + '/auth/refreshToken',
           refreshToken
         );
-        sessionStorage.setItem('jwtToken_Login', newToken.data.accessToken);
+        localStorage.setItem('jwtToken_Login', newToken.data.accessToken);
 
         const response = {
           data: 'Refresh',

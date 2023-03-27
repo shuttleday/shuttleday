@@ -10,12 +10,12 @@ import { googleSignIn } from '../data/repository';
 const GLogin = () => {
   let navigate = useNavigate();
   async function onResponse(response) {
-    sessionStorage.setItem('jwtToken_Login', response.credential);
+    localStorage.setItem('jwtToken_Login', response.credential);
     const res = await googleSignIn();
     if (res === null) {
-      sessionStorage.setItem('jwtToken_Login', 'USER NOT FOUND');
+      localStorage.setItem('jwtToken_Login', 'USER NOT FOUND');
     } else {
-      sessionStorage.setItem('jwtToken_Login', res.accessToken);
+      localStorage.setItem('jwtToken_Login', res.accessToken);
       console.log(res.refreshToken);
       localStorage.setItem('refreshToken', res.refreshToken);
     }

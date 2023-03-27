@@ -144,19 +144,19 @@ const Home = () => {
   //--------------------------------------------------------------------------------
 
   useEffect(() => {
-    if (sessionStorage.getItem('jwtToken_Login') === null) {
+    if (localStorage.getItem('jwtToken_Login') === null) {
       navigate('/GLogin');
-    } else if (sessionStorage.getItem('jwtToken_Login') === 'USER NOT FOUND') {
+    } else if (localStorage.getItem('jwtToken_Login') === 'USER NOT FOUND') {
       console.log('here');
       const googleToken = jwt_decode(location.state.googleToken);
-      sessionStorage.setItem('jwtToken_Login', location.state.googleToken);
+      localStorage.setItem('jwtToken_Login', location.state.googleToken);
       setUsername(googleToken.name);
       handleOpen();
     } else {
       // console.log(location.state.googleToken);
-      const user = jwt_decode(sessionStorage.getItem('jwtToken_Login'));
+      const user = jwt_decode(localStorage.getItem('jwtToken_Login'));
       console.log(user);
-      console.log(sessionStorage.getItem('jwtToken_Login'));
+      console.log(localStorage.getItem('jwtToken_Login'));
 
       async function getSessionData() {
         getSession().then((res) => {
@@ -256,7 +256,7 @@ const Home = () => {
   };
 
   const handleSubmit = async () => {
-    sessionStorage.setItem('jwtToken_Login', location.state.googleToken);
+    localStorage.setItem('jwtToken_Login', location.state.googleToken);
     const res = await createAccount(username);
     if (res === ERROR) {
       setCondition(ERROR);
@@ -271,7 +271,7 @@ const Home = () => {
 
     const tokens = await googleSignIn();
     if (tokens !== null) {
-      sessionStorage.setItem('jwtToken_Login', tokens.accessToken);
+      localStorage.setItem('jwtToken_Login', tokens.accessToken);
       localStorage.setItem('refreshToken', tokens.refreshToken);
       window.location.reload();
     }
@@ -298,7 +298,7 @@ const Home = () => {
 
   const handleSelect = (event) => {
     setSelected(event.target.value);
-    const user = jwt_decode(sessionStorage.getItem('jwtToken_Login'));
+    const user = jwt_decode(localStorage.getItem('jwtToken_Login'));
     if (
       sessionInfo[event.target.value].players.find(
         (item) => item.userEmail === user.email
