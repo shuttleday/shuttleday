@@ -28,16 +28,6 @@ pipeline {
                 }
             }
         }
-        stage("SonarQube Analysis") {
-            steps {
-                script {
-                    def scannerHome = tool 'sonarqube';
-                    withSonarQubeEnv() {
-                        sh "${scannerHome}/bin/sonar-scanner"
-                    }
-                }
-            }
-          }
 
         stage ("Transpile TypeScript to JavaScript") {
             steps {
