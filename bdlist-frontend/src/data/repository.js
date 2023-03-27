@@ -178,6 +178,7 @@ async function getReceipts(ids) {
     return list;
   } catch (error) {
     console.log(error);
+    return [];
   }
 }
 

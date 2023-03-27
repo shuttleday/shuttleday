@@ -24,7 +24,7 @@ const Edit = () => {
   useEffect(() => {
     async function getData() {
       getSession().then((res) => {
-        console.log(res.gameSessions[0]._id);
+        console.log(res.gameSessions);
         if (res.gameSessions !== null) {
           setSessionInfo(res.gameSessions);
           setSelected(0);
