@@ -8,12 +8,14 @@ import Select from '@mui/material/Select';
 import dayjs from 'dayjs';
 import TextField from '@mui/material/TextField';
 import Snackbar from '@mui/material/Snackbar';
+import Error from '../components/error';
 import MuiAlert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
 import SpeedDialComponent from '../components/SpeedDialComponent';
 import { Button } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { Typography } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import { editSession, getSession } from '../data/repository';
@@ -23,20 +25,31 @@ const Edit = () => {
 
   useEffect(() => {
     async function getData() {
+      setIsLoading(true);
       getSession().then((res) => {
-        console.log(res.gameSessions);
-        if (res.gameSessions !== null) {
+        if (res.gameSessions !== null && res.gameSessions.length > 0) {
           setSessionInfo(res.gameSessions);
-          setSelected(0);
+          setValue(dayjs(res.gameSessions[selected].start));
+          setCourts(res.gameSessions[selected].courts.join(','));
+          setCost(res.gameSessions[selected].cost);
+          setDuration(
+            dayjs(res.gameSessions[selected].end).diff(
+              dayjs(res.gameSessions[selected].start),
+              'hour'
+            )
+          );
         }
       });
+      setIsLoading(false);
     }
 
-    if (sessionInfo === null) {
-      getData();
-    }
+    getData();
+
+    setIsLoading(false);
     // eslint-disable-next-line
   }, []);
+
+  const [isLoading, setIsLoading] = useState(false);
   const [sessionInfo, setSessionInfo] = useState(location.state.sessionInfo);
   const [selected, setSelected] = useState(0);
 
@@ -49,16 +62,18 @@ const Edit = () => {
     setOpen(false);
   };
 
-  const [condition, setCondition] = useState('success');
   const RE = /^\d+(,\d+)*$/; //Format for input e.g. 1,2,3,4
-  const [value, setValue] = useState(
-    dayjs(location.state.sessionInfo[selected].end)
-  );
-  const [courts, setCourts] = useState(
-    location.state.sessionInfo[selected].courts.join(',')
-  );
 
-  const [cost, setCost] = useState(location.state.sessionInfo[selected].cost);
+  //Default values obtained from the given session infomation
+  const [condition, setCondition] = useState('success');
+  const [value, setValue] = useState(null);
+  const [courts, setCourts] = useState(null);
+  const [cost, setCost] = useState(null);
+  const [duration, setDuration] = useState(null);
+
+  const onChangeDuration = (event) => {
+    setDuration(event.target.value);
+  };
 
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
@@ -66,7 +81,6 @@ const Edit = () => {
 
   const onChange = (event) => {
     setCourts(event.target.value);
-    console.log(courts);
   };
 
   const onCost = (event) => {
@@ -81,10 +95,9 @@ const Edit = () => {
     }
 
     const courtList = courts.split(',').map(String);
-
     const sessionData = {
-      start: dayjs().toISOString(),
-      end: dayjs(value).toISOString(),
+      start: dayjs(value).toISOString(),
+      end: dayjs(value).add(duration, 'hour').toISOString(),
       courts: courtList,
       cost: parseInt(cost),
       payTo: sessionInfo[selected].payTo,
@@ -105,88 +118,117 @@ const Edit = () => {
   };
   return (
     <div>
-      <Stack spacing={6} display='flex' justify='center' alignItems='center'>
-        <Box>
-          <Typography variant='h6' align='left' sx={{ mb: 1 }}>
-            Edit Session
-          </Typography>
-        </Box>
-        <Box>
-          <FormControl sx={{ m: 1, minWidth: { xs: 150, sm: 180, md: 200 } }}>
-            <InputLabel id='demo-simple-select-helper-label'>
-              Sessions
-            </InputLabel>
-            <Select
-              id='Session-payment'
-              value={selected}
-              label='Sessions'
-              color='primary'
-              onChange={handleSelect}
-            >
-              {sessionInfo === null ? (
-                <MenuItem value={0}>N/A</MenuItem>
-              ) : (
-                sessionInfo.map((date, index) => (
-                  <MenuItem key={index} value={index}>
-                    {dayjs(date.end).format('DD/MM/YYYY ddd')}
-                  </MenuItem>
-                ))
-              )}
-            </Select>
-          </FormControl>
-        </Box>
-        <Box>
-          <Typography variant='h6' align='left' sx={{ mb: 1 }}>
-            New date
-          </Typography>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <MobileDatePicker
-              label='Session date'
-              value={value}
-              onChange={(newValue) => {
-                setValue(newValue);
-              }}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
-        </Box>
-        <Box>
-          <Typography variant='h6' align='left' sx={{ mb: 1 }}>
-            Court number
-          </Typography>
-          <TextField
-            id='text'
-            label='Courts'
-            defaultValue={courts}
-            helperText='Seperate the numbers with a comma'
-            variant='standard'
-            onChange={onChange}
-          />
-        </Box>
-
-        <Box>
-          <Typography variant='h6' align='left' sx={{ mb: 1 }}>
-            Price per player
-          </Typography>
-          <TextField
-            id='text-price'
-            label='Price'
-            defaultValue={cost}
-            helperText='Optional, can be added later in edit'
-            variant='standard'
-            onChange={onCost}
-          />
-        </Box>
-
-        <Button
-          variant='contained'
-          color='success'
-          size='large'
-          onClick={onConfirm}
+      {isLoading ? (
+        <Stack
+          spacing={2}
+          display='flex'
+          justifyContent='center'
+          alignItems='center'
         >
-          Confirm
-        </Button>
-      </Stack>
+          <CircularProgress color='success' />
+        </Stack>
+      ) : sessionInfo === null || sessionInfo.length < 0 ? (
+        <Error
+          title={'No data found...'}
+          subTitle={'Go make a new sessions before trying to edit one kay..?'}
+        />
+      ) : (
+        <Stack spacing={6} display='flex' justify='center' alignItems='center'>
+          <Box>
+            <Typography variant='h6' align='left' sx={{ mb: 1 }}>
+              Edit Session
+            </Typography>
+          </Box>
+          <Box>
+            <FormControl sx={{ m: 1, minWidth: { xs: 150, sm: 180, md: 200 } }}>
+              <InputLabel id='demo-simple-select-helper-label'>
+                Sessions
+              </InputLabel>
+              <Select
+                id='Session-payment'
+                value={selected}
+                label='Sessions'
+                color='primary'
+                onChange={handleSelect}
+              >
+                {sessionInfo === null ? (
+                  <MenuItem value={0}>N/A</MenuItem>
+                ) : (
+                  sessionInfo.map((date, index) => (
+                    <MenuItem key={index} value={index}>
+                      {dayjs(date.end).format('DD/MM/YYYY ddd')}
+                    </MenuItem>
+                  ))
+                )}
+              </Select>
+            </FormControl>
+          </Box>
+          <Box>
+            <Typography variant='h6' align='left' sx={{ mb: 1 }}>
+              New date
+            </Typography>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <MobileDateTimePicker
+                sx={{ width: 250 }}
+                value={value}
+                label='Date'
+                onChange={(newValue) => {
+                  setValue(newValue);
+                }}
+              />
+            </LocalizationProvider>
+          </Box>
+          <Box>
+            <Typography variant='h6' align='left' sx={{ mb: 1 }}>
+              Session duration
+            </Typography>
+            <TextField
+              style={{ width: 250 }}
+              helperText='Duration of this session'
+              id='duration'
+              value={duration}
+              variant='standard'
+              onChange={onChangeDuration}
+            />
+          </Box>
+          <Box>
+            <Typography variant='h6' align='left' sx={{ mb: 1 }}>
+              Court number
+            </Typography>
+            <TextField
+              style={{ width: 250 }}
+              id='text'
+              value={courts}
+              helperText='Seperate the numbers with a comma'
+              variant='standard'
+              onChange={onChange}
+            />
+          </Box>
+
+          <Box>
+            <Typography variant='h6' align='left' sx={{ mb: 1 }}>
+              Price per player
+            </Typography>
+            <TextField
+              style={{ width: 250 }}
+              id='text-price'
+              value={cost}
+              helperText='Optional, can be added later in edit'
+              variant='standard'
+              onChange={onCost}
+            />
+          </Box>
+
+          <Button
+            variant='contained'
+            color='success'
+            size='large'
+            onClick={onConfirm}
+          >
+            Confirm
+          </Button>
+        </Stack>
+      )}
 
       <SpeedDialComponent />
       <Snackbar

@@ -37,7 +37,6 @@ const SessionCreate = () => {
   };
   const onChangeDuration = (event) => {
     setDuration(event.target.value);
-    console.log(value);
   };
   const onCost = (event) => {
     setCost(event.target.value);
