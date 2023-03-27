@@ -184,13 +184,6 @@ const Home = () => {
           setOpen(true);
         }
 
-        // if (!user) {
-        //   const googleToken = jwt_decode(location.state.googleToken);
-        //   sessionStorage.setItem('jwtToken_Login', location.state.googleToken);
-        //   setUsername(googleToken.name);
-        //   handleOpen();
-        // }
-
         if (user.data.userType === 'admin') {
           setRender(true);
         }

@@ -24,7 +24,7 @@ const SessionCreate = () => {
 
   const RE = /^\d+(,\d+)*$/; //Format for input e.g. 1,2,3,4
   const [value, setValue] = useState(dayjs());
-  const [courts, setCourts] = useState(null);
+  const [courts, setCourts] = useState('0');
 
   const [cost, setCost] = useState(0);
 
@@ -52,12 +52,13 @@ const SessionCreate = () => {
     const courtList = courts.split(',').map(String);
 
     const sessionData = {
-      start: dayjs().toISOString(),
+      start: dayjs().subtract(1, 'day').toISOString(),
       end: dayjs(value).toISOString(),
       courts: courtList,
       cost: parseInt(cost),
     };
 
+    console.log(sessionData);
     const response = await createSession(sessionData);
 
     if (response) {
