@@ -19,10 +19,10 @@ const Details = () => {
   const [users, setUsers] = useState(null);
 
   useEffect(() => {
-    if (sessionStorage.getItem('jwtToken_Login') === null) {
+    if (localStorage.getItem('jwtToken_Login') === null) {
       navigate('/GLogin');
     }
-    const user = jwt_decode(sessionStorage.getItem('jwtToken_Login'));
+    const user = jwt_decode(localStorage.getItem('jwtToken_Login'));
     if (user.userType !== 'admin') {
       navigate('/NotFound-404');
     }

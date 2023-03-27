@@ -95,7 +95,7 @@ const SessionCreate = () => {
             <MobileDateTimePicker
               sx={{ width: 250 }}
               defaultValue={value}
-              label='Controlled picker'
+              label='Select Date'
               onChange={(newValue) => {
                 setValue(newValue);
               }}
@@ -108,7 +108,7 @@ const SessionCreate = () => {
           </Typography>
           <TextField
             style={{ width: 250 }}
-            helperText='Duration of this session'
+            helperText='Duration of this session in hours'
             id='duration'
             label='Duration'
             defaultValue='0'

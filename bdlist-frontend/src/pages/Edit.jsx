@@ -184,7 +184,7 @@ const Edit = () => {
             </Typography>
             <TextField
               style={{ width: 250 }}
-              helperText='Duration of this session'
+              helperText='Duration of this session in hours'
               id='duration'
               value={duration}
               variant='standard'
