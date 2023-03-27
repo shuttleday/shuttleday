@@ -9,7 +9,7 @@ import MuiAlert from '@mui/material/Alert';
 import { Button } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { Typography } from '@mui/material';
 import { createSession } from '../data/repository';
 
@@ -25,7 +25,7 @@ const SessionCreate = () => {
   const RE = /^\d+(,\d+)*$/; //Format for input e.g. 1,2,3,4
   const [value, setValue] = useState(dayjs());
   const [courts, setCourts] = useState('0');
-
+  const [duration, setDuration] = useState(0);
   const [cost, setCost] = useState(0);
 
   const Alert = React.forwardRef(function Alert(props, ref) {
@@ -34,9 +34,11 @@ const SessionCreate = () => {
 
   const onChange = (event) => {
     setCourts(event.target.value);
-    console.log(courts);
   };
-
+  const onChangeDuration = (event) => {
+    setDuration(event.target.value);
+    console.log(value);
+  };
   const onCost = (event) => {
     setCost(event.target.value);
   };
@@ -49,16 +51,22 @@ const SessionCreate = () => {
       return;
     }
 
+    if (duration < 1) {
+      setAlertMsg('Duration should have at least 1 hour');
+      setCondition('error');
+      setOpen(true);
+      return;
+    }
+
     const courtList = courts.split(',').map(String);
 
     const sessionData = {
-      start: dayjs().subtract(1, 'day').toISOString(),
-      end: dayjs(value).toISOString(),
+      start: dayjs(value).toISOString(),
+      end: dayjs(value).add(duration, 'hour').toISOString(),
       courts: courtList,
       cost: parseInt(cost),
     };
 
-    console.log(sessionData);
     const response = await createSession(sessionData);
 
     if (response) {
@@ -70,6 +78,7 @@ const SessionCreate = () => {
       setCondition('error');
       setOpen(true);
     }
+    return;
   };
   return (
     <div>
@@ -81,25 +90,40 @@ const SessionCreate = () => {
       >
         <Box>
           <Typography variant='h6' align='left' sx={{ mb: 1 }}>
-            Choose date
+            Choose date and time
           </Typography>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <MobileDatePicker
-              label='Session date'
-              value={value}
+            <MobileDateTimePicker
+              sx={{ width: 250 }}
+              defaultValue={value}
+              label='Controlled picker'
               onChange={(newValue) => {
                 setValue(newValue);
               }}
-              renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
+        </Box>
+        <Box>
+          <Typography variant='h6' align='left' sx={{ mb: 1 }}>
+            Session duration
+          </Typography>
+          <TextField
+            style={{ width: 250 }}
+            helperText='Duration of this session'
+            id='duration'
+            label='Duration'
+            defaultValue='0'
+            variant='standard'
+            onChange={onChangeDuration}
+          />
         </Box>
         <Box>
           <Typography variant='h6' align='left' sx={{ mb: 1 }}>
             Court number
           </Typography>
           <TextField
-            id='text'
+            style={{ width: 250 }}
+            id='court'
             label='Courts'
             defaultValue='0'
             helperText='Seperate the numbers with a comma'
@@ -113,6 +137,7 @@ const SessionCreate = () => {
             Price per player
           </Typography>
           <TextField
+            style={{ width: 250 }}
             id='text-price'
             label='Price'
             defaultValue='0'
@@ -130,6 +155,7 @@ const SessionCreate = () => {
         >
           Create
         </Button>
+        <br />
       </Stack>
 
       <SpeedDialComponent />
