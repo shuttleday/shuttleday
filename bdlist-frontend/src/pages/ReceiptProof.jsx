@@ -5,10 +5,8 @@ import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 import ListSubheader from '@mui/material/ListSubheader';
 import CircularProgress from '@mui/material/CircularProgress';
-import Card from '@mui/material/Card';
-import CardMedia from '@mui/material/CardMedia';
-import Mikel from '../img/Mikel.jpg';
 import dayjs from 'dayjs';
+import Error from '../components/error';
 import ImageViewer from 'react-simple-image-viewer';
 import { Box, Stack, Typography } from '@mui/material';
 import { getSession, getReceipts } from '../data/repository';
@@ -120,38 +118,12 @@ const ReceiptProof = () => {
           )}
         </Stack>
       ) : (
-        <Stack
-          spacing={2}
-          display='flex'
-          justifyContent='center'
-          alignItems='center'
-        >
-          <Card
-            sx={{
-              width: { sx: 280, sm: 350, md: 500 },
-              height: { sx: 280, sm: 350, md: 500 },
-            }}
-          >
-            <CardMedia component='img' image={Mikel} alt='Paella dish' />
-          </Card>
-          <Typography
-            sx={{ display: 'flex' }}
-            component='span'
-            variant='h3'
-            color='text.primary'
-          >
-            No data found...
-          </Typography>
-          <br />
-          <Typography
-            sx={{ display: 'inline' }}
-            component='span'
-            variant='h5'
-            color='text.primary'
-          >
-            Either no sessions has been created or no one has paid yet....
-          </Typography>
-        </Stack>
+        <Error
+          title={'No data found...'}
+          subTitle={
+            'Either no sessions has been created or no one has paid yet....'
+          }
+        />
       )}
 
       {isViewerOpen && (
