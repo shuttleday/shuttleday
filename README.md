@@ -10,24 +10,12 @@
     <img src="https://img.shields.io/badge/license-WTFPL-brightgreen">
   </a>
 </p>
-<a href="https://jenkins.pierreccesario.com/job/Shuttleday/">
-        <img src="https://jenkins.pierreccesario.com/buildStatus/icon?job=Shuttleday">
-</a>
-<a href="https://sonarqube.pierreccesario.com/dashboard?id=shuttleday_shuttleday_AYaC1XqOjJNBmqHJy_6N">
-    <img src="https://sonarqube.pierreccesario.com/api/project_badges/measure?project=shuttleday_shuttleday_AYaC1XqOjJNBmqHJy_6N&metric=alert_status&token=sqb_9aeb7c71da525241c292560b8787ce67ff1a529c">
-</a>
-<a href="https://sonarqube.pierreccesario.com/dashboard?id=shuttleday_shuttleday_AYaC1XqOjJNBmqHJy_6N">
-    <img src="https://sonarqube.pierreccesario.com/api/project_badges/measure?project=shuttleday_shuttleday_AYaC1XqOjJNBmqHJy_6N&metric=coverage&token=sqb_9aeb7c71da525241c292560b8787ce67ff1a529c">
+<a href="https://jenkins.pierreccesario.com/job/shuttleday-backend/">
+        <img src="https://jenkins.pierreccesario.com/buildStatus/icon?job=shuttleday-backend&subject=Backend%20Build">
 </a>
 
-<a href="https://sonarqube.pierreccesario.com/dashboard?id=shuttleday_shuttleday_AYaC1XqOjJNBmqHJy_6N">
-    <img src="https://sonarqube.pierreccesario.com/api/project_badges/measure?project=shuttleday_shuttleday_AYaC1XqOjJNBmqHJy_6N&metric=security_rating&token=sqb_9aeb7c71da525241c292560b8787ce67ff1a529c">
-</a>
-<a href="https://sonarqube.pierreccesario.com/dashboard?id=shuttleday_shuttleday_AYaC1XqOjJNBmqHJy_6N">
-    <img src="https://sonarqube.pierreccesario.com/api/project_badges/measure?project=shuttleday_shuttleday_AYaC1XqOjJNBmqHJy_6N&metric=sqale_rating&token=sqb_9aeb7c71da525241c292560b8787ce67ff1a529c">
-</a>
-<a href="https://sonarqube.pierreccesario.com/dashboard?id=shuttleday_shuttleday_AYaC1XqOjJNBmqHJy_6N">
-    <img src="https://sonarqube.pierreccesario.com/api/project_badges/measure?project=shuttleday_shuttleday_AYaC1XqOjJNBmqHJy_6N&metric=reliability_rating&token=sqb_9aeb7c71da525241c292560b8787ce67ff1a529c">
+<a href="https://jenkins.pierreccesario.com/job/shuttleday-frontend/">
+        <img src="https://jenkins.pierreccesario.com/buildStatus/icon?job=shuttleday-frontend&subject=Frontend%20Build">
 </a>
 
 </div>
