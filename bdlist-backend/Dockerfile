@@ -26,6 +26,8 @@ ENV NODE_ENV=production
 # install deps
 RUN pnpm i
 
+EXPOSE 2600
+
 COPY dist/ ./dist/
 
 CMD node ./dist/index.js
