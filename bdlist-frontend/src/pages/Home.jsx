@@ -460,7 +460,7 @@ const Home = () => {
                 </Box>
                 <List
                   sx={{
-                    width: { xs: 300, sm: 452, lg: 452 },
+                    width: { xs: 272, sm: 452, lg: 452 },
                     maxwidth: 660,
                     minHeight: 300,
                     bgcolor: 'background.paper',
@@ -498,9 +498,11 @@ const Home = () => {
                               primary={
                                 <Fragment>
                                   <Typography
-                                    sx={{ display: 'inline' }}
+                                    sx={{
+                                      display: 'inline',
+                                      typography: { sm: 'h5', xs: 'subtitle1' },
+                                    }}
                                     component='span'
-                                    variant='h5'
                                     color='text.primary'
                                   >
                                     {player.username}
