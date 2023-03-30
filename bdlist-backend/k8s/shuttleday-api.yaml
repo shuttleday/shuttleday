@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: shuttleday
+  name: shuttleday-api
+spec:
+  type: ClusterIP
+  selector:
+    app: shuttleday-api
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 2600
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: shuttleday 
+  name: shuttleday-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: shuttleday-api
+  template:
+    metadata:
+      labels:
+        app: shuttleday-api
+    spec:
+      containers:
+      - name: api
+        # imagePullSecret not required because it's a public image
+        image: ghcr.io/shuttleday/api:amd64
+        imagePullPolicy: Always 
+        envFrom:
+        - secretRef:
+            name: shuttleday-api-secret
+        ports:
+        - containerPort: 2600
