@@ -1,44 +1,24 @@
 const pino = require("pino");
 
-const prod = {
-  targets: [
-    {
-      level: "info",
-      target: "pino-pretty",
-      options: {
-        destination: "./last.log",
-        translateTime: "yyyy-mm-dd HH:MM:ss.l",
-        colorize: false,
-      },
-    },
-  ],
-};
-
 const dev = {
-  targets: [
-    {
-      level: "info",
-      target: "pino-pretty",
-      options: {
-        translateTime: "yyyy-mm-dd HH:MM:ss.l",
-        colorize: true,
-        ignore: "pid,hostname",
-      },
-    },
-    {
-      level: "info",
-      target: "pino-pretty",
-      options: {
-        destination: "./last.log",
-        translateTime: "yyyy-mm-dd HH:MM:ss.l",
-        colorize: false,
-      },
-    },
-  ],
+  translateTime: "yyyy-mm-dd HH:MM:ss.l",
+  colorize: true,
+  ignore: "pid,hostname",
 };
 
-const pinoConfig = process.env.NODE_ENV === "dev" ? dev : prod;
-const transport = pino.transport(pinoConfig);
-const log = pino(transport);
+const prod = {
+  destination: "./last.log",
+  translateTime: "yyyy-mm-dd HH:MM:ss.l",
+  colorize: false,
+  ignore: "pid,hostname",
+};
+
+const log = pino({
+  transport: {
+    target: "pino-pretty",
+    level: "info",
+    options: process.env.NODE_ENV === "development" ? dev : prod,
+  },
+});
 
 export default log;
