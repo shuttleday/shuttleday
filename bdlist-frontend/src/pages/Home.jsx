@@ -124,7 +124,6 @@ const Home = () => {
   const [buttonOn, setButtonON] = useState(true);
 
   const handleOnChange = (e) => {
-    console.log(e.target.files[0]);
     setButtonON(false);
     setImage(e.target.files[0]);
   };
@@ -147,20 +146,14 @@ const Home = () => {
     if (localStorage.getItem('jwtToken_Login') === null) {
       navigate('/GLogin');
     } else if (localStorage.getItem('jwtToken_Login') === 'USER NOT FOUND') {
-      console.log('here');
       const googleToken = jwt_decode(location.state.googleToken);
       localStorage.setItem('jwtToken_Login', location.state.googleToken);
       setUsername(googleToken.name);
       handleOpen();
     } else {
-      // console.log(location.state.googleToken);
       const user = jwt_decode(localStorage.getItem('jwtToken_Login'));
-      console.log(user);
-      console.log(localStorage.getItem('jwtToken_Login'));
-
       async function getSessionData() {
         getSession().then((res) => {
-          console.log(res.gameSessions[0]._id);
           if (res.gameSessions !== null) {
             setSessionInfo(res.gameSessions);
             setSelected(0);
@@ -177,6 +170,7 @@ const Home = () => {
         });
       }
 
+      //Checks if user has already registered
       userCheck(user.email).then((user) => {
         if (user.data === 'Refresh') {
           setCondition(WARNING);
@@ -206,7 +200,6 @@ const Home = () => {
 
   const onJoin = async () => {
     const newPlayerList = await joinSession(sessionInfo[selected]._id);
-    console.log(newPlayerList);
     if (newPlayerList) {
       let oldData = sessionInfo;
       oldData[selected].players = newPlayerList;
@@ -221,11 +214,9 @@ const Home = () => {
       setAlertMsg('Something went wrong..');
       setOpen(true);
     }
-    console.log(sessionInfo);
   };
   const onRemove = async () => {
     const newPlayerList = await removeFromSession(sessionInfo[selected]._id);
-    console.log(newPlayerList);
     if (newPlayerList) {
       let oldData = sessionInfo;
       oldData[selected].players = newPlayerList;
@@ -235,7 +226,6 @@ const Home = () => {
       setOpen(true);
       setPlayerStat(true);
     } else {
-      console.log('here');
       setCondition(ERROR);
       setAlertMsg('Something went wrong... Try refreshing the');
       setOpen(true);
