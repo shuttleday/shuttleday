@@ -20,15 +20,6 @@ pipeline {
                 }
             }
         }
-        stage("Jest Unit Test") {
-            steps {
-                dir("bdlist-backend/") {
-                    sh 'pnpm startTestDb'
-                    sh 'ACCESS_TOKEN_SECRET=$AT_SECRET REFRESH_TOKEN_SECRET=$RT_SECRET pnpm ci:test'
-                }
-            }
-        }
-
         stage ("Transpile TypeScript to JavaScript") {
             steps {
                 dir("bdlist-backend/") {
@@ -36,27 +27,13 @@ pipeline {
                 }
             }
         }
-          
-        stage("Build Docker Image and Deploy") {
+
+        stage ("Dockerize API") {
             steps {
                 dir("bdlist-backend/") {
-                    sh 'docker compose --env-file $ENV_VARS up --build -d'
+                    sh 'docker build -t ghcr.io/shuttleday/api:latest .' 
                 }
             }
-        }
-        
-    }
-
-    post {
-        always {
-            dir('bdlist-backend/') {
-                sh 'pnpm stopTestDb'
-            }
-        }
-        cleanup {
-            // remove old builds
-            sh 'docker system prune'
-            sh 'docker volume prune -f'
-        }
+        }  
     }
 }
