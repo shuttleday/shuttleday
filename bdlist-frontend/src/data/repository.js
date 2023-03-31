@@ -13,6 +13,7 @@ async function userCheck(email) {
     return false;
   }
 }
+
 //Creates an account for new users automatically with their given username (also requires google jwt)
 async function createAccount(username) {
   const data = {
@@ -21,7 +22,7 @@ async function createAccount(username) {
 
   try {
     const response = await axios.post(
-      process.env.REACT_APP_API_LINK + '/users',
+      process.env.REACT_APP_API_LINK + '/auth/register',
       data
     );
     const user = response.data;
@@ -50,8 +51,8 @@ async function googleSignIn() {
 async function getSession() {
   try {
     const today = dayjs();
-    const past = today.subtract(7, 'day');
-    const future = today.add(7, 'day');
+    const past = today.subtract(8, 'day');
+    const future = today.add(8, 'day');
 
     const response = await axios.get(
       process.env.REACT_APP_API_LINK + '/game-sessions',
