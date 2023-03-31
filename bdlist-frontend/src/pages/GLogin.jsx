@@ -12,11 +12,12 @@ const GLogin = () => {
   async function onResponse(response) {
     localStorage.setItem('jwtToken_Login', response.credential);
     const res = await googleSignIn();
+
+    //If the user has registered, googleSignIn() will return access and refresh tokens.
     if (res === null) {
       localStorage.setItem('jwtToken_Login', 'USER NOT FOUND');
     } else {
       localStorage.setItem('jwtToken_Login', res.accessToken);
-      console.log(res.refreshToken);
       localStorage.setItem('refreshToken', res.refreshToken);
     }
 
@@ -47,6 +48,7 @@ const GLogin = () => {
               width: 500,
               maxWidth: '100%',
               mt: 14,
+              ml: 6,
               justifyContent: 'center',
               alignItems: 'center',
             }}
