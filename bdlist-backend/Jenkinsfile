@@ -35,5 +35,13 @@ pipeline {
                 }
             }
         }  
+
+        stage ("Push image to ghcr.io") {
+            steps {
+                dir("bdlist-backend/") {
+                    sh 'docker push ghcr.io/shuttleday/api:latest' 
+                }
+            }
+        }  
     }
 }
