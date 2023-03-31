@@ -30,7 +30,7 @@ pipeline {
                 dir("bdlist-backend/") {
                     sh 'docker login ghcr.io -u PScoriae -p $GHCR_TOKEN'
                     sh 'docker buildx create --name build-container --driver=docker-container'
-                    sh 'docker buildx build --push --platform linux/amd64,linux/arm64,darwin/arm64 -t ghcr.io/shuttleday/api:latest . --builder=build-container' 
+                    sh 'docker buildx build --push --platform linux/amd64,linux/arm64 -t ghcr.io/shuttleday/api:latest . --builder=build-container' 
                 }
             }
         }  
