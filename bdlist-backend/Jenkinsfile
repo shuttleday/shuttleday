@@ -3,23 +3,27 @@ pipeline {
     agent any
 
     environment {
-        GHCR_TOKEN     = credentials('GHCR_TOKEN')
+        GHCR_TOKEN = credentials('GHCR_TOKEN')
     }
 
     tools {
         nodejs 'nodejs'
     }
+
     stages {
         stage("Install Dependencies") {
             steps {
                 dir("bdlist-backend/") {
+                    echo 'Installing dependencies...'
                     sh 'pnpm i'
                 }
             }
         }
+
         stage ("Transpile TypeScript to JavaScript") {
             steps {
                 dir("bdlist-backend/") {
+                    echo 'Transpiling TypeScript to JavaScript...'
                     sh 'pnpm build'
                 }
             }
@@ -28,15 +32,25 @@ pipeline {
         stage ("Multi-platform Dockerize API and push to ghcr.io") {
             steps {
                 dir("bdlist-backend/") {
+                    echo 'Grabbing version number for Docker tag...'
+                    script {
+                        env.TAG = sh "jq '.version' package.json"
+                    }
+                    echo 'Authenticating Docker with ghcr.io...'
                     sh 'docker login ghcr.io -u PScoriae -p $GHCR_TOKEN'
-                    sh 'docker buildx build --push --platform linux/amd64,linux/arm64 -t ghcr.io/shuttleday/api:latest . --builder=build-container' 
+
+                    echo 'Building and pushing multi-platform image...'
+                    sh 'docker buildx build --push --platform linux/amd64,linux/arm64 -t ghcr.io/shuttleday/api:$TAG . --builder=build-container' 
                 }
             }
         }  
     }
+
     post {
         cleanup {
+            echo 'Deleting dangling images...'
             sh 'docker system prune -f'
+            echo 'Success!'
         }
     }
 }

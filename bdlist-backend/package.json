@@ -1,7 +1,7 @@
 {
   "name": "shuttleday-server",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.1.0",
+  "description": "API Server for shuttleday.info",
   "main": "dist/index.js",
   "engines": {
     "npm": ">=9.0.0 <10.0.0",
@@ -18,7 +18,7 @@
     "ci:test": "NODE_ENV=test jest -i"
   },
   "keywords": [],
-  "author": "",
+  "author": "Shuttleday",
   "license": "WTFPL",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.272.0",
