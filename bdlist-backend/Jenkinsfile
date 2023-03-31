@@ -25,19 +25,11 @@ pipeline {
             }
         }
 
-        stage ("Dockerize API") {
-            steps {
-                dir("bdlist-backend/") {
-                    sh 'docker build -t ghcr.io/shuttleday/api:latest .' 
-                }
-            }
-        }  
-
-        stage ("Push image to ghcr.io") {
+        stage ("Multi-platform Dockerize API and push to ghcr.io") {
             steps {
                 dir("bdlist-backend/") {
                     sh 'docker login ghcr.io -u PScoriae -p $GHCR_TOKEN'
-                    sh 'docker push ghcr.io/shuttleday/api:latest' 
+                    sh 'docker buildx build --push --platform linux/amd64,linux/arm64,darwin/arm64 -t ghcr.io/shuttleday/api:latest . --builder=build-container' 
                 }
             }
         }  
