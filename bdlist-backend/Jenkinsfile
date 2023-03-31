@@ -5,13 +5,6 @@ pipeline {
     tools {
         nodejs 'nodejs'
     }
-
-    environment {
-        ENV_VARS     = credentials('shuttleday-env-file')
-        AT_SECRET = credentials('ACCESS_TOKEN_SECRET')
-        RT_SECRET = credentials('REFRESH_TOKEN_SECRET')
-    }
-
     stages {
         stage("Install Dependencies") {
             steps {
