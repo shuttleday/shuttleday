@@ -7,8 +7,6 @@ export interface User extends WithId<Document> {
   username: string;
   createdAt: Date;
   userType: string; // player | admin
-  accessToken: string | undefined;
-  refreshToken: string | undefined;
 }
 
 export interface UserPayment extends WithId<Document> {
