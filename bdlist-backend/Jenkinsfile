@@ -34,12 +34,13 @@ pipeline {
                 dir("bdlist-backend/") {
                     echo 'Grabbing version number for Docker tag...'
                     script {
-                        env.TAG = sh "jq '.version' package.json"
+                        RAW = sh(script: "jq '.version' package.json", returnStdout: true).trim()
+                        TAG = sh(script: "sed -e 's/^\"//' -e 's/\"$//' <<<${RAW}", returnStdout: true).trim()
                     }
                     echo 'Authenticating Docker with ghcr.io...'
                     sh 'docker login ghcr.io -u PScoriae -p $GHCR_TOKEN'
 
-                    echo 'Building and pushing multi-platform image of tag ${TAG}'
+                    echo 'Building and pushing multi-platform image...'
                     sh 'docker buildx build --push --platform linux/amd64,linux/arm64 -t ghcr.io/shuttleday/api:${TAG} . --builder=build-container' 
                 }
             }
