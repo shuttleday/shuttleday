@@ -154,23 +154,23 @@ const Home = () => {
       const user = jwt_decode(localStorage.getItem('jwtToken_Login'));
       async function getSessionData() {
         getSession().then((res) => {
-          if (res.gameSessions !== null) {
+          if (res.gameSessions.length > 0) {
             setSessionInfo(res.gameSessions);
             setSelected(0);
-          }
-          if (
-            res.gameSessions[selected].players.find(
-              (item) => item.userEmail === user.email
-            )
-          ) {
-            setPlayerStat(false);
-          } else {
-            setPlayerStat(true);
+            if (
+              res.gameSessions[selected].players.find(
+                (item) => item.userEmail === user.email
+              )
+            ) {
+              setPlayerStat(false);
+            } else {
+              setPlayerStat(true);
+            }
           }
         });
       }
 
-      //Checks if user has already registered
+      //Checks if user is admin
       userCheck(user.email).then((user) => {
         if (user.data === 'Refresh') {
           setCondition(WARNING);
