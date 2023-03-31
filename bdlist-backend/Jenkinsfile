@@ -36,7 +36,7 @@ pipeline {
                     script {
                         TAG = sh(script: "jq -r '.version' package.json", returnStdout: true).trim()
                         sh ('docker login ghcr.io -u PScoriae -p $GHCR_TOKEN')
-                        sh ('docker buildx build --push --platform linux/amd64,linux/arm64 -t ghcr.io/shuttleday/api:$TAG . --builder=build-container')
+                        sh ('docker buildx build --push --platform linux/amd64,linux/arm64 -t ghcr.io/shuttleday/api:${TAG} . --builder=build-container')
                     }
                 }
             }
