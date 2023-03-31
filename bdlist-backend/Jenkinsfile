@@ -34,8 +34,7 @@ pipeline {
                 dir("bdlist-backend/") {
                     echo 'Grabbing version number for Docker tag...'
                     script {
-                        RAW = sh(script: "jq '.version' package.json", returnStdout: true).trim()
-                        TAG = sh(script: "sed -e 's/^\"//' -e 's/\"$//' <<<\$RAW", returnStdout: true).trim()
+                        TAG = sh(script: "jq -r '.version' package.json", returnStdout: true).trim()
                     }
                     echo 'Authenticating Docker with ghcr.io...'
                     sh 'docker login ghcr.io -u PScoriae -p $GHCR_TOKEN'
