@@ -39,7 +39,7 @@ pipeline {
                     echo 'Authenticating Docker with ghcr.io...'
                     sh 'docker login ghcr.io -u PScoriae -p $GHCR_TOKEN'
 
-                    echo 'Building and pushing multi-platform image...'
+                    echo 'Building and pushing multi-platform image of tag ${TAG}'
                     sh 'docker buildx build --push --platform linux/amd64,linux/arm64 -t ghcr.io/shuttleday/api:${TAG} . --builder=build-container' 
                 }
             }
