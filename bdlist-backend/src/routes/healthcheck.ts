@@ -4,7 +4,7 @@ const router = Router();
 
 // Healthcheck for API service
 router.get("/", (req: Request, res: Response, next: NextFunction) => {
-  res.sendStatus(200);
+  res.status(200);
   next();
 });
 
