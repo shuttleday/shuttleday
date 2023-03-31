@@ -60,27 +60,14 @@ export function validateDates(req: Request) {
   return { fromDate, toDate };
 }
 
-// Massage user data for use in JWT
-function filterUserData(userObj: User) {
-  return {
-    email: userObj.email,
-    firstName: userObj.firstName,
-    lastName: userObj.lastName,
-    username: userObj.username,
-    userType: userObj.userType,
-  };
-}
-
 export function genAccessToken(userObj: User) {
-  const userData = filterUserData(userObj);
-  return jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET!, {
+  return jwt.sign(userObj, process.env.ACCESS_TOKEN_SECRET!, {
     expiresIn: "30d",
   });
 }
 
 export function genRefreshToken(userObj: User) {
-  const userData = filterUserData(userObj);
-  return jwt.sign(userData, process.env.REFRESH_TOKEN_SECRET!, {
+  return jwt.sign(userObj, process.env.REFRESH_TOKEN_SECRET!, {
     expiresIn: "180d",
   });
 }

@@ -1,17 +1,55 @@
 import { NextFunction, Request, Response, Router } from "express";
-import * as argon2 from "argon2";
 import { Users } from "../db/collections";
 import {
   genAccessToken,
   genRefreshToken,
   validateGJwt,
   verifyRefreshToken,
+  userExists,
 } from "../utils/functions";
 import { ApiError } from "../utils/error-util";
 import { validatePOST } from "../middleware/validateRequest";
+import { ObjectId } from "mongodb";
+import { User } from "../db/interfaces";
 
 const router = Router();
 
+router.post(
+  "/register",
+  validatePOST,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Get details of user trying to sign up
+      const decoded = await validateGJwt(req);
+
+      // Ensure user with that email doesn't already exist
+      if (await userExists(decoded?.email!))
+        throw new ApiError(409, "User with that email already exists");
+
+      const document: User = {
+        _id: new ObjectId(),
+        email: decoded?.email!,
+        firstName: decoded?.given_name!,
+        lastName: decoded?.family_name!,
+        username: req.body.username,
+        createdAt: new Date(),
+        userType: "player", // default
+      };
+
+      await Users.insertOne(document);
+
+      const accessToken = genAccessToken(document);
+      const refreshToken = genRefreshToken(document);
+
+      res.status(201).json({ user: document, accessToken, refreshToken });
+      next();
+    } catch (error: any) {
+      if (error.message.startsWith("Invalid Google JWT"))
+        return res.sendStatus(401);
+      next(error);
+    }
+  }
+);
 // Get Shuttleday JWT
 router.post(
   "/signin",
@@ -29,17 +67,6 @@ router.post(
 
       const accessToken = genAccessToken(result);
       const refreshToken = genRefreshToken(result);
-
-      // Update db with latest hashed tokens
-      await Users.updateOne(
-        { email: userEmail },
-        {
-          $set: {
-            accessToken: await argon2.hash(accessToken),
-            refreshToken: await argon2.hash(refreshToken),
-          },
-        }
-      );
 
       res.status(201).json({ accessToken, refreshToken });
       next();
@@ -66,22 +93,8 @@ router.post(
 
       if (!found) throw new ApiError(404, "No user with that email");
 
-      if (!found.refreshToken) throw new ApiError(404, "Please sign in first");
-
-      // Validate token is identical to db token
-      if (!(await argon2.verify(found.refreshToken, candidateToken)))
-        throw new ApiError(401, "Unauthorized");
-
       // Generate new access token
       const newAccessToken = genAccessToken(found);
-
-      // Save new access token to db
-      const result = await Users.updateOne(
-        { email: userEmail },
-        { $set: { accessToken: await argon2.hash(newAccessToken) } }
-      );
-
-      if (result.modifiedCount === 0) throw new Error();
 
       // Return new access token
       res.status(201).json({ accessToken: newAccessToken });

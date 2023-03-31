@@ -3,7 +3,7 @@ export interface requiredMETHOD {
 }
 
 export const requiredPOST: requiredMETHOD = {
-  "/users": ["username"],
+  "/auth/register": ["username"],
   "/game-sessions": ["start", "end", "cost", "courts"],
   "/session-players": ["sessionId"],
   "/refreshToken": ["refreshToken"],
