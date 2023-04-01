@@ -1,6 +1,6 @@
 {
   "name": "shuttleday-server",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "API Server for shuttleday.info",
   "main": "dist/index.js",
   "engines": {
