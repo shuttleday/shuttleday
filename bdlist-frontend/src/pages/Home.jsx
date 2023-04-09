@@ -155,6 +155,7 @@ const Home = () => {
       async function getSessionData() {
         getSession().then((res) => {
           if (res.gameSessions.length > 0) {
+            console.log(res);
             setSessionInfo(res.gameSessions);
             setSelected(0);
             if (
@@ -412,15 +413,7 @@ const Home = () => {
             <TabPanel value='1'>
               <Stack spacing={1} justifyContent='center'>
                 <Box sx={{ flexGrow: 1 }}>
-                  <AppBar
-                    position='static'
-                    style={{
-                      background: 'green',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      borderRadius: '8px',
-                    }}
-                  >
+                  <div>
                     <Toolbar>
                       <FormControl
                         sx={{
@@ -453,7 +446,7 @@ const Home = () => {
                         </Select>
                       </FormControl>
                     </Toolbar>
-                  </AppBar>
+                  </div>
                 </Box>
                 <List
                   sx={{

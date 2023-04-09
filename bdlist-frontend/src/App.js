@@ -1,6 +1,5 @@
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
 import GLogin from './pages/GLogin';
 import NotFound from './pages/NotFound';
 import Details from './pages/Details';
@@ -11,20 +10,28 @@ import Header from './components/header';
 import { CssBaseline } from '@mui/material';
 import Edit from './pages/Edit';
 import ReceiptProof from './pages/ReceiptProof';
-// import Authentication from './pages/authentication';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import Home from './pages/home';
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
 function App() {
-  const [mode, setMode] = useState('light');
+  const [mode, setMode] = useState(
+    localStorage.getItem('mode') ? localStorage.getItem('mode') : 'light'
+  );
+
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
         setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+        if (mode === 'light') {
+          localStorage.setItem('mode', 'dark');
+        } else {
+          localStorage.setItem('mode', 'light');
+        }
       },
     }),
-    []
+    [mode]
   );
 
   const theme = useMemo(
