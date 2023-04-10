@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import SpeedDialComponent from '../components/SpeedDialComponent';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
@@ -85,17 +85,21 @@ const ReceiptProof = () => {
                 <ImageList
                   sx={{
                     width: { sx: 240, sm: 300, md: 500 },
-                    height: { sx: 350, sm: 400, md: 450 },
+                    height: { sx: 100, sm: 100, md: 550 },
                   }}
                 >
                   <ImageListItem key='Subheader' cols={2}>
-                    <ListSubheader component='div'>
+                    <ListSubheader
+                      component='div'
+                      className='bg-primary p-3 rounded-md sm:'
+                    >
                       <Typography
                         id='modal-modal-title'
-                        variant='h6'
-                        component='h2'
+                        className='text-white font-medium lg:text-[28px] sm:text-[25px] xs:text-[17px] text-[16px] lg:leading-[40px] text-center'
                       >
-                        {dayjs(imageInfo.date).format('DD/MM/YYYY ddd')}
+                        {dayjs(imageInfo.date).format(
+                          'DD/MM/YYYY dddd hh:mm A'
+                        )}
                       </Typography>
                     </ListSubheader>
                   </ImageListItem>
@@ -103,16 +107,21 @@ const ReceiptProof = () => {
                   {imageInfo.urls.map((image, index) => (
                     <ImageListItem key={index}>
                       <img
+                        className='rounded-md'
                         src={`${image.signedUrl}`}
-                        srcSet={`${image.signedUrl}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                        srcSet={`${image.signedUrl}`}
                         alt={image.payer}
                         onClick={() => openImageViewer(index, infoIndex)}
-                        loading='lazy'
                       />
-                      <ImageListItemBar title={image.payer} subtitle={''} />
+                      <ImageListItemBar
+                        title={image.payer}
+                        subtitle={''}
+                        className='rounded-md'
+                      />
                     </ImageListItem>
                   ))}
                 </ImageList>
+                <br />
               </Box>
             ))
           )}

@@ -12,6 +12,7 @@ import Edit from './pages/Edit';
 import ReceiptProof from './pages/ReceiptProof';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import HomePage from './pages/Homepage';
+import Dev from './pages/Dev';
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
@@ -61,6 +62,7 @@ function App() {
                 <Route path='/create' element={<SessionCreate />} />
                 <Route path='/edit' element={<Edit />} />
                 <Route path='/receipt' element={<ReceiptProof />} />
+                <Route path='/dev' element={<Dev />} />
               </Routes>
             </>
           </div>

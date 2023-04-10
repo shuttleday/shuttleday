@@ -313,6 +313,10 @@ const HomePage = () => {
                         component='img'
                         image={URL.createObjectURL(image)}
                         alt='Your Image'
+                        sx={{
+                          maxHeight: '400px',
+                          height: { sx: 300, sm: 350, md: 390 },
+                        }}
                       />
                     </Card>
                   </>
