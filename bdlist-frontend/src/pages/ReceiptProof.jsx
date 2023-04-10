@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, Suspense } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import SpeedDialComponent from '../components/SpeedDialComponent';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
@@ -52,16 +52,7 @@ const ReceiptProof = () => {
     // eslint-disable-next-line
   }, []);
 
-  if (isNull) {
-    return (
-      <Error
-        title={'No data found...'}
-        subTitle={
-          'Either no sessions has been created or no one has paid yet....'
-        }
-      />
-    );
-  } else if (images === null) {
+  if (images === null) {
     return (
       <Stack
         spacing={2}
@@ -75,64 +66,75 @@ const ReceiptProof = () => {
   }
   return (
     <div>
-      <Stack
-        spacing={2}
-        display='flex'
-        justifyContent='center'
-        alignItems='center'
-      >
-        <Typography
-          id='modal-modal-title'
-          variant='h6'
-          component='h2'
-        ></Typography>
-        {images === [] ? (
-          <Box></Box>
-        ) : (
-          images.map((imageInfo, infoIndex) => (
-            <Box key={infoIndex}>
-              <ImageList
-                sx={{
-                  width: { sx: 240, sm: 300, md: 500 },
-                  height: { sx: 100, sm: 100, md: 550 },
-                }}
-              >
-                <ImageListItem key='Subheader' cols={2}>
-                  <ListSubheader
-                    component='div'
-                    className='bg-primary p-3 rounded-md sm:'
-                  >
-                    <Typography
-                      id='modal-modal-title'
-                      className='text-white font-medium lg:text-[28px] sm:text-[25px] xs:text-[17px] text-[16px] lg:leading-[40px] text-center'
+      {isNull ? (
+        <Error
+          title={'No data found...'}
+          subTitle={
+            'Either no sessions has been created or no one has paid yet....'
+          }
+        />
+      ) : (
+        <Stack
+          spacing={2}
+          display='flex'
+          justifyContent='center'
+          alignItems='center'
+        >
+          <Typography
+            id='modal-modal-title'
+            variant='h6'
+            component='h2'
+          ></Typography>
+          {images === [] ? (
+            <Box></Box>
+          ) : (
+            images.map((imageInfo, infoIndex) => (
+              <Box key={infoIndex}>
+                <ImageList
+                  sx={{
+                    width: { sx: 240, sm: 300, md: 500 },
+                    height: { sx: 100, sm: 100, md: 550 },
+                  }}
+                >
+                  <ImageListItem key='Subheader' cols={2}>
+                    <ListSubheader
+                      component='div'
+                      className='bg-primary p-3 rounded-md sm:'
                     >
-                      {dayjs(imageInfo.date).format('DD/MM/YYYY dddd hh:mm A')}
-                    </Typography>
-                  </ListSubheader>
-                </ImageListItem>
-
-                {imageInfo.urls.map((image, index) => (
-                  <ImageListItem key={index}>
-                    <img
-                      className='rounded-md'
-                      src={`${image.signedUrl}`}
-                      srcSet={`${image.signedUrl}`}
-                      alt={image.payer}
-                      onClick={() => openImageViewer(index, infoIndex)}
-                    />
-                    <ImageListItemBar
-                      title={image.payer}
-                      subtitle={''}
-                      className='rounded-md'
-                    />
+                      <Typography
+                        id='modal-modal-title'
+                        className='text-white font-medium lg:text-[28px] sm:text-[25px] xs:text-[17px] text-[16px] lg:leading-[40px] text-center'
+                      >
+                        {dayjs(imageInfo.date).format(
+                          'DD/MM/YYYY dddd hh:mm A'
+                        )}
+                      </Typography>
+                    </ListSubheader>
                   </ImageListItem>
-                ))}
-              </ImageList>
-              <br />
-            </Box>
-          ))
-        )}
-      </Stack>
+
+                  {imageInfo.urls.map((image, index) => (
+                    <ImageListItem key={index}>
+                      <img
+                        className='rounded-md'
+                        src={`${image.signedUrl}`}
+                        srcSet={`${image.signedUrl}`}
+                        alt={image.payer}
+                        onClick={() => openImageViewer(index, infoIndex)}
+                      />
+                      <ImageListItemBar
+                        title={image.payer}
+                        subtitle={''}
+                        className='rounded-md'
+                      />
+                    </ImageListItem>
+                  ))}
+                </ImageList>
+                <br />
+              </Box>
+            ))
+          )}
+        </Stack>
+      )}
 
       {isViewerOpen && (
         <ImageViewer
