@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import {
   userCheck,
   createAccount,
@@ -21,7 +21,6 @@ import Box from '@mui/material/Box';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import { Button } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
@@ -392,40 +391,54 @@ const HomePage = () => {
             </Box>
             <TabPanel value='1'>
               <Stack spacing={1} justifyContent='center'>
+                {sessionInfo === null ? (
+                  <div></div>
+                ) : (
+                  <div className='flex space-x-2'>
+                    <div className='bg-primary flex-1 rounded-md p-2 text-center border-green-400'>
+                      Courts <p>{sessionInfo[selected].courts.join(',')}</p>
+                    </div>
+                    <div className='bg-primary flex-1 rounded-md p-2 text-center border-green-400'>
+                      Time{' '}
+                      <p>
+                        {dayjs(sessionInfo[selected].start).format('hh:mm A')}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 <Box sx={{ flexGrow: 1 }}>
-                  <div>
-                    <Toolbar>
-                      <FormControl
-                        sx={{
-                          m: 1.5,
-                          minWidth: { xs: 150, sm: 180, md: 200 },
-                          flexGrow: 1,
-                        }}
-                        variant='filled'
+                  <div className=' bg-primary rounded-md w-full'>
+                    <FormControl
+                      sx={{
+                        minWidth: { xs: 150, sm: 180, md: 200 },
+                        flexGrow: 1,
+                      }}
+                      variant='filled'
+                      className=' w-full'
+                    >
+                      <InputLabel id='demo-simple-select-helper-label'>
+                        Sessions
+                      </InputLabel>
+                      <Select
+                        id='demo-simple-select-helper'
+                        value={selected}
+                        label='Sessions'
+                        color='primary'
+                        onChange={handleSelect}
+                        style={{ borderRadius: '8px' }}
                       >
-                        <InputLabel id='demo-simple-select-helper-label'>
-                          Sessions
-                        </InputLabel>
-                        <Select
-                          id='demo-simple-select-helper'
-                          value={selected}
-                          label='Sessions'
-                          color='primary'
-                          onChange={handleSelect}
-                          style={{ borderRadius: '8px' }}
-                        >
-                          {sessionInfo === null ? (
-                            <MenuItem value={0}>N/A</MenuItem>
-                          ) : (
-                            sessionInfo.map((date, index) => (
-                              <MenuItem key={index} value={index}>
-                                {dayjs(date.end).format('DD/MM/YYYY ddd')}
-                              </MenuItem>
-                            ))
-                          )}
-                        </Select>
-                      </FormControl>
-                    </Toolbar>
+                        {sessionInfo === null ? (
+                          <MenuItem value={0}>N/A</MenuItem>
+                        ) : (
+                          sessionInfo.map((date, index) => (
+                            <MenuItem key={index} value={index}>
+                              {dayjs(date.end).format('DD/MM/YYYY ddd')}
+                            </MenuItem>
+                          ))
+                        )}
+                      </Select>
+                    </FormControl>
                   </div>
                 </Box>
                 <List
@@ -490,7 +503,7 @@ const HomePage = () => {
                 {playerStat ? (
                   <Button
                     variant='contained'
-                    color={SUCCESS}
+                    className='bg-primary'
                     size='large'
                     onClick={onJoin}
                   >
