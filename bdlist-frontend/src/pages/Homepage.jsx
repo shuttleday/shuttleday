@@ -22,7 +22,6 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Toolbar from '@mui/material/Toolbar';
-import AppBar from '@mui/material/AppBar';
 import IconButton from '@mui/material/IconButton';
 import { Button } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
@@ -33,44 +32,25 @@ import Bank from '../img/BankQR.jpg';
 import Modal from '@mui/material/Modal';
 import Chip from '@mui/material/Chip';
 import ImageIcon from '@mui/icons-material/Image';
-import EditIcon from '@mui/icons-material/Edit';
-import AddBoxIcon from '@mui/icons-material/AddBox';
 import { useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
-import ReceiptIcon from '@mui/icons-material/Receipt';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import InfoIcon from '@mui/icons-material/Info';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import jwt_decode from 'jwt-decode';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import dayjs from 'dayjs';
+import { actions, ERROR, SUCCESS, WARNING } from '../constants';
 
 import { useLocation } from 'react-router-dom';
 
-const Home = () => {
-  const ERROR = 'error';
-  const SUCCESS = 'success';
-  const WARNING = 'warning';
+const HomePage = () => {
   const location = useLocation();
   let navigate = useNavigate();
-
-  const actions = [
-    {
-      icon: <ManageAccountsIcon />,
-      name: 'Manage User',
-      operation: 'management',
-    },
-    { icon: <ReceiptIcon />, name: 'Payment History', operation: 'payment' },
-    { icon: <InfoIcon />, name: 'User Details', operation: 'details' },
-    { icon: <AddBoxIcon />, name: 'Create Session', operation: 'create' },
-    { icon: <EditIcon />, name: 'Edit Session', operation: 'edit' },
-  ];
 
   function handleSpeedDial(operation) {
     if (operation === 'payment') {
@@ -638,4 +618,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomePage;

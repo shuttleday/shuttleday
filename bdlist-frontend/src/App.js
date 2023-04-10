@@ -11,7 +11,7 @@ import { CssBaseline } from '@mui/material';
 import Edit from './pages/Edit';
 import ReceiptProof from './pages/ReceiptProof';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import Home from './pages/home';
+import HomePage from './pages/Homepage';
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
@@ -52,7 +52,7 @@ function App() {
             <Header />
             <>
               <Routes>
-                <Route path='/' element={<Home />} />
+                <Route path='/' element={<HomePage />} />
 
                 {/* <Route path='/auth' element={<Authentication />} /> */}
                 <Route path='/Glogin' element={<GLogin />} />
