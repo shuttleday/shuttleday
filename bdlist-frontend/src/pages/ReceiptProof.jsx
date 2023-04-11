@@ -4,13 +4,13 @@ import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 import ListSubheader from '@mui/material/ListSubheader';
-import CircularProgress from '@mui/material/CircularProgress';
 import dayjs from 'dayjs';
 import Error from '../components/error';
 import ImageViewer from 'react-simple-image-viewer';
 import { Box, Stack, Typography } from '@mui/material';
 import { getSession, getReceipts } from '../data/repository';
 
+import Loading from '../components/Loading';
 const ReceiptProof = () => {
   const [images, setImages] = useState(null);
   const [isNull, setIsNull] = useState(false);
@@ -53,16 +53,7 @@ const ReceiptProof = () => {
   }, []);
 
   if (images === null) {
-    return (
-      <Stack
-        spacing={2}
-        display='flex'
-        justifyContent='center'
-        alignItems='center'
-      >
-        <CircularProgress color='success' />
-      </Stack>
-    );
+    return <Loading />;
   }
   return (
     <div>

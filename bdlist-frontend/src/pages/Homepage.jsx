@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Suspense } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   userCheck,
   createAccount,
@@ -43,6 +43,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import dayjs from 'dayjs';
+import Loading from '../components/Loading';
 import { actions, ERROR, SUCCESS, WARNING } from '../constants';
 
 import { useLocation } from 'react-router-dom';
@@ -394,10 +395,10 @@ const HomePage = () => {
               </TabList>
             </Box>
             <TabPanel value='1'>
-              <Stack spacing={1} justifyContent='center'>
-                {sessionInfo === null ? (
-                  <div></div>
-                ) : (
+              {sessionInfo === null ? (
+                <Loading />
+              ) : (
+                <Stack spacing={1} justifyContent='center'>
                   <div className='flex space-x-2'>
                     <div className='bg-primary flex-1 rounded-md p-2 text-center border-green-400'>
                       Courts <p>{sessionInfo[selected].courts.join(',')}</p>
@@ -409,56 +410,50 @@ const HomePage = () => {
                       </p>
                     </div>
                   </div>
-                )}
 
-                <Box sx={{ flexGrow: 1 }}>
-                  <div className=' bg-primary rounded-md w-full'>
-                    <FormControl
-                      sx={{
-                        minWidth: { xs: 150, sm: 180, md: 200 },
-                        flexGrow: 1,
-                      }}
-                      variant='filled'
-                      className=' w-full'
-                    >
-                      <InputLabel id='demo-simple-select-helper-label'>
-                        Sessions
-                      </InputLabel>
-                      <Select
-                        id='demo-simple-select-helper'
-                        value={selected}
-                        label='Sessions'
-                        color='primary'
-                        onChange={handleSelect}
-                        style={{ borderRadius: '8px' }}
+                  <Box sx={{ flexGrow: 1 }}>
+                    <div className=' bg-primary rounded-md w-full'>
+                      <FormControl
+                        sx={{
+                          minWidth: { xs: 150, sm: 180, md: 200 },
+                          flexGrow: 1,
+                        }}
+                        variant='filled'
+                        className=' w-full'
                       >
-                        {sessionInfo === null ? (
-                          <MenuItem value={0}>N/A</MenuItem>
-                        ) : (
-                          sessionInfo.map((date, index) => (
+                        <InputLabel id='demo-simple-select-helper-label'>
+                          Sessions
+                        </InputLabel>
+                        <Select
+                          id='demo-simple-select-helper'
+                          value={selected}
+                          label='Sessions'
+                          color='primary'
+                          onChange={handleSelect}
+                          style={{ borderRadius: '8px' }}
+                        >
+                          {sessionInfo.map((date, index) => (
                             <MenuItem key={index} value={index}>
                               {dayjs(date.end).format('DD/MM/YYYY ddd')}
                             </MenuItem>
-                          ))
-                        )}
-                      </Select>
-                    </FormControl>
-                  </div>
-                </Box>
-                <List
-                  sx={{
-                    width: { xs: 272, sm: 452, lg: 452 },
-                    maxwidth: 660,
-                    minHeight: 300,
-                    bgcolor: 'background.paper',
-                    maxHeight: 400,
-                    overflow: 'auto',
-                  }}
-                  alignItems='center'
-                  justifycontent='center'
-                >
-                  {sessionInfo !== null &&
-                    (sessionInfo[selected].players.length === 0 ? (
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </div>
+                  </Box>
+                  <List
+                    sx={{
+                      width: { xs: 272, sm: 452, lg: 452 },
+                      maxwidth: 660,
+                      minHeight: 300,
+                      bgcolor: 'background.paper',
+                      maxHeight: 400,
+                      overflow: 'auto',
+                    }}
+                    alignItems='center'
+                    justifycontent='center'
+                  >
+                    {sessionInfo[selected].players.length === 0 ? (
                       <Box textAlign='center' mr={2}>
                         <Typography
                           sx={{
@@ -487,7 +482,10 @@ const HomePage = () => {
                                   <Typography
                                     sx={{
                                       display: 'inline',
-                                      typography: { sm: 'h5', xs: 'subtitle1' },
+                                      typography: {
+                                        sm: 'h5',
+                                        xs: 'subtitle1',
+                                      },
                                     }}
                                     component='span'
                                     color='text.primary'
@@ -501,29 +499,30 @@ const HomePage = () => {
                           <Divider variant='middle' />
                         </div>
                       ))
-                    ))}
-                </List>
-                <br />
-                {playerStat ? (
-                  <Button
-                    variant='contained'
-                    className='bg-primary'
-                    size='large'
-                    onClick={onJoin}
-                  >
-                    Join
-                  </Button>
-                ) : (
-                  <Button
-                    variant='contained'
-                    color={ERROR}
-                    size='large'
-                    onClick={onRemove}
-                  >
-                    Remove
-                  </Button>
-                )}
-              </Stack>
+                    )}
+                  </List>
+                  <br />
+                  {playerStat ? (
+                    <Button
+                      variant='contained'
+                      className='bg-primary'
+                      size='large'
+                      onClick={onJoin}
+                    >
+                      Join
+                    </Button>
+                  ) : (
+                    <Button
+                      variant='contained'
+                      color={ERROR}
+                      size='large'
+                      onClick={onRemove}
+                    >
+                      Remove
+                    </Button>
+                  )}
+                </Stack>
+              )}
             </TabPanel>
             {/* ---------------------------------------------------------------------------------------------------------------------------- */}
             <TabPanel value='2'>
@@ -539,7 +538,7 @@ const HomePage = () => {
                     height: { sx: 280, sm: 590, md: 660 },
                   }}
                 >
-                  <CardMedia component='img' image={Bank} alt='Paella dish' />
+                  <CardMedia component='img' image={Bank} alt='QR-Code' />
                 </Card>
                 <FormControl
                   sx={{ m: 1, minWidth: { xs: 150, sm: 180, md: 200 } }}
