@@ -52,7 +52,7 @@ router.post(
 
       // Upload files to S3
       const file = processUploadedFiles(req.files!);
-      const filename = `${result.value.payTo}/${result.value._id}/${req.user.username}.jpg`;
+      const filename = `${result.value._id}/${req.user.username}.jpg`;
 
       const bucketParams = {
         Bucket: process.env.AWS_S3_BUCKET_NAME!,
