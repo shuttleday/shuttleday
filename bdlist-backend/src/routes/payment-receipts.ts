@@ -17,11 +17,9 @@ router.get(
       // Get session
       const gameSession = await GameSessions.findOne({
         _id: new ObjectId(req.query.sessionId as string),
-        payTo: req.user.email,
       });
 
-      if (!gameSession)
-        throw new ApiError(404, "No session under your account with that ID");
+      if (!gameSession) throw new ApiError(404, "No session with that ID");
 
       // Get only players that paid for that session
       const players = gameSession.players.filter((player) => {
@@ -36,7 +34,7 @@ router.get(
       const promises = players.map((player) => {
         const command = new GetObjectCommand({
           Bucket: process.env.AWS_S3_BUCKET_NAME,
-          Key: `${req.user.email}/${gameSession._id}/${player.username}.jpg`,
+          Key: `${gameSession._id}/${player.username}.jpg`,
         });
         return getSignedUrl(s3, command, { expiresIn: 3600 });
       });
@@ -49,8 +47,8 @@ router.get(
         const url = new URL(signedUrl);
         const pathname = url.pathname;
         const decodedPath = decodeURIComponent(pathname);
-        const filename = decodedPath.split("/")[3];
-        const username = filename.split(".")[0];
+        const usernameJpg = decodedPath.split("/")[2];
+        const username = usernameJpg.split(".")[0];
         return { payer: username, signedUrl };
       });
 

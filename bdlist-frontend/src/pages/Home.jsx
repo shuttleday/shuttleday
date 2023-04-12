@@ -417,12 +417,18 @@ const Home = () => {
                     style={{
                       background: 'green',
                       display: 'flex',
-                      justifyContent: 'space-between',
+                      justifyContent: 'center',
+                      borderRadius: '8px',
                     }}
                   >
                     <Toolbar>
                       <FormControl
-                        sx={{ m: 1, minWidth: { xs: 150, sm: 180, md: 200 } }}
+                        sx={{
+                          m: 1.5,
+                          minWidth: { xs: 150, sm: 180, md: 200 },
+                          flexGrow: 1,
+                        }}
+                        variant='filled'
                       >
                         <InputLabel id='demo-simple-select-helper-label'>
                           Sessions
@@ -433,6 +439,7 @@ const Home = () => {
                           label='Sessions'
                           color='primary'
                           onChange={handleSelect}
+                          style={{ borderRadius: '8px' }}
                         >
                           {sessionInfo === null ? (
                             <MenuItem value={0}>N/A</MenuItem>
