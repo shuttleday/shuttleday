@@ -1,10 +1,7 @@
 import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
-import { Box } from '@mui/material';
 import Stack from '@mui/material/Stack';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import { googleSignIn } from '../data/repository';
 import Tilt from 'react-parallax-tilt';
 
@@ -43,12 +40,14 @@ const GLogin = () => {
           <h3 className='text-[20px] font-bold text-center font-sans'>
             Login with google
           </h3>
-          <GoogleLogin
-            onSuccess={(response) => {
-              onResponse(response);
-            }}
-            onError={(response) => console.log('error')}
-          />
+          <div className='border p-4 rounded-md'>
+            <GoogleLogin
+              onSuccess={(response) => {
+                onResponse(response);
+              }}
+              onError={(response) => console.log('error')}
+            />
+          </div>
         </div>
       </Tilt>
     </Stack>

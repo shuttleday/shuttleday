@@ -35,17 +35,15 @@ const ReceiptProof = () => {
 
   useEffect(() => {
     async function getData() {
-      getSession().then((resData) => {
-        if (resData.gameSessions !== null) {
+      getSession()
+        .then((resData) => {
           getReceipts(resData.gameSessions)
             .then((res) => {
               setImages(res);
             })
-            .error(setIsNull(true));
-        } else {
-          alert('No data found');
-        }
-      });
+            .catch((error) => setIsNull(true));
+        })
+        .catch((error) => alert('No data found'));
     }
 
     getData();
