@@ -1,11 +1,9 @@
 import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
-import { Box } from '@mui/material';
 import Stack from '@mui/material/Stack';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import { googleSignIn } from '../data/repository';
+import Tilt from 'react-parallax-tilt';
 
 const GLogin = () => {
   let navigate = useNavigate();
@@ -29,38 +27,29 @@ const GLogin = () => {
 
   return (
     <Stack
-      spacing={2}
       display='flex'
       justifyContent='center'
       alignItems='center'
+      className='mt-20'
     >
-      <Card
-        justifyContent='center'
-        alignItems='center'
-        sx={{ maxWidth: 340, height: 400 }}
-        variant='outlined'
-      >
-        <CardContent>
-          <Box
-            textAlign='center'
-            sx={{
-              width: 500,
-              maxWidth: '100%',
-              mt: 14,
-              ml: 6,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
+      <Tilt>
+        <div
+          options={{ max: 45, scale: 1, speed: 450 }}
+          className='rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border border-green-400 shadow-card md:h-[300px] lg:h-[400px]'
+        >
+          <h3 className='text-[20px] font-bold text-center font-sans'>
+            Login with google
+          </h3>
+          <div className='border p-4 rounded-md'>
             <GoogleLogin
               onSuccess={(response) => {
                 onResponse(response);
               }}
               onError={(response) => console.log('error')}
             />
-          </Box>
-        </CardContent>
-      </Card>
+          </div>
+        </div>
+      </Tilt>
     </Stack>
   );
 };

@@ -21,8 +21,6 @@ import Box from '@mui/material/Box';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import Toolbar from '@mui/material/Toolbar';
-import AppBar from '@mui/material/AppBar';
 import IconButton from '@mui/material/IconButton';
 import { Button } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
@@ -33,44 +31,26 @@ import Bank from '../img/BankQR.jpg';
 import Modal from '@mui/material/Modal';
 import Chip from '@mui/material/Chip';
 import ImageIcon from '@mui/icons-material/Image';
-import EditIcon from '@mui/icons-material/Edit';
-import AddBoxIcon from '@mui/icons-material/AddBox';
 import { useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
-import ReceiptIcon from '@mui/icons-material/Receipt';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import InfoIcon from '@mui/icons-material/Info';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import jwt_decode from 'jwt-decode';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import dayjs from 'dayjs';
+import Loading from '../components/Loading';
+import { actions, ERROR, SUCCESS, WARNING } from '../constants';
 
 import { useLocation } from 'react-router-dom';
 
-const Home = () => {
-  const ERROR = 'error';
-  const SUCCESS = 'success';
-  const WARNING = 'warning';
+const HomePage = () => {
   const location = useLocation();
   let navigate = useNavigate();
-
-  const actions = [
-    {
-      icon: <ManageAccountsIcon />,
-      name: 'Manage User',
-      operation: 'management',
-    },
-    { icon: <ReceiptIcon />, name: 'Payment History', operation: 'payment' },
-    { icon: <InfoIcon />, name: 'User Details', operation: 'details' },
-    { icon: <AddBoxIcon />, name: 'Create Session', operation: 'create' },
-    { icon: <EditIcon />, name: 'Edit Session', operation: 'edit' },
-  ];
 
   function handleSpeedDial(operation) {
     if (operation === 'payment') {
@@ -155,6 +135,7 @@ const Home = () => {
       async function getSessionData() {
         getSession().then((res) => {
           if (res.gameSessions.length > 0) {
+            console.log(res);
             setSessionInfo(res.gameSessions);
             setSelected(0);
             if (
@@ -333,6 +314,10 @@ const Home = () => {
                         component='img'
                         image={URL.createObjectURL(image)}
                         alt='Your Image'
+                        sx={{
+                          maxHeight: '400px',
+                          height: { sx: 300, sm: 350, md: 390 },
+                        }}
                       />
                     </Card>
                   </>
@@ -410,25 +395,31 @@ const Home = () => {
               </TabList>
             </Box>
             <TabPanel value='1'>
-              <Stack spacing={1} justifyContent='center'>
-                <Box sx={{ flexGrow: 1 }}>
-                  <AppBar
-                    position='static'
-                    style={{
-                      background: 'green',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      borderRadius: '8px',
-                    }}
-                  >
-                    <Toolbar>
+              {sessionInfo === null ? (
+                <Loading />
+              ) : (
+                <Stack spacing={1} justifyContent='center'>
+                  <div className='flex space-x-2'>
+                    <div className='bg-primary flex-1 rounded-md p-2 text-center border-green-400'>
+                      Courts <p>{sessionInfo[selected].courts.join(',')}</p>
+                    </div>
+                    <div className='bg-primary flex-1 rounded-md p-2 text-center border-green-400'>
+                      Time{' '}
+                      <p>
+                        {dayjs(sessionInfo[selected].start).format('hh:mm A')}
+                      </p>
+                    </div>
+                  </div>
+
+                  <Box sx={{ flexGrow: 1 }}>
+                    <div className=' bg-primary rounded-md w-full'>
                       <FormControl
                         sx={{
-                          m: 1.5,
                           minWidth: { xs: 150, sm: 180, md: 200 },
                           flexGrow: 1,
                         }}
                         variant='filled'
+                        className=' w-full'
                       >
                         <InputLabel id='demo-simple-select-helper-label'>
                           Sessions
@@ -441,34 +432,28 @@ const Home = () => {
                           onChange={handleSelect}
                           style={{ borderRadius: '8px' }}
                         >
-                          {sessionInfo === null ? (
-                            <MenuItem value={0}>N/A</MenuItem>
-                          ) : (
-                            sessionInfo.map((date, index) => (
-                              <MenuItem key={index} value={index}>
-                                {dayjs(date.end).format('DD/MM/YYYY ddd')}
-                              </MenuItem>
-                            ))
-                          )}
+                          {sessionInfo.map((date, index) => (
+                            <MenuItem key={index} value={index}>
+                              {dayjs(date.end).format('DD/MM/YYYY ddd')}
+                            </MenuItem>
+                          ))}
                         </Select>
                       </FormControl>
-                    </Toolbar>
-                  </AppBar>
-                </Box>
-                <List
-                  sx={{
-                    width: { xs: 272, sm: 452, lg: 452 },
-                    maxwidth: 660,
-                    minHeight: 300,
-                    bgcolor: 'background.paper',
-                    maxHeight: 400,
-                    overflow: 'auto',
-                  }}
-                  alignItems='center'
-                  justifycontent='center'
-                >
-                  {sessionInfo !== null &&
-                    (sessionInfo[selected].players.length === 0 ? (
+                    </div>
+                  </Box>
+                  <List
+                    sx={{
+                      width: { xs: 272, sm: 452, lg: 452 },
+                      maxwidth: 660,
+                      minHeight: 300,
+                      bgcolor: 'background.paper',
+                      maxHeight: 400,
+                      overflow: 'auto',
+                    }}
+                    alignItems='center'
+                    justifycontent='center'
+                  >
+                    {sessionInfo[selected].players.length === 0 ? (
                       <Box textAlign='center' mr={2}>
                         <Typography
                           sx={{
@@ -497,7 +482,10 @@ const Home = () => {
                                   <Typography
                                     sx={{
                                       display: 'inline',
-                                      typography: { sm: 'h5', xs: 'subtitle1' },
+                                      typography: {
+                                        sm: 'h5',
+                                        xs: 'subtitle1',
+                                      },
                                     }}
                                     component='span'
                                     color='text.primary'
@@ -511,29 +499,30 @@ const Home = () => {
                           <Divider variant='middle' />
                         </div>
                       ))
-                    ))}
-                </List>
-                <br />
-                {playerStat ? (
-                  <Button
-                    variant='contained'
-                    color={SUCCESS}
-                    size='large'
-                    onClick={onJoin}
-                  >
-                    Join
-                  </Button>
-                ) : (
-                  <Button
-                    variant='contained'
-                    color={ERROR}
-                    size='large'
-                    onClick={onRemove}
-                  >
-                    Remove
-                  </Button>
-                )}
-              </Stack>
+                    )}
+                  </List>
+                  <br />
+                  {playerStat ? (
+                    <Button
+                      variant='contained'
+                      className='bg-primary'
+                      size='large'
+                      onClick={onJoin}
+                    >
+                      Join
+                    </Button>
+                  ) : (
+                    <Button
+                      variant='contained'
+                      color={ERROR}
+                      size='large'
+                      onClick={onRemove}
+                    >
+                      Remove
+                    </Button>
+                  )}
+                </Stack>
+              )}
             </TabPanel>
             {/* ---------------------------------------------------------------------------------------------------------------------------- */}
             <TabPanel value='2'>
@@ -549,7 +538,7 @@ const Home = () => {
                     height: { sx: 280, sm: 590, md: 660 },
                   }}
                 >
-                  <CardMedia component='img' image={Bank} alt='Paella dish' />
+                  <CardMedia component='img' image={Bank} alt='QR-Code' />
                 </Card>
                 <FormControl
                   sx={{ m: 1, minWidth: { xs: 150, sm: 180, md: 200 } }}
@@ -645,4 +634,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomePage;

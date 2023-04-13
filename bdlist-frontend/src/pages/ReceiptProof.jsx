@@ -4,16 +4,16 @@ import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 import ListSubheader from '@mui/material/ListSubheader';
-import CircularProgress from '@mui/material/CircularProgress';
 import dayjs from 'dayjs';
 import Error from '../components/error';
 import ImageViewer from 'react-simple-image-viewer';
 import { Box, Stack, Typography } from '@mui/material';
 import { getSession, getReceipts } from '../data/repository';
 
+import Loading from '../components/Loading';
 const ReceiptProof = () => {
-  const [images, setImages] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [images, setImages] = useState(null);
+  const [isNull, setIsNull] = useState(false);
   const [selectedImages, setSelectedImages] = useState(null);
 
   const [currentImage, setCurrentImage] = useState(0);
@@ -35,37 +35,34 @@ const ReceiptProof = () => {
 
   useEffect(() => {
     async function getData() {
-      getSession().then((resData) => {
-        if (resData.gameSessions !== null) {
-          getReceipts(resData.gameSessions).then((res) => {
-            if (res !== null) {
+      getSession()
+        .then((resData) => {
+          getReceipts(resData.gameSessions)
+            .then((res) => {
               setImages(res);
-            } else {
-            }
-          });
-        } else {
-          alert('No data found');
-        }
-      });
+            })
+            .catch((error) => setIsNull(true));
+        })
+        .catch((error) => alert('No data found'));
     }
 
     getData();
-    setIsLoading(false);
     // eslint-disable-next-line
   }, []);
 
+  if (images === null) {
+    return <Loading />;
+  }
   return (
     <div>
-      {isLoading ? (
-        <Stack
-          spacing={2}
-          display='flex'
-          justifyContent='center'
-          alignItems='center'
-        >
-          <CircularProgress color='success' />
-        </Stack>
-      ) : images.length > 0 ? (
+      {isNull ? (
+        <Error
+          title={'No data found...'}
+          subTitle={
+            'Either no sessions has been created or no one has paid yet....'
+          }
+        />
+      ) : (
         <Stack
           spacing={2}
           display='flex'
@@ -85,17 +82,21 @@ const ReceiptProof = () => {
                 <ImageList
                   sx={{
                     width: { sx: 240, sm: 300, md: 500 },
-                    height: { sx: 350, sm: 400, md: 450 },
+                    height: { sx: 100, sm: 100, md: 550 },
                   }}
                 >
                   <ImageListItem key='Subheader' cols={2}>
-                    <ListSubheader component='div'>
+                    <ListSubheader
+                      component='div'
+                      className='bg-primary p-3 rounded-md sm:'
+                    >
                       <Typography
                         id='modal-modal-title'
-                        variant='h6'
-                        component='h2'
+                        className='text-white font-medium lg:text-[28px] sm:text-[25px] xs:text-[17px] text-[16px] lg:leading-[40px] text-center'
                       >
-                        {dayjs(imageInfo.date).format('DD/MM/YYYY ddd')}
+                        {dayjs(imageInfo.date).format(
+                          'DD/MM/YYYY dddd hh:mm A'
+                        )}
                       </Typography>
                     </ListSubheader>
                   </ImageListItem>
@@ -103,27 +104,25 @@ const ReceiptProof = () => {
                   {imageInfo.urls.map((image, index) => (
                     <ImageListItem key={index}>
                       <img
+                        className='rounded-md'
                         src={`${image.signedUrl}`}
-                        srcSet={`${image.signedUrl}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                        srcSet={`${image.signedUrl}`}
                         alt={image.payer}
                         onClick={() => openImageViewer(index, infoIndex)}
-                        loading='lazy'
                       />
-                      <ImageListItemBar title={image.payer} subtitle={''} />
+                      <ImageListItemBar
+                        title={image.payer}
+                        subtitle={''}
+                        className='rounded-md'
+                      />
                     </ImageListItem>
                   ))}
                 </ImageList>
+                <br />
               </Box>
             ))
           )}
         </Stack>
-      ) : (
-        <Error
-          title={'No data found...'}
-          subTitle={
-            'Either no sessions has been created or no one has paid yet....'
-          }
-        />
       )}
 
       {isViewerOpen && (

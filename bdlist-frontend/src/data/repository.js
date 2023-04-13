@@ -61,7 +61,13 @@ async function getSession() {
       }
     );
 
-    return response.data;
+    let modify = response.data;
+    for (var i = 0; i < modify.gameSessions.length; i++) {
+      let courtList = modify.gameSessions[i].courts.map((str) => Number(str));
+      modify.gameSessions.court = courtList;
+    }
+
+    return modify;
   } catch (error) {
     console.log(error);
   }
