@@ -1,6 +1,5 @@
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
 import GLogin from './pages/GLogin';
 import NotFound from './pages/NotFound';
 import Details from './pages/Details';
@@ -11,20 +10,29 @@ import Header from './components/header';
 import { CssBaseline } from '@mui/material';
 import Edit from './pages/Edit';
 import ReceiptProof from './pages/ReceiptProof';
-// import Authentication from './pages/authentication';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import HomePage from './pages/Homepage';
+import Dev from './pages/Dev';
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
 function App() {
-  const [mode, setMode] = useState('light');
+  const [mode, setMode] = useState(
+    localStorage.getItem('mode') ? localStorage.getItem('mode') : 'light'
+  );
+
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
         setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+        if (mode === 'light') {
+          localStorage.setItem('mode', 'dark');
+        } else {
+          localStorage.setItem('mode', 'light');
+        }
       },
     }),
-    []
+    [mode]
   );
 
   const theme = useMemo(
@@ -45,7 +53,7 @@ function App() {
             <Header />
             <>
               <Routes>
-                <Route path='/' element={<Home />} />
+                <Route path='/' element={<HomePage />} />
 
                 {/* <Route path='/auth' element={<Authentication />} /> */}
                 <Route path='/Glogin' element={<GLogin />} />
@@ -54,6 +62,7 @@ function App() {
                 <Route path='/create' element={<SessionCreate />} />
                 <Route path='/edit' element={<Edit />} />
                 <Route path='/receipt' element={<ReceiptProof />} />
+                <Route path='/dev' element={<Dev />} />
               </Routes>
             </>
           </div>

@@ -22,7 +22,7 @@ const Header = () => {
           bgcolor: 'background.default',
           color: 'text.primary',
           borderRadius: 1,
-          p: 3,
+          p: 2,
         }}
       >
         <IconButton
