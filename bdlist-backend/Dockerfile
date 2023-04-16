@@ -19,16 +19,16 @@ COPY pnpm-lock.yaml ./
 # install pnpm
 RUN npm install -g pnpm
 
-# package.json is only copied AFTER the dep installs because the version number
-# frequently changes without any changes in deps
-COPY package.json ./
-
 # set production env var for pnpm
 # makes pnpm only install deps, not devDeps
 ENV NODE_ENV=production
 
 # install deps
 RUN pnpm i
+
+# package.json is only copied AFTER the dep installs because the version number
+# frequently changes without any changes in deps
+COPY package.json ./
 
 EXPOSE 2600
 
