@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
 import { googleSignIn } from '../data/repository';
 import Tilt from 'react-parallax-tilt';
+import GoogleIcon from '../img/google_icon-icons.com_62736.ico';
 
 const GLogin = () => {
   let navigate = useNavigate();
@@ -38,8 +39,13 @@ const GLogin = () => {
           className='rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border border-green-400 shadow-card md:h-[300px] lg:h-[400px]'
         >
           <h3 className='text-[20px] font-bold text-center font-sans'>
-            Login with google
+            Login with
           </h3>
+          <img
+            src={GoogleIcon}
+            alt='google'
+            className='App-logo h-[70px] w-[70px] p-1'
+          />
           <div className='border p-4 rounded-md'>
             <GoogleLogin
               onSuccess={(response) => {
