@@ -14,7 +14,7 @@ WORKDIR /app
 
 # split COPY into two parts to take advantage of layering system
 # builder will use cache if there are no changes in dependencies
-COPY pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml ./
 
 # install pnpm
 RUN npm install -g pnpm
@@ -25,10 +25,6 @@ ENV NODE_ENV=production
 
 # install deps
 RUN pnpm i
-
-# package.json is only copied AFTER the dep installs because the version number
-# frequently changes without any changes in deps
-COPY package.json ./
 
 EXPOSE 2600
 
