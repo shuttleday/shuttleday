@@ -34,5 +34,5 @@ package-lock.json
 *.log
 
 # k8s secrets
-bdlist-backend/k8s/shuttleday-api-secret.yaml
-bdlist-backend/k8s/mongo-secret.yaml
+shuttleday-api-secret.yaml
+mongo-secret.yaml
