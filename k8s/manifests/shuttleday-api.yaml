@@ -30,7 +30,7 @@ spec:
       containers:
       - name: api
         # imagePullSecret not required because it's a public image
-        image: ghcr.io/shuttleday/api:latest
+        image: ghcr.io/shuttleday/api:1.1.2
         imagePullPolicy: Always 
         envFrom:
         - secretRef:
