@@ -45,7 +45,8 @@ import Select from '@mui/material/Select';
 import dayjs from 'dayjs';
 import Loading from '../components/Loading';
 import { actions, ERROR, SUCCESS, WARNING } from '../constants';
-
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import { useLocation } from 'react-router-dom';
 
 const HomePage = () => {
@@ -102,6 +103,11 @@ const HomePage = () => {
   //Control logic for Images--------------------------------------------------------
   const [image, setImage] = useState(null);
   const [buttonOn, setButtonON] = useState(true);
+
+  const [checked, setChecked] = React.useState(false);
+  const handleCheck = () => {
+    setChecked((prev) => (prev === true ? false : true));
+  };
 
   const handleOnChange = (e) => {
     setButtonON(false);
@@ -227,6 +233,12 @@ const HomePage = () => {
   };
 
   const handleSubmit = async () => {
+    if (!checked) {
+      setCondition(ERROR);
+      setAlertMsg('Please tick the checkbox.');
+      setOpen(true);
+      return;
+    }
     localStorage.setItem('jwtToken_Login', location.state.googleToken);
     const res = await createAccount(username);
     if (res === ERROR) {
@@ -363,9 +375,15 @@ const HomePage = () => {
                   color='secondary'
                   defaultValue={username}
                   onChange={onChange}
+                  className='mb-2'
                 />
               </Typography>
-              <br />
+              <FormControlLabel
+                className=' shadow-neutral-400 mb-2'
+                label='This is the name I prefer.'
+                control={<Checkbox onChange={handleCheck} />}
+              ></FormControlLabel>
+
               <Box textAlign='center'>
                 <Button
                   variant='contained'
