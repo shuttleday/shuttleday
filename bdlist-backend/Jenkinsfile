@@ -46,7 +46,7 @@ pipeline {
     post {
         success {
             echo "Triggering Update Manifest pipeline"
-            build job: 'shuttleday-update-k8s-manifest', parameters: [string(name: 'DOCKERTAG', value: $TAG)]
+            build job: 'shuttleday-update-k8s-manifest', parameters: [string(name: 'DOCKERTAG', value: ${TAG})]
         }
         cleanup {
             echo 'Deleting dangling images...'
