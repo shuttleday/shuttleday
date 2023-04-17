@@ -13,7 +13,7 @@
 
 <p>
 <a href="https://jenkins.pierreccesario.com/job/shuttleday-backend/">
-        <img src="https://jenkins.pierreccesario.com/buildStatus/icon?job=shuttleday-backend&subject=Backend%20Build">
+        <img src="https://jenkins.pierreccesario.com/buildStatus/icon?job=shuttleday-backend%2Fmain&subject=Backend%20Build">
 </a>
 <a href="https://jenkins.pierreccesario.com/job/shuttleday-frontend/">
         <img src="https://jenkins.pierreccesario.com/buildStatus/icon?job=shuttleday-frontend&subject=Frontend%20Build">
