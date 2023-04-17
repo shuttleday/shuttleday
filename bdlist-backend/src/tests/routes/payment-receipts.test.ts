@@ -23,7 +23,7 @@ jest.mock("../../middleware/authenticate", () => {
       req.user = {
         email: "sakura@miyawaki.com",
         username: "39saku_chan",
-        userType: "admin",
+        userType: "ADMIN",
       } as User;
       next();
     },

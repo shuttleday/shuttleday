@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 import * as functions from "../../utils/functions";
 import { User } from "../../db/interfaces";
+import { UserType } from "../../db/interfaces";
 
 describe("JWT functions", () => {
   it("returns a new access token from a User object", () => {
@@ -9,7 +10,7 @@ describe("JWT functions", () => {
       firstName: "Eunchae",
       lastName: "Hong",
       username: "hhh.e_c.v",
-      userType: "player",
+      userType: UserType.Player,
     };
 
     const input: User = {
@@ -18,6 +19,7 @@ describe("JWT functions", () => {
       createdAt: new Date("2023-03-11T06:35:46.000Z"),
       accessToken: "sometoken",
       refreshToken: "someothertoken",
+      hasQR: false,
     };
 
     const output = functions.genAccessToken(input);
