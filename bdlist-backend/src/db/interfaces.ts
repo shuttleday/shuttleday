@@ -12,6 +12,7 @@ export interface User extends WithId<Document> {
   username: string;
   createdAt: Date;
   userType: UserType;
+  hasQR: boolean;
 }
 
 export interface UserPayment extends WithId<Document> {

@@ -34,6 +34,7 @@ router.post(
         username: req.body.username,
         createdAt: new Date(),
         userType: UserType.Player,
+        hasQR: false,
       };
 
       await Users.insertOne(document);
