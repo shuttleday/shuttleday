@@ -14,8 +14,8 @@ pipeline {
         stage("Install Dependencies") {
             steps {
                 dir("bdlist-backend/") {
-                    echo 'Installing dependencies...'
-                    sh 'pnpm i'
+                    echo "Installing dependencies..."
+                    sh "pnpm i"
                 }
             }
         }
@@ -23,35 +23,34 @@ pipeline {
         stage ("Transpile TypeScript to JavaScript") {
             steps {
                 dir("bdlist-backend/") {
-                    echo 'Transpiling TypeScript to JavaScript...'
-                    sh 'pnpm build'
+                    echo "Transpiling TypeScript to JavaScript..."
+                    sh "pnpm build"
                 }
             }
         }
 
         stage ("Multi-platform Dockerize API and push to ghcr.io") {
+            when { branch 'main' }
             steps {
                 dir("bdlist-backend/") {
-                    echo 'Grabbing version number for Docker tag...'
+                    echo "Grabbing version number for Docker tag..."
                     script {
                         TAG = sh(script: "jq -r '.version' version.json", returnStdout: true).trim();
                     }
-                    sh "docker login ghcr.io -u PScoriae -p $GHCR_TOKEN"
+                    sh 'docker login ghcr.io -u PScoriae -p $GHCR_TOKEN'
                     sh "docker buildx build --push --platform linux/amd64,linux/arm64 --builder=build-container -t ghcr.io/shuttleday/api:$TAG -t ghcr.io/shuttleday/api . "
                 }
             }
-        }  
-    }
+        }
 
-    post {
-        success {
-            echo "Triggering Update Manifest pipeline"
-            build job: 'shuttleday-update-k8s-manifest', parameters: [string(name: 'DOCKERTAG', value: TAG)]
-        }
-        cleanup {
-            echo 'Deleting dangling images...'
-            sh 'docker system prune -f'
-            echo 'Success!'
-        }
+        stage ("Trigger Update Manifest Pipeline") {
+            when { branch 'main' }
+            steps {
+                dir("bdlist-backend/") {
+                    echo "Triggering Update Manifest pipeline"
+                    build job: 'shuttleday-update-k8s-manifest', parameters: [string(name: 'DOCKERTAG', value: TAG)]
+                }
+            }
+        }  
     }
 }
