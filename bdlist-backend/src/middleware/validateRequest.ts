@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { processUploadedFiles } from "../utils/functions";
+import { UserType } from "../db/interfaces";
 import {
   requiredPOST,
   requiredGET,
@@ -32,7 +33,7 @@ export async function adminCheck(
   next: NextFunction
 ) {
   try {
-    if (req.user.userType !== "admin")
+    if (req.user.userType !== UserType.Admin)
       throw new ApiError(403, "You must be an admin to access this resource");
 
     next();

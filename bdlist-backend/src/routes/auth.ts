@@ -10,7 +10,7 @@ import {
 import { ApiError } from "../utils/error-util";
 import { validatePOST } from "../middleware/validateRequest";
 import { ObjectId } from "mongodb";
-import { User } from "../db/interfaces";
+import { User, UserType } from "../db/interfaces";
 
 const router = Router();
 
@@ -33,7 +33,7 @@ router.post(
         lastName: decoded?.family_name!,
         username: req.body.username,
         createdAt: new Date(),
-        userType: "player", // default
+        userType: UserType.Player,
       };
 
       await Users.insertOne(document);

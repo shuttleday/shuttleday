@@ -1,12 +1,17 @@
 import { WithId, Document } from "mongodb";
 
+export enum UserType {
+  Player = "PLAYER",
+  Admin = "ADMIN",
+}
+
 export interface User extends WithId<Document> {
   email: string;
   firstName: string;
   lastName: string;
   username: string;
   createdAt: Date;
-  userType: string; // player | admin
+  userType: UserType;
 }
 
 export interface UserPayment extends WithId<Document> {
