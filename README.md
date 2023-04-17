@@ -77,12 +77,12 @@
 
 ## Tech Stack
 
-| Infrastructure                   | CI/CD        | Container Orchestration | Backend                          | Frontend                        |
-| -------------------------------- | ------------ | ----------------------- | -------------------------------- | ------------------------------- |
-| ![][aws] <br> ![][red-hat]       | ![][jenkins] | ![][kubernetes]         | ![][mongodb]                     | ![][react] <br> ![][javascript] |
-| ![][terraform] <br> ![][ansible] | ![][jest]    | ![][argocd]             | ![][nodejs] <br> ![][typescript] | ![][webpack]                    |
-| ![][nginx]                       | ![][docker]  |                         | ![][expressjs] <br> ![][jwt]     | ![][material-ui]                |
-| ![][cloudflare]                  |              |                         |                                  |                                 |
+| Infrastructure                   | Continuous Integration | Container Orchestration | Backend                          | Frontend                        |
+| -------------------------------- | ---------------------- | ----------------------- | -------------------------------- | ------------------------------- |
+| ![][aws] <br> ![][red-hat]       | ![][jenkins]           | ![][kubernetes]         | ![][mongodb]                     | ![][react] <br> ![][javascript] |
+| ![][terraform] <br> ![][ansible] | ![][jest]              | ![][argocd]             | ![][nodejs] <br> ![][typescript] | ![][webpack]                    |
+| ![][nginx]                       | ![][docker]            |                         | ![][expressjs] <br> ![][jwt]     | ![][material-ui]                |
+| ![][cloudflare]                  |                        |                         |                                  |                                 |
 
 ## Features
 
