@@ -4,6 +4,7 @@ pipeline {
 
     environment {
         GHCR_TOKEN = credentials('GHCR_TOKEN')
+        DISCORD_WEBHOOK = credentials('DISCORD_WEBHOOK')
     }
 
     tools {
@@ -52,5 +53,11 @@ pipeline {
                 }
             }
         }  
+    }
+
+    post {
+        always {
+            discordSend description: "Jenkins Pipeline Build", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: DISCORD_WEBHOOK
+        }
     }
 }
