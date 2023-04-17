@@ -10,14 +10,20 @@
     <img src="https://img.shields.io/badge/license-WTFPL-brightgreen">
   </a>
 </p>
+
+<p>
 <a href="https://jenkins.pierreccesario.com/job/shuttleday-backend/">
         <img src="https://jenkins.pierreccesario.com/buildStatus/icon?job=shuttleday-backend&subject=Backend%20Build">
 </a>
-
 <a href="https://jenkins.pierreccesario.com/job/shuttleday-frontend/">
         <img src="https://jenkins.pierreccesario.com/buildStatus/icon?job=shuttleday-frontend&subject=Frontend%20Build">
 </a>
+</p>
 
+<p>
+<img src="https://uptime-kuma.pierreccesario.com/api/badge/9/uptime/720?label=API%20Uptime%2030d">
+<img src="https://uptime-kuma.pierreccesario.com/api/badge/5/uptime/720?label=Frontend%20Uptime%2030d">
+</p>
 </div>
 </br>
 <details>
