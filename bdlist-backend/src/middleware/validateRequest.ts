@@ -8,6 +8,7 @@ import {
   requiredMETHOD,
 } from "./validation";
 import { ApiError } from "../utils/error-util";
+
 const MB = 5;
 const FILE_SIZE_LIMIT = MB * 1024 * 1024;
 
@@ -42,13 +43,18 @@ export async function adminCheck(
   }
 }
 
-export function validateFileUpload(
+export async function validateFileUpload(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
     if (!req.files) throw new ApiError(401, "No image was uploaded");
+    const file = processUploadedFiles(req.files!);
+
+    // If does not have image mime type, prevent from uploading
+    if (!file.mimetype.startsWith("image"))
+      throw new ApiError(400, "File is not an image");
 
     next();
   } catch (error) {
