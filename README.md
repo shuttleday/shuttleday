@@ -21,8 +21,14 @@
 </p>
 
 <p>
+
+<a href="https://status.shuttleday.info">
 <img src="https://uptime-kuma.pierreccesario.com/api/badge/9/uptime/720?label=API%20Uptime%2030d">
+</a>
+<a href="https://status.shuttleday.info">
 <img src="https://uptime-kuma.pierreccesario.com/api/badge/5/uptime/720?label=Frontend%20Uptime%2030d">
+</a>
+
 </p>
 </div>
 </br>
