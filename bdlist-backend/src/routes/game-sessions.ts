@@ -50,6 +50,7 @@ router
         courts: req.body.courts,
         createdAt: new Date(),
         payTo: req.user.email,
+        title: req.body.title,
       };
 
       try {
@@ -84,6 +85,7 @@ router
             cost: req.body.cost as number,
             payTo: req.body.payTo,
             courts: req.body.courts as string[],
+            title: req.body.title,
           },
         },
         { returnDocument: "after" }

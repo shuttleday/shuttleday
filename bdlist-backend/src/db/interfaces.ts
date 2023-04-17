@@ -25,4 +25,5 @@ export interface GameSession extends WithId<Document> {
   payTo: string; // email
   courts: string[];
   createdAt: Date;
+  title?: string;
 }
