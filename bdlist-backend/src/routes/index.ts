@@ -7,6 +7,7 @@ import sessionPlayersRouter from "./session-players";
 import userPaymentsRouter from "./user-payments";
 import paymentReceiptsRouter from "./payment-receipts";
 import healthcheckRouter from "./healthcheck";
+import adminRouter from "./admins";
 
 export default function (app: Express) {
   app.use("/auth", authRouter);
@@ -16,4 +17,5 @@ export default function (app: Express) {
   app.use("/user-payments", userPaymentsRouter);
   app.use("/payment-receipts", paymentReceiptsRouter);
   app.use("/healthcheck", healthcheckRouter);
+  app.use("/admins", adminRouter);
 }
