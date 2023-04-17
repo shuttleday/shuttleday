@@ -7,18 +7,31 @@ import {
 } from "../middleware/validateRequest";
 import fileUpload from "express-fileupload";
 import { s3, processUploadedFiles } from "../utils/functions";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { Users } from "../db/collections";
 
 const router = Router();
 // /admins
 
 router
-  .route("/qr")
+  .route("/qr/:email")
   // Get QR code by email
-  .get(adminCheck, async (req: Request, res: Response, next: NextFunction) => {
+  .get(async (req: Request, res: Response, next: NextFunction) => {
     try {
-      res.status(200).json();
+      const email = req.params.email;
+      const result = await Users.findOne({ email });
+      if (!result) throw new ApiError(404, "No user with that email");
+
+      if (!result.hasQR) throw new ApiError(404, "No QR has been uploaded");
+
+      const command = new GetObjectCommand({
+        Bucket: process.env.AWS_S3_BUCKET_NAME,
+        Key: `${req.user.email}-QR.jpg`,
+      });
+      const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+
+      res.status(200).json({ url });
       next();
     } catch (error) {
       next(error);
