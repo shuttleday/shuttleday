@@ -36,7 +36,7 @@ pipeline {
                 dir("bdlist-backend/") {
                     echo "Grabbing version number for Docker tag..."
                     script {
-                        TAG = sh(script: "jq -r '.version' version.json", returnStdout: true).trim();
+                        TAG = sh(script: "jq -r '.version' src/version.json", returnStdout: true).trim();
                     }
                     sh 'docker login ghcr.io -u PScoriae -p $GHCR_TOKEN'
                     sh "docker buildx build --push --platform linux/amd64,linux/arm64 --builder=build-container -t ghcr.io/shuttleday/api:$TAG -t ghcr.io/shuttleday/api . "
