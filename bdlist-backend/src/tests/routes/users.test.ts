@@ -90,7 +90,7 @@ describe("POST /users", () => {
           lastName: "Kim",
           username: "_chaechae_1",
           createdAt: expect.any(String),
-          userType: "player",
+          userType: "PLAYER",
         }),
       })
     );
