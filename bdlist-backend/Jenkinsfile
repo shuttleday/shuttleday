@@ -5,6 +5,9 @@ pipeline {
     environment {
         GHCR_TOKEN = credentials('GHCR_TOKEN')
         DISCORD_WEBHOOK = credentials('DISCORD_WEBHOOK')
+        AT_SECRET = credentials('SHUTTLEDAY_AT')
+        RT_SECRET = credentials('SHUTTLEDAY_RT')
+        CODECOV_TOKEN = credentials('CODECOV_TOKEN')
     }
 
     tools {
@@ -17,6 +20,24 @@ pipeline {
                 dir("bdlist-backend/") {
                     echo "Installing dependencies..."
                     sh "pnpm i"
+                }
+            }
+        }
+
+        stage("Jest Unit Test") {
+            steps {
+                dir("bdlist-backend/") {
+                    sh 'pnpm startTestDb'
+                    sh "ACCESS_TOKEN_SECRET=$AT_SECRET REFRESH_TOKEN_SECRET=$RT_SECRET pnpm ci:test"
+                    sh 'pnpm stopTestDb'
+                }
+            }
+        }
+
+        stage("CodeCov") {
+            steps {
+                dir("bdlist-backend/") {
+                    sh 'CODECOV_TOKEN=$CODECOV_TOKEN codecov'
                 }
             }
         }
@@ -36,7 +57,7 @@ pipeline {
                 dir("bdlist-backend/") {
                     echo "Grabbing version number for Docker tag..."
                     script {
-                        TAG = sh(script: "jq -r '.version' version.json", returnStdout: true).trim();
+                        TAG = sh(script: "jq -r '.version' src/version.json", returnStdout: true).trim();
                     }
                     sh 'docker login ghcr.io -u PScoriae -p $GHCR_TOKEN'
                     sh "docker buildx build --push --platform linux/amd64,linux/arm64 --builder=build-container -t ghcr.io/shuttleday/api:$TAG -t ghcr.io/shuttleday/api . "

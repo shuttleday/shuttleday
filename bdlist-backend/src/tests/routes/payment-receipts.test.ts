@@ -46,7 +46,7 @@ describe("GET /payment-receipts", () => {
     expect(res.body).toMatchObject({
       signedUrls: [
         {
-          payer: "_chaechae_1",
+          payer: "640972e1ab208acdf081d525",
           signedUrl:
             "https://shuttleday-payments.s3.ap-southeast-1.amazonaws.com/sakura%40miyawaki.com/640972e1ab208acdf081d525/_chaechae_1.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=%2F20230321%2Fap-southeast-1%2Fs3%2Faws4_request&X-Amz-Date=20230321T110813Z&X-Amz-Expires=3600&X-Amz-Signature=12e99a2fa4ff9c308de65202c892754a2d0c89e21d3ee2cadea1f78d60854f0c&X-Amz-SignedHeaders=host&x-id=GetObject",
         },
@@ -66,23 +66,7 @@ describe("GET /payment-receipts", () => {
     // validation
     expect(res.statusCode).toBe(404);
     expect(res.body).toMatchObject({
-      error: "No session under your account with that ID",
-    });
-  });
-
-  it("returns a 404 if the passed in session does not belong to the caller", async () => {
-    // perform request
-    const res = await api
-      .get("/payment-receipts")
-      .query({
-        sessionId: "640972e1ab208acdf081d025",
-      })
-      .expect("Content-Type", /json/);
-
-    // validation
-    expect(res.statusCode).toBe(404);
-    expect(res.body).toMatchObject({
-      error: "No session under your account with that ID",
+      error: "No session with that ID",
     });
   });
 

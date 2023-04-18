@@ -2,11 +2,10 @@ import request from "supertest";
 import app from "../../setup";
 import { disconnectDb } from "../../db/connect";
 import { NextFunction } from "express";
+import { Request } from "express";
+import { UserType } from "../../db/interfaces";
+import { ObjectId } from "mongodb";
 const api = request(app);
-
-// mock validateGJwt on a per test basis
-// https://dev.to/wolfhoundjesse/comment/lj50
-import * as functions from "../../utils/functions";
 
 // globally mock authenticate middleware
 jest.mock("../../middleware/authenticate", () => {
@@ -14,7 +13,19 @@ jest.mock("../../middleware/authenticate", () => {
     // use existing definitions for other functions
     ...jest.requireActual("../../middleware/authenticate"),
     // skip JWT auth
-    authenticate: (req: Request, res: Response, next: NextFunction) => next(),
+    authenticate: (req: Request, res: Response, next: NextFunction) => {
+      req.user = {
+        _id: new ObjectId(),
+        email: "test@email.com",
+        firstName: "HI",
+        lastName: "Hello",
+        username: "peepoo",
+        createdAt: new Date(),
+        userType: UserType.Admin,
+        hasQR: true,
+      };
+      next();
+    },
   };
 });
 
@@ -25,7 +36,7 @@ const userTeh = {
   lastName: "Teh",
   username: "Kirix",
   createdAt: "2023-03-19T10:11:51.693Z",
-  userType: "player",
+  userType: "PLAYER",
 };
 
 const userPie = {
@@ -35,7 +46,7 @@ const userPie = {
   lastName: "Cesario",
   username: "PScoriae",
   createdAt: "2023-03-19T10:00:31.171Z",
-  userType: "player",
+  userType: "PLAYER",
 };
 
 const userYunjin = {
@@ -45,58 +56,11 @@ const userYunjin = {
   lastName: "Huh",
   username: "jenaissante",
   createdAt: "2023-03-19T10:00:31.171Z",
-  userType: "admin",
+  userType: "ADMIN",
 };
 
 // DB teardown so that Jest exits gracefully
 afterAll(async () => await disconnectDb());
-
-describe("POST /users", () => {
-  it("returns a newly created user", async () => {
-    // mock return value for this specific test
-    const validateGJwtMock = jest
-      .spyOn(functions, "validateGJwt")
-      .mockResolvedValueOnce({
-        email: "chaewon@kim.com",
-        given_name: "Chaewon",
-        family_name: "Kim",
-        iss: "hi",
-        sub: "sldfjds",
-        exp: 239480392843,
-        aud: "sldfj;sdf",
-        iat: 230480234,
-      });
-
-    // perform request
-    const res = await api
-      .post("/users")
-      .send({
-        username: "_chaechae_1",
-      })
-      .expect("Content-Type", /json/);
-
-    // validation
-    expect(res.statusCode).toBe(201);
-    expect(res.body).toMatchObject(
-      expect.objectContaining({
-        result: expect.objectContaining({
-          acknowledged: true,
-          insertedId: expect.any(String),
-        }),
-        document: expect.objectContaining({
-          _id: expect.any(String),
-          email: "chaewon@kim.com",
-          firstName: "Chaewon",
-          lastName: "Kim",
-          username: "_chaechae_1",
-          createdAt: expect.any(String),
-          userType: "player",
-        }),
-      })
-    );
-    expect(validateGJwtMock).toHaveBeenCalled();
-  });
-});
 
 describe("GET /users/:email", () => {
   it("returns user based on email param", async () => {

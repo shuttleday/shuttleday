@@ -12,6 +12,12 @@
 </p>
 
 <p>
+  <a href="https://codecov.io/github/shuttleday/shuttleday" > 
+    <img src="https://codecov.io/github/shuttleday/shuttleday/branch/main/graph/badge.svg?token=KA4B01QNXI"/> 
+  </a>
+</p>
+
+<p>
 <a href="https://jenkins.pierreccesario.com/job/shuttleday-backend/">
         <img src="https://jenkins.pierreccesario.com/buildStatus/icon?job=shuttleday-backend%2Fmain&subject=Backend%20Build">
 </a>

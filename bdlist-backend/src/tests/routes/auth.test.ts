@@ -44,3 +44,48 @@ describe("POST /auth/signin", () => {
     expect(validateGJwtMock).toHaveBeenCalled();
   });
 });
+
+describe("POST /auth/register", () => {
+  it("returns a newly created user", async () => {
+    // mock return value for this specific test
+    const validateGJwtMock = jest
+      .spyOn(functions, "validateGJwt")
+      .mockResolvedValueOnce({
+        email: "chaewon@kim.com",
+        given_name: "Chaewon",
+        family_name: "Kim",
+        iss: "hi",
+        sub: "sldfjds",
+        exp: 239480392843,
+        aud: "sldfj;sdf",
+        iat: 230480234,
+      });
+
+    // perform request
+    const res = await api
+      .post("/auth/register")
+      .send({
+        username: "_chaechae_1",
+      })
+      .expect("Content-Type", /json/);
+
+    // validation
+    expect(res.statusCode).toBe(201);
+    expect(res.body).toMatchObject(
+      expect.objectContaining({
+        accessToken: expect.any(String),
+        refreshToken: expect.any(String),
+        user: expect.objectContaining({
+          _id: expect.any(String),
+          email: "chaewon@kim.com",
+          firstName: "Chaewon",
+          lastName: "Kim",
+          username: "_chaechae_1",
+          createdAt: expect.any(String),
+          userType: "PLAYER",
+        }),
+      })
+    );
+    expect(validateGJwtMock).toHaveBeenCalled();
+  });
+});
