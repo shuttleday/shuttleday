@@ -10,6 +10,15 @@ pipeline {
         CODECOV_TOKEN = credentials('CODECOV_TOKEN')
     }
 
+    options {
+        timeout(time: 30, unit: 'MINUTES')
+        disableConcurrentBuilds(abortPrevious: true)
+        buildDiscarder logRotator( 
+                    daysToKeepStr: '10', 
+                    numToKeepStr: '10'
+                )
+    }
+
     tools {
         nodejs 'nodejs'
     }
