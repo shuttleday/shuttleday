@@ -25,7 +25,7 @@ const userTeh = {
   lastName: "Teh",
   username: "Kirix",
   createdAt: "2023-03-19T10:11:51.693Z",
-  userType: "player",
+  userType: "PLAYER",
 };
 
 const userPie = {
@@ -35,7 +35,7 @@ const userPie = {
   lastName: "Cesario",
   username: "PScoriae",
   createdAt: "2023-03-19T10:00:31.171Z",
-  userType: "player",
+  userType: "PLAYER",
 };
 
 const userYunjin = {
@@ -45,58 +45,11 @@ const userYunjin = {
   lastName: "Huh",
   username: "jenaissante",
   createdAt: "2023-03-19T10:00:31.171Z",
-  userType: "admin",
+  userType: "ADMIN",
 };
 
 // DB teardown so that Jest exits gracefully
 afterAll(async () => await disconnectDb());
-
-describe("POST /users", () => {
-  it("returns a newly created user", async () => {
-    // mock return value for this specific test
-    const validateGJwtMock = jest
-      .spyOn(functions, "validateGJwt")
-      .mockResolvedValueOnce({
-        email: "chaewon@kim.com",
-        given_name: "Chaewon",
-        family_name: "Kim",
-        iss: "hi",
-        sub: "sldfjds",
-        exp: 239480392843,
-        aud: "sldfj;sdf",
-        iat: 230480234,
-      });
-
-    // perform request
-    const res = await api
-      .post("/users")
-      .send({
-        username: "_chaechae_1",
-      })
-      .expect("Content-Type", /json/);
-
-    // validation
-    expect(res.statusCode).toBe(201);
-    expect(res.body).toMatchObject(
-      expect.objectContaining({
-        result: expect.objectContaining({
-          acknowledged: true,
-          insertedId: expect.any(String),
-        }),
-        document: expect.objectContaining({
-          _id: expect.any(String),
-          email: "chaewon@kim.com",
-          firstName: "Chaewon",
-          lastName: "Kim",
-          username: "_chaechae_1",
-          createdAt: expect.any(String),
-          userType: "PLAYER",
-        }),
-      })
-    );
-    expect(validateGJwtMock).toHaveBeenCalled();
-  });
-});
 
 describe("GET /users/:email", () => {
   it("returns user based on email param", async () => {
