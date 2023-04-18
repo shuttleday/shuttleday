@@ -10,6 +10,11 @@ pipeline {
         CODECOV_TOKEN = credentials('CODECOV_TOKEN')
     }
 
+    options {
+        timeout(time: 30, unit: 'MINUTE')
+        disableConcurrentBuilds(abortPrevious: true)
+    }
+
     tools {
         nodejs 'nodejs'
     }
