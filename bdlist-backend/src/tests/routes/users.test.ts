@@ -2,11 +2,10 @@ import request from "supertest";
 import app from "../../setup";
 import { disconnectDb } from "../../db/connect";
 import { NextFunction } from "express";
+import { Request } from "express";
+import { UserType } from "../../db/interfaces";
+import { ObjectId } from "mongodb";
 const api = request(app);
-
-// mock validateGJwt on a per test basis
-// https://dev.to/wolfhoundjesse/comment/lj50
-import * as functions from "../../utils/functions";
 
 // globally mock authenticate middleware
 jest.mock("../../middleware/authenticate", () => {
@@ -14,7 +13,19 @@ jest.mock("../../middleware/authenticate", () => {
     // use existing definitions for other functions
     ...jest.requireActual("../../middleware/authenticate"),
     // skip JWT auth
-    authenticate: (req: Request, res: Response, next: NextFunction) => next(),
+    authenticate: (req: Request, res: Response, next: NextFunction) => {
+      req.user = {
+        _id: new ObjectId(),
+        email: "test@email.com",
+        firstName: "HI",
+        lastName: "Hello",
+        username: "peepoo",
+        createdAt: new Date(),
+        userType: UserType.Admin,
+        hasQR: true,
+      };
+      next();
+    },
   };
 });
 
