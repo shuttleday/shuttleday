@@ -29,8 +29,6 @@ pipeline {
                     sh 'pnpm startTestDb'
                     sh "ACCESS_TOKEN_SECRET=$AT_SECRET REFRESH_TOKEN_SECRET=$RT_SECRET pnpm ci:test"
                     sh 'pnpm stopTestDb'
-                    sh 'sudo docker volume ls --filter dangling=true | awk 'NR>1{print $2}' > toDelete.txt'
-                    sh 'cat toDelete.txt | while read line; do sudo docker volume remove -f $line; done'
                 }
             }
         }
