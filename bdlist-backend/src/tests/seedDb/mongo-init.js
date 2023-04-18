@@ -19,11 +19,7 @@ db["users"].insertMany([
     lastName: "Cesario",
     username: "PScoriae",
     createdAt: new Date("2023-03-19T10:00:31.171Z"),
-    userType: "player",
-    accessToken:
-      "$argon2id$v=19$m=65536,t=3,p=4$0mWjhqlFbeMjl+JStrWYAg$hwlDxcgGxCvJsJ/gkp0YMHfZABETIN8C8IQtztyesPU",
-    refreshToken:
-      "$argon2id$v=19$m=65536,t=3,p=4$IvwcOJCO84O9sj0vQniCbg$/m2crfQSG3X5eldxRYguVz8hLLcK6IkkjE3Ab3IGtPg",
+    userType: "PLAYER",
   },
   {
     _id: ObjectId("6416dfe71b2a978617f9c27f"),
@@ -32,11 +28,7 @@ db["users"].insertMany([
     lastName: "Teh",
     username: "Kirix",
     createdAt: new Date("2023-03-19T10:11:51.693Z"),
-    userType: "player",
-    accessToken:
-      "$argon2id$v=19$m=65536,t=3,p=4$wv1qv5LWFQNOlj4dm0sIZw$9qu+KtX6I4i/R69JX/2rbKvbxA/7IrmC+xUhl1ztcm0",
-    refreshToken:
-      "$argon2id$v=19$m=65536,t=3,p=4$JHKW8x+dpnt6Oazdeg1lng$TYI0E+RKEODcLWLFhkTwQPMFd+LDW1F7EiM0fG5ABDg",
+    userType: "PLAYER",
   },
   {
     _id: ObjectId("6416e081090bb857e3384aa3"),
@@ -45,11 +37,7 @@ db["users"].insertMany([
     lastName: "Huh",
     username: "jenaissante",
     createdAt: new Date("2023-03-19T10:00:31.171Z"),
-    userType: "admin",
-    accessToken:
-      "$argon2id$v=19$m=65536,t=3,p=4$3xeJHi84oq9krTjm+839gQ$aCzetWKSfqQZa9XQu9hZpEC+ReogmLlOIqO8Vg02PlE",
-    refreshToken:
-      "$argon2id$v=19$m=65536,t=3,p=4$k6t0jdtr3ijZnneVH9s8WA$qznkQLe+UNwCI/O5cEhezBX5CAYW6G3HDwIvlqhuwSs",
+    userType: "ADMIN",
   },
 ]);
 
