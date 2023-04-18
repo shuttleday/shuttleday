@@ -5,6 +5,8 @@ pipeline {
     environment {
         GHCR_TOKEN = credentials('GHCR_TOKEN')
         DISCORD_WEBHOOK = credentials('DISCORD_WEBHOOK')
+        AT_SECRET = credentials('SHUTTLEDAY_AT')
+        RT_SECRET = credentials('SHUTTLEDAY_RT')
     }
 
     tools {
@@ -17,6 +19,18 @@ pipeline {
                 dir("bdlist-backend/") {
                     echo "Installing dependencies..."
                     sh "pnpm i"
+                }
+            }
+        }
+
+        stage("Jest Unit Test") {
+            steps {
+                dir("bdlist-backend/") {
+                    sh 'pnpm startTestDb'
+                    sh "ACCESS_TOKEN_SECRET=$AT_SECRET REFRESH_TOKEN_SECRET=$RT_SECRET pnpm ci:test"
+                    sh 'pnpm stopTestDb'
+                    sh 'sudo docker volume ls --filter dangling=true | awk 'NR>1{print $2}' > toDelete.txt'
+                    sh 'cat toDelete.txt | while read line; do sudo docker volume remove -f $line; done'
                 }
             }
         }
