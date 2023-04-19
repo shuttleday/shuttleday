@@ -96,6 +96,10 @@
 | ![][nginx]                       | ![][docker]            |                         | ![][expressjs] <br> ![][jwt]     | ![][material-ui]                |
 | ![][cloudflare]                  |                        |                         |                                  |                                 |
 
+## System Architecture
+
+![](docs/images/systemArchitecture.png)
+
 ## Features
 
 - GitOps workflow
