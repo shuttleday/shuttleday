@@ -36,7 +36,7 @@ pipeline {
         stage("Jest Unit Test") {
             steps {
                 dir("bdlist-backend/") {
-                    sh "pnpm startTestDb; ACCESS_TOKEN_SECRET=$AT_SECRET REFRESH_TOKEN_SECRET=$RT_SECRET pnpm ci:test; pnpm stopTestDb; sudo docker volume prune -f"
+                    sh "pnpm startTestDb; ACCESS_TOKEN_SECRET=$AT_SECRET REFRESH_TOKEN_SECRET=$RT_SECRET pnpm ci:test"
                 }
             }
         }
@@ -92,6 +92,8 @@ pipeline {
             } 
         }
         always {
+            sh "pnpm stopTestDb"
+            sh "sudo docker volume prune -f"
             discordSend description: "Jenkins Pipeline Build", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: DISCORD_WEBHOOK
         }
     }
