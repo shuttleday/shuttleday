@@ -98,7 +98,7 @@
 
 ## System Architecture
 
-![](docs/images/systemArchitecture.png)
+![](docs/images/systemArchitecture.webp)
 
 ## Features
 

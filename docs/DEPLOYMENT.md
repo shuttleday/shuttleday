@@ -10,7 +10,7 @@ It aims to replicate the current setup as closely as possible. Regardless, where
 
 This is a diagram of the infrastructure and software used to host and deploy the Shuttleday project:
 
-![](images/systemArchitecture.png)
+![](images/systemArchitecture.webp)
 
 ## Datacenters
 
