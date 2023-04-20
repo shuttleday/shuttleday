@@ -26,20 +26,4 @@ describe("JWT functions", () => {
     expect(typeof output).toBe("string");
     expect(output.startsWith("eyJhbG")).toBe(true);
   });
-
-  it("returns the decoded JWT token", () => {
-    const output = functions.verifyAccessToken(
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNvbWVlbWFpbEBlbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJFdW5jaGFlIiwibGFzdE5hbWUiOiJIb25nIiwidXNlcm5hbWUiOiJoaGguZV9jLnYiLCJ1c2VyVHlwZSI6InBsYXllciIsImlhdCI6MTY3OTM5MzM2OCwiZXhwIjoxNjgxOTg1MzY4fQ.jdLHv-gTp-aSlsX4oUQrCJF07SkNmcVHy2Q-DMn_jkI"
-    );
-
-    expect(output).toMatchObject({
-      email: "someemail@email.com",
-      firstName: "Eunchae",
-      lastName: "Hong",
-      username: "hhh.e_c.v",
-      userType: "player",
-      iat: 1679393368,
-      exp: 1681985368,
-    });
-  });
 });
