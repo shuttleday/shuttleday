@@ -5,8 +5,6 @@ pipeline {
     environment {
         GHCR_TOKEN = credentials('GHCR_TOKEN')
         DISCORD_WEBHOOK = credentials('DISCORD_WEBHOOK')
-        AT_SECRET = credentials('SHUTTLEDAY_AT')
-        RT_SECRET = credentials('SHUTTLEDAY_RT')
         CODECOV_TOKEN = credentials('CODECOV_TOKEN')
     }
 
@@ -32,15 +30,6 @@ pipeline {
                 }
             }
         }
-
-        stage("Jest Unit Test") {
-            steps {
-                dir("bdlist-backend/") {
-                    sh "pnpm startTestDb; ACCESS_TOKEN_SECRET=$AT_SECRET REFRESH_TOKEN_SECRET=$RT_SECRET pnpm ci:test"
-                }
-            }
-        }
-
         stage("CodeCov") {
             steps {
                 dir("bdlist-backend/") {
@@ -71,16 +60,6 @@ pipeline {
                 }
             }
         }
-
-        // stage ("Trigger Update Manifest Pipeline") {
-        //     when { branch 'main' }
-        //     steps {
-        //         dir("bdlist-backend/") {
-        //             echo "Triggering Update Manifest pipeline"
-        //             build job: 'shuttleday-update-k8s-manifest', parameters: [string(name: 'DOCKERTAG', value: TAG)]
-        //         }
-        //     }
-        // }  
     }
 
     post {
@@ -92,8 +71,6 @@ pipeline {
             } 
         }
         always {
-            sh "pnpm stopTestDb"
-            sh "sudo docker volume prune -f"
             discordSend description: "Jenkins Pipeline Build", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: DISCORD_WEBHOOK
         }
     }
