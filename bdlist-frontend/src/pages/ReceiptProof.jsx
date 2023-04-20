@@ -37,11 +37,14 @@ const ReceiptProof = () => {
     async function getData() {
       getSession()
         .then((resData) => {
+          console.log(resData);
           getReceipts(resData.gameSessions)
             .then((res) => {
               setImages(res);
             })
-            .catch((error) => setIsNull(true));
+            .catch((error) => {
+              setIsNull(true);
+            });
         })
         .catch((error) => alert('No data found'));
     }

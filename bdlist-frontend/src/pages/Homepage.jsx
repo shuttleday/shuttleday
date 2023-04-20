@@ -452,7 +452,8 @@ const HomePage = () => {
                         >
                           {sessionInfo.map((date, index) => (
                             <MenuItem key={index} value={index}>
-                              {dayjs(date.end).format('DD/MM/YYYY ddd')}
+                              {dayjs(date.end).format('DD/MM/YYYY ddd')} (mikel
+                              has the fattest ass and the biggest boobs)
                             </MenuItem>
                           ))}
                         </Select>
@@ -544,63 +545,76 @@ const HomePage = () => {
             </TabPanel>
             {/* ---------------------------------------------------------------------------------------------------------------------------- */}
             <TabPanel value='2'>
-              <Stack
-                spacing={2}
-                direction='column'
-                alignItems='center'
-                justifyContent='center'
-              >
-                <Card
-                  sx={{
-                    width: { sx: 280, sm: 350, md: 400 },
-                    height: { sx: 280, sm: 590, md: 660 },
-                  }}
-                >
-                  <CardMedia component='img' image={Bank} alt='QR-Code' />
-                </Card>
-                <FormControl
-                  sx={{ m: 1, minWidth: { xs: 150, sm: 180, md: 200 } }}
-                >
-                  <InputLabel id='demo-simple-select-helper-label'>
-                    Sessions
-                  </InputLabel>
-                  <Select
-                    id='Session-payment'
-                    value={selected}
-                    label='Sessions'
-                    color='primary'
-                    onChange={handleSelect}
-                  >
-                    {sessionInfo === null ? (
-                      <MenuItem value={0}>N/A</MenuItem>
-                    ) : (
-                      sessionInfo.map((date, index) => (
-                        <MenuItem key={index} value={index}>
-                          {dayjs(date.end).format('DD/MM/YYYY ddd')}
-                        </MenuItem>
-                      ))
-                    )}
-                  </Select>
-                </FormControl>
+              {sessionInfo === null ? (
+                <Loading />
+              ) : (
+                <Stack spacing={1} justifyContent='center'>
+                  <div className='flex space-x-2'>
+                    <div className='bg-primary flex-1 rounded-md p-2 text-center border-green-400'>
+                      Courts <p>{sessionInfo[selected].courts.join(',')}</p>
+                    </div>
+                    <div className='bg-primary flex-1 rounded-md p-2 text-center border-green-400'>
+                      Time{' '}
+                      <p>
+                        {dayjs(sessionInfo[selected].start).format('hh:mm A')}
+                      </p>
+                    </div>
+                  </div>
 
-                <Chip
-                  label={
-                    sessionInfo !== null
-                      ? '$' + sessionInfo[selected].cost + ' Per person.'
-                      : 'Not Avaliable'
-                  }
-                  color='success'
-                  variant='outlined'
-                />
-                <Button
-                  variant='contained'
-                  color='success'
-                  size='large'
-                  onClick={handleOpenModalImage}
-                >
-                  Upload Receipt
-                </Button>
-              </Stack>
+                  <Box sx={{ flexGrow: 1 }}>
+                    <div className=' bg-primary rounded-md w-full'>
+                      <FormControl
+                        sx={{
+                          minWidth: { xs: 150, sm: 180, md: 200 },
+                          flexGrow: 1,
+                        }}
+                        variant='filled'
+                        className=' w-full'
+                      >
+                        <InputLabel id='demo-simple-select-helper-label'>
+                          Sessions
+                        </InputLabel>
+                        <Select
+                          id='demo-simple-select-helper'
+                          value={selected}
+                          label='Sessions'
+                          color='primary'
+                          onChange={handleSelect}
+                          style={{ borderRadius: '8px' }}
+                        >
+                          {sessionInfo.map((date, index) => (
+                            <MenuItem key={index} value={index}>
+                              {dayjs(date.end).format('DD/MM/YYYY ddd')} (mikel
+                              has the fattest ass and)
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </div>
+                  </Box>
+                  <Card className=' rounded-md flex items-center'>
+                    <CardMedia component='img' image={Bank} alt='QR-Code' />
+                  </Card>
+
+                  <Chip
+                    label={
+                      sessionInfo !== null
+                        ? '$' + sessionInfo[selected].cost + ' Per person.'
+                        : 'Not Avaliable'
+                    }
+                    color='success'
+                    variant='outlined'
+                  />
+                  <Button
+                    variant='contained'
+                    color='success'
+                    size='large'
+                    onClick={handleOpenModalImage}
+                  >
+                    Upload Receipt
+                  </Button>
+                </Stack>
+              )}
             </TabPanel>
           </TabContext>
         </Box>

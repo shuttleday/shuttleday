@@ -130,10 +130,12 @@ async function getUsers() {
     const users = response.data;
     return users.result;
   } catch (error) {
+    console.log(error);
     return null;
   }
 }
 
+//Creates a session only if an admin is making the request
 async function createSession(sessionData) {
   try {
     const response = await axios.post(
@@ -146,6 +148,7 @@ async function createSession(sessionData) {
   }
 }
 
+//Edit existing sessions
 async function editSession(sessionData) {
   try {
     const response = await axios.patch(
@@ -159,6 +162,7 @@ async function editSession(sessionData) {
   }
 }
 
+//
 async function getReceipts(ids) {
   try {
     let list = [];
