@@ -36,9 +36,7 @@ pipeline {
         stage("Jest Unit Test") {
             steps {
                 dir("bdlist-backend/") {
-                    sh 'pnpm startTestDb'
-                    sh "ACCESS_TOKEN_SECRET=$AT_SECRET REFRESH_TOKEN_SECRET=$RT_SECRET pnpm ci:test"
-                    sh 'pnpm stopTestDb'
+                    sh "pnpm startTestDb; ACCESS_TOKEN_SECRET=$AT_SECRET REFRESH_TOKEN_SECRET=$RT_SECRET pnpm ci:test; pnpm stopTestDb; sudo docker volume prune -f"
                 }
             }
         }
