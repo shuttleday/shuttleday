@@ -60,16 +60,19 @@ pipeline {
                 }
             }
         }
+
+        stage ("Trigger K8s manifest update") {
+            when { branch 'main'}
+            steps {
+                dir("bdlist-backend/") {
+                    echo "Triggering Update Manifest pipeline"
+                    build job: 'shuttleday-update-k8s-manifest', parameters: [string(name: 'DOCKERTAG', value: TAG)]
+                } 
+            }
+        }
     }
 
     post {
-        success {
-            when {branch 'main'}
-            dir("bdlist-backend/") {
-                echo "Triggering Update Manifest pipeline"
-                build job: 'shuttleday-update-k8s-manifest', parameters: [string(name: 'DOCKERTAG', value: TAG)]
-            } 
-        }
         always {
             discordSend description: "Jenkins Pipeline Build", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: DISCORD_WEBHOOK
         }
