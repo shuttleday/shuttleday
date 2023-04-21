@@ -102,7 +102,7 @@
 
 ![](docs/images/systemArchitecture.webp)
 
-## Features
+## Highlights
 
 - GitOps workflow
 - Kubernetes HA Deployment
