@@ -1,10 +1,10 @@
 #!/bin/bash
 
-$GHCR_TOKEN=$1
+GHCR_TOKEN=$1
 PREV_TAG=$(cat prevVersion.txt 2>/dev/null || true)
 DESIRED_TAG=$(jq -r '.version' src/version.json)
 
-if [$DESIRED_TAG == $PREV_TAG]; then
+if [["$DESIRED_TAG" == "$PREV_TAG"]]; then
     echo "No changes in tag. Exiting."
     exit 0
 fi
