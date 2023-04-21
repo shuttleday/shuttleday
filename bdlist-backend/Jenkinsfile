@@ -52,7 +52,7 @@ pipeline {
             steps {
                 dir("bdlist-backend/") {
                     script {
-                        RESULT = sh(script: 'bash dockerize.sh', returnStdout: true).trim()
+                        RESULT = sh(script: "bash dockerize.sh $GHCR_TOKEN", returnStdout: true).trim()
                     }
                 }
             }
