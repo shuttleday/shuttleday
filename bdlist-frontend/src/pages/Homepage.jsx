@@ -410,6 +410,7 @@ const HomePage = () => {
               >
                 <Tab label='NameList' value='1' />
                 <Tab label='Payment' value='2' />
+                {/* <Tab label='Receipts' value='3' /> */}
               </TabList>
             </Box>
             <TabPanel value='1'>
@@ -452,8 +453,7 @@ const HomePage = () => {
                         >
                           {sessionInfo.map((date, index) => (
                             <MenuItem key={index} value={index}>
-                              {dayjs(date.end).format('DD/MM/YYYY ddd')} (mikel
-                              has the fattest ass and the biggest boobs)
+                              {dayjs(date.end).format('DD/MM/YYYY ddd')}
                             </MenuItem>
                           ))}
                         </Select>
@@ -496,6 +496,7 @@ const HomePage = () => {
                                 justifyContent: 'center',
                                 size: 30,
                               }}
+                              className='flex'
                               primary={
                                 <Fragment>
                                   <Typography
@@ -507,7 +508,12 @@ const HomePage = () => {
                                       },
                                     }}
                                     component='span'
-                                    color='text.primary'
+                                    className={
+                                      player.userEmail ===
+                                      sessionInfo[selected].payTo
+                                        ? 'text-yellow-400 grow'
+                                        : player.paid && 'text-green-400'
+                                    }
                                   >
                                     {player.username}
                                   </Typography>
