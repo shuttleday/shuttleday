@@ -61,8 +61,8 @@ pipeline {
         stage ("Compare Versions") {
             steps {
                 unstash 'version'
-                sh "PREVIOUS_VERSION=$(cat version.txt)"
-                sh "CURRENT_VERSION=$(cat src/version.json | jq -r .version)"
+                sh "PREVIOUS_VERSION=\$(cat version.txt)"
+                sh "CURRENT_VERSION=\$(cat src/version.json | jq -r .version)"
                 sh "if [ \"$PREVIOUS_VERSION\" = \"$CURRENT_VERSION\" ]; then echo \"Versions match\"; else echo \"Versions do not match\"; fi"
                 script {
                     env.VERSIONS_MATCH = (PREVIOUS_VERSION == CURRENT_VERSION) ? "true" : "false"
