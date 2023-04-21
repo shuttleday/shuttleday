@@ -15,6 +15,7 @@ pipeline {
                     daysToKeepStr: '10', 
                     numToKeepStr: '10'
                 )
+        preserveStashes(buildCount: 1)
     }
 
     tools {
@@ -47,16 +48,37 @@ pipeline {
             }
         }
 
-        stage ("Multi-platform Dockerize API and push to ghcr.io") {
-            when { branch 'main' }
+        stage ("Stash Current Version") {
             steps {
                 dir("bdlist-backend/") {
-                    echo "Grabbing version number for Docker tag..."
-                    script {
-                        TAG = sh(script: "jq -r '.version' src/version.json", returnStdout: true).trim();
-                    }
+                    sh "VERSION=$(cat src/version.json | jq -r .version)"
+                    sh "echo $VERSION > version.txt"
+                    stash name: 'version', includes: 'version.txt'
+                }
+            }
+        }
+
+        stage ("Compare Versions") {
+            steps {
+                unstash 'version'
+                sh "PREVIOUS_VERSION=$(cat version.txt)"
+                sh "CURRENT_VERSION=$(cat src/version.json | jq -r .version)"
+                sh "if [ \"$PREVIOUS_VERSION\" = \"$CURRENT_VERSION\" ]; then echo \"Versions match\"; else echo \"Versions do not match\"; fi"
+                script {
+                    env.VERSIONS_MATCH = (PREVIOUS_VERSION == CURRENT_VERSION) ? "true" : "false"
+                }
+            }
+        }
+
+        stage ("Multi-platform Dockerize API and push to ghcr.io") {
+            // This stage only runs when:
+            // - the branch is main
+            // - the desired tag in version.json is NOT the same as the desired tag in the previous run
+            when { allOf { branch 'main'; expression { env.VERSIONS_MATCH == "false" }}}
+            steps {
+                dir("bdlist-backend/") {
                     sh 'docker login ghcr.io -u PScoriae -p $GHCR_TOKEN'
-                    sh "docker buildx build --push --platform linux/amd64,linux/arm64 --builder=build-container -t ghcr.io/shuttleday/api:$TAG -t ghcr.io/shuttleday/api . "
+                    sh "docker buildx build --push --platform linux/amd64,linux/arm64 --builder=build-container -t ghcr.io/shuttleday/api:$CURRENT_VERSION -t ghcr.io/shuttleday/api . "
                 }
             }
         }
