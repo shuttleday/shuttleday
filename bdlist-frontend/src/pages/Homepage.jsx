@@ -669,46 +669,44 @@ const HomePage = () => {
           </Alert>
         </Snackbar>
       </Stack>
-      {render && (
-        <Box
-          sx={{
-            transform: 'translateZ(0px)',
-            flexGrow: 1,
-            position: 'fixed',
-            bottom: 0,
-            width: 1.0,
-          }}
+      <Box
+        sx={{
+          transform: 'translateZ(0px)',
+          flexGrow: 1,
+          position: 'fixed',
+          bottom: 0,
+          width: 1.0,
+        }}
+      >
+        <SpeedDial
+          sticky='true'
+          ariaLabel='SpeedDial openIcon'
+          sx={{ position: 'absolute', bottom: 16, right: 16 }}
+          icon={<SpeedDialIcon openIcon={<AccountCircleIcon />} />}
         >
-          <SpeedDial
-            sticky='true'
-            ariaLabel='SpeedDial openIcon'
-            sx={{ position: 'absolute', bottom: 16, right: 16 }}
-            icon={<SpeedDialIcon openIcon={<AccountCircleIcon />} />}
-          >
-            {render
-              ? adminActions.map((action) => (
-                  <SpeedDialAction
-                    key={action.name}
-                    onClick={(e) => {
-                      handleSpeedDial(action.operation);
-                    }}
-                    icon={action.icon}
-                    tooltipTitle={action.name}
-                  />
-                ))
-              : userActions.map((action) => (
-                  <SpeedDialAction
-                    key={action.name}
-                    onClick={(e) => {
-                      handleSpeedDial(action.operation);
-                    }}
-                    icon={action.icon}
-                    tooltipTitle={action.name}
-                  />
-                ))}
-          </SpeedDial>
-        </Box>
-      )}
+          {render
+            ? adminActions.map((action) => (
+                <SpeedDialAction
+                  key={action.name}
+                  onClick={(e) => {
+                    handleSpeedDial(action.operation);
+                  }}
+                  icon={action.icon}
+                  tooltipTitle={action.name}
+                />
+              ))
+            : userActions.map((action) => (
+                <SpeedDialAction
+                  key={action.name}
+                  onClick={(e) => {
+                    handleSpeedDial(action.operation);
+                  }}
+                  icon={action.icon}
+                  tooltipTitle={action.name}
+                />
+              ))}
+        </SpeedDial>
+      </Box>
       {isViewerOpen && (
         <ImageViewer
           src={selectedImages}
