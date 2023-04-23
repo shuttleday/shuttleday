@@ -56,9 +56,7 @@ const HomePage = () => {
   let navigate = useNavigate();
 
   function handleSpeedDial(operation) {
-    if (operation === 'payment') {
-      navigate('/receipt');
-    } else if (operation === 'details') {
+    if (operation === 'details') {
       navigate('/details');
     } else if (operation === 'create') {
       navigate('/create');
@@ -141,7 +139,6 @@ const HomePage = () => {
       async function getSessionData() {
         getSession().then((res) => {
           if (res.gameSessions.length > 0) {
-            console.log(res);
             setSessionInfo(res.gameSessions);
             setSelected(0);
             if (
