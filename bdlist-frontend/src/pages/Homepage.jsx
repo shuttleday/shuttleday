@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   userCheck,
   createAccount,
@@ -7,6 +7,7 @@ import {
   removeFromSession,
   uploadReceipt,
   googleSignIn,
+  getReceipts,
 } from '../data/repository';
 
 import List from '@mui/material/List';
@@ -38,16 +39,17 @@ import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import jwt_decode from 'jwt-decode';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import dayjs from 'dayjs';
 import Loading from '../components/Loading';
-import { actions, ERROR, SUCCESS, WARNING } from '../constants';
+import { actions, ERROR, SUCCESS, WARNING, admin } from '../constants';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { useLocation } from 'react-router-dom';
+import InfoHeader from '../components/InfoHeader';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
+import ImageViewer from 'react-simple-image-viewer';
+import ImageListItemBar from '@mui/material/ImageListItemBar';
+import { BiErrorAlt } from 'react-icons/bi';
 
 const HomePage = () => {
   const location = useLocation();
@@ -58,10 +60,6 @@ const HomePage = () => {
       navigate('/receipt');
     } else if (operation === 'details') {
       navigate('/details');
-    } else if (operation === 'management') {
-      setCondition(ERROR);
-      setAlertMsg('Not avaliable');
-      setOpen(true);
     } else if (operation === 'create') {
       navigate('/create');
     } else if (operation === 'edit') {
@@ -88,6 +86,8 @@ const HomePage = () => {
 
   const [sessionInfo, setSessionInfo] = useState(null);
   const [selected, setSelected] = useState(0);
+
+  //Used as a flag to see if the player has joined the specific session
   const [playerStat, setPlayerStat] = useState(true);
 
   //Control logic for tabs----------------------------------------------------------
@@ -165,7 +165,7 @@ const HomePage = () => {
           setOpen(true);
         }
 
-        if (user.data.userType === 'admin') {
+        if (user.data.userType === admin) {
           setRender(true);
         }
       });
@@ -181,8 +181,41 @@ const HomePage = () => {
 
   const [alertMsg, setAlertMsg] = useState('');
 
+  const [receipts, setReceipts] = useState(null);
+  const [isEmpty, setIsEmpty] = useState(false);
+  const [selectedImages, setSelectedImages] = useState(null);
+
+  const [currentImage, setCurrentImage] = useState(0);
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
+
+  const openImageViewer = useCallback(
+    (index) => {
+      setSelectedImages(receipts.viewableImage);
+      setCurrentImage(index);
+      setIsViewerOpen(true);
+      // eslint-disable-next-line
+    },
+    [receipts]
+  );
+
+  const closeImageViewer = () => {
+    setCurrentImage(0);
+    setIsViewerOpen(false);
+  };
+
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);
+    if (newValue === '3') {
+      getReceipts(sessionInfo[selected]._id)
+        .then((res) => {
+          setIsEmpty(false);
+          setReceipts(res);
+        })
+        .catch((error) => {
+          setIsEmpty(true);
+          setReceipts([]);
+        });
+    }
   };
 
   const onJoin = async () => {
@@ -281,15 +314,29 @@ const HomePage = () => {
 
   const handleSelect = (event) => {
     setSelected(event.target.value);
-    const user = jwt_decode(localStorage.getItem('jwtToken_Login'));
-    if (
-      sessionInfo[event.target.value].players.find(
-        (item) => item.userEmail === user.email
-      )
-    ) {
-      setPlayerStat(false);
-    } else {
-      setPlayerStat(true);
+
+    if (activeTab === '1') {
+      const user = jwt_decode(localStorage.getItem('jwtToken_Login'));
+      if (
+        sessionInfo[event.target.value].players.find(
+          (item) => item.userEmail === user.email
+        )
+      ) {
+        setPlayerStat(false);
+      } else {
+        setPlayerStat(true);
+      }
+    } else if (activeTab === '3') {
+      setReceipts(null);
+      getReceipts(sessionInfo[event.target.value]._id)
+        .then((res) => {
+          setIsEmpty(false);
+          setReceipts(res);
+        })
+        .catch((error) => {
+          setIsEmpty(true);
+          setReceipts([]);
+        });
     }
   };
   return (
@@ -410,7 +457,7 @@ const HomePage = () => {
               >
                 <Tab label='NameList' value='1' />
                 <Tab label='Payment' value='2' />
-                {/* <Tab label='Receipts' value='3' /> */}
+                {render && <Tab label='Receipts' value='3' />}
               </TabList>
             </Box>
             <TabPanel value='1'>
@@ -418,48 +465,11 @@ const HomePage = () => {
                 <Loading />
               ) : (
                 <Stack spacing={1} justifyContent='center'>
-                  <div className='flex space-x-2'>
-                    <div className='bg-primary flex-1 rounded-md p-2 text-center border-green-400'>
-                      Courts <p>{sessionInfo[selected].courts.join(',')}</p>
-                    </div>
-                    <div className='bg-primary flex-1 rounded-md p-2 text-center border-green-400'>
-                      Time{' '}
-                      <p>
-                        {dayjs(sessionInfo[selected].start).format('hh:mm A')}
-                      </p>
-                    </div>
-                  </div>
-
-                  <Box sx={{ flexGrow: 1 }}>
-                    <div className=' bg-primary rounded-md w-full'>
-                      <FormControl
-                        sx={{
-                          minWidth: { xs: 150, sm: 180, md: 200 },
-                          flexGrow: 1,
-                        }}
-                        variant='filled'
-                        className=' w-full'
-                      >
-                        <InputLabel id='demo-simple-select-helper-label'>
-                          Sessions
-                        </InputLabel>
-                        <Select
-                          id='demo-simple-select-helper'
-                          value={selected}
-                          label='Sessions'
-                          color='primary'
-                          onChange={handleSelect}
-                          style={{ borderRadius: '8px' }}
-                        >
-                          {sessionInfo.map((date, index) => (
-                            <MenuItem key={index} value={index}>
-                              {dayjs(date.end).format('DD/MM/YYYY ddd')}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </div>
-                  </Box>
+                  <InfoHeader
+                    sessionInfo={sessionInfo}
+                    selected={selected}
+                    handleSelect={handleSelect}
+                  />
                   <List
                     sx={{
                       width: { xs: 272, sm: 452, lg: 452 },
@@ -555,49 +565,11 @@ const HomePage = () => {
                 <Loading />
               ) : (
                 <Stack spacing={1} justifyContent='center'>
-                  <div className='flex space-x-2'>
-                    <div className='bg-primary flex-1 rounded-md p-2 text-center border-green-400'>
-                      Courts <p>{sessionInfo[selected].courts.join(',')}</p>
-                    </div>
-                    <div className='bg-primary flex-1 rounded-md p-2 text-center border-green-400'>
-                      Time{' '}
-                      <p>
-                        {dayjs(sessionInfo[selected].start).format('hh:mm A')}
-                      </p>
-                    </div>
-                  </div>
-
-                  <Box sx={{ flexGrow: 1 }}>
-                    <div className=' bg-primary rounded-md w-full'>
-                      <FormControl
-                        sx={{
-                          minWidth: { xs: 150, sm: 180, md: 200 },
-                          flexGrow: 1,
-                        }}
-                        variant='filled'
-                        className=' w-full'
-                      >
-                        <InputLabel id='demo-simple-select-helper-label'>
-                          Sessions
-                        </InputLabel>
-                        <Select
-                          id='demo-simple-select-helper'
-                          value={selected}
-                          label='Sessions'
-                          color='primary'
-                          onChange={handleSelect}
-                          style={{ borderRadius: '8px' }}
-                        >
-                          {sessionInfo.map((date, index) => (
-                            <MenuItem key={index} value={index}>
-                              {dayjs(date.end).format('DD/MM/YYYY ddd')} (mikel
-                              has the fattest ass and)
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </div>
-                  </Box>
+                  <InfoHeader
+                    sessionInfo={sessionInfo}
+                    selected={selected}
+                    handleSelect={handleSelect}
+                  />
                   <Card className=' rounded-md flex items-center'>
                     <CardMedia component='img' image={Bank} alt='QR-Code' />
                   </Card>
@@ -621,6 +593,56 @@ const HomePage = () => {
                   </Button>
                 </Stack>
               )}
+            </TabPanel>
+            <TabPanel value='3'>
+              <Stack spacing={1}>
+                <InfoHeader
+                  sessionInfo={sessionInfo}
+                  selected={selected}
+                  handleSelect={handleSelect}
+                />
+
+                {receipts === null ? (
+                  <Loading />
+                ) : isEmpty ? (
+                  <div className='py-4 px-12  flex justify-evenly items-center flex-col h-[350px] lg:h-[500px]'>
+                    <div className=' justify-center items-center '>
+                      <BiErrorAlt className='h-[60px] w-[60px]' />
+                    </div>
+
+                    <p className='text-center font-bold text-red-500 '>
+                      No receipts has been uploaded yet
+                    </p>
+                  </div>
+                ) : (
+                  <Box>
+                    <ImageList
+                      sx={{
+                        width: { sx: 240, sm: 450 },
+                        height: { sx: 200, sm: 300, md: 550 },
+                      }}
+                    >
+                      {receipts.urls.map((image, index) => (
+                        <ImageListItem key={index}>
+                          <img
+                            className='rounded-md'
+                            src={`${image.signedUrl}`}
+                            srcSet={`${image.signedUrl}`}
+                            alt={image.payer}
+                            onClick={() => openImageViewer(index)}
+                          />
+                          <ImageListItemBar
+                            title={image.payer}
+                            subtitle={''}
+                            className='rounded-md'
+                          />
+                        </ImageListItem>
+                      ))}
+                    </ImageList>
+                    <br />
+                  </Box>
+                )}
+              </Stack>
             </TabPanel>
           </TabContext>
         </Box>
@@ -667,6 +689,18 @@ const HomePage = () => {
             ))}
           </SpeedDial>
         </Box>
+      )}
+      {isViewerOpen && (
+        <ImageViewer
+          src={selectedImages}
+          currentIndex={currentImage}
+          onClose={closeImageViewer}
+          disableScroll={false}
+          backgroundStyle={{
+            backgroundColor: 'rgba(0,0,0,0.9)',
+          }}
+          closeOnClickOutside={true}
+        />
       )}
     </div>
   );

@@ -64,7 +64,9 @@ async function getSession() {
     let modify = response.data;
     for (var i = 0; i < modify.gameSessions.length; i++) {
       let courtList = modify.gameSessions[i].courts.map((str) => Number(str));
+      const players = modify.gameSessions[i].players.slice().reverse();
       modify.gameSessions.court = courtList;
+      modify.gameSessions.players = players;
     }
 
     return modify;
@@ -163,33 +165,28 @@ async function editSession(sessionData) {
 }
 
 //
-async function getReceipts(ids) {
+async function getReceipts(id) {
   try {
-    let list = [];
-    for (var i = 0; i < ids.length; i++) {
-      const response = await axios.get(
-        process.env.REACT_APP_API_LINK + '/payment-receipts',
-        {
-          params: { sessionId: ids[i]._id },
-        }
-      );
-
-      let images = [];
-      for (var j = 0; j < response.data.signedUrls.length; j++) {
-        images.push(response.data.signedUrls[j].signedUrl);
+    const response = await axios.get(
+      process.env.REACT_APP_API_LINK + '/payment-receipts',
+      {
+        params: { sessionId: id },
       }
-      const dataObj = {
-        id: ids[i]._id,
-        urls: response.data.signedUrls,
-        date: ids[i].end,
-        viewableImage: images,
-      };
-      list.push(dataObj);
+    );
+
+    let images = [];
+    for (var j = 0; j < response.data.signedUrls.length; j++) {
+      images.push(response.data.signedUrls[j].signedUrl);
     }
-    return list;
+
+    const dataObj = {
+      urls: response.data.signedUrls,
+      viewableImage: images,
+    };
+
+    return dataObj;
   } catch (error) {
-    console.log(error);
-    return [];
+    throw error;
   }
 }
 

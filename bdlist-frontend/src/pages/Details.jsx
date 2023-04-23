@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import { getUsers } from '../data/repository';
 import { useState } from 'react';
+import { admin } from '../constants';
 
 import SpeedDialComponent from '../components/SpeedDialComponent';
 
@@ -23,7 +24,7 @@ const Details = () => {
       navigate('/GLogin');
     }
     const user = jwt_decode(localStorage.getItem('jwtToken_Login'));
-    if (user.userType !== 'admin') {
+    if (user.userType !== admin) {
       navigate('/NotFound-404');
     }
 
