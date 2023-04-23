@@ -40,7 +40,14 @@ import SpeedDialAction from '@mui/material/SpeedDialAction';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import jwt_decode from 'jwt-decode';
 import Loading from '../components/Loading';
-import { actions, ERROR, SUCCESS, WARNING, admin } from '../constants';
+import {
+  adminActions,
+  userActions,
+  ERROR,
+  SUCCESS,
+  WARNING,
+  admin,
+} from '../constants';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { useLocation } from 'react-router-dom';
@@ -60,6 +67,10 @@ const HomePage = () => {
       navigate('/details');
     } else if (operation === 'create') {
       navigate('/create');
+    } else if (operation === 'logout') {
+      localStorage.removeItem('jwtToken_Login');
+      localStorage.removeItem('refreshToken');
+      navigate('/Glogin');
     } else if (operation === 'edit') {
       navigate('/edit', {
         state: {
@@ -674,16 +685,27 @@ const HomePage = () => {
             sx={{ position: 'absolute', bottom: 16, right: 16 }}
             icon={<SpeedDialIcon openIcon={<AccountCircleIcon />} />}
           >
-            {actions.map((action) => (
-              <SpeedDialAction
-                key={action.name}
-                onClick={(e) => {
-                  handleSpeedDial(action.operation);
-                }}
-                icon={action.icon}
-                tooltipTitle={action.name}
-              />
-            ))}
+            {render
+              ? adminActions.map((action) => (
+                  <SpeedDialAction
+                    key={action.name}
+                    onClick={(e) => {
+                      handleSpeedDial(action.operation);
+                    }}
+                    icon={action.icon}
+                    tooltipTitle={action.name}
+                  />
+                ))
+              : userActions.map((action) => (
+                  <SpeedDialAction
+                    key={action.name}
+                    onClick={(e) => {
+                      handleSpeedDial(action.operation);
+                    }}
+                    icon={action.icon}
+                    tooltipTitle={action.name}
+                  />
+                ))}
           </SpeedDial>
         </Box>
       )}
