@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -10,7 +9,6 @@ import TextField from '@mui/material/TextField';
 import Snackbar from '@mui/material/Snackbar';
 import Error from '../components/error';
 import MuiAlert from '@mui/material/Alert';
-import CircularProgress from '@mui/material/CircularProgress';
 import SpeedDialComponent from '../components/SpeedDialComponent';
 import { Button } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -25,7 +23,6 @@ const Edit = () => {
 
   useEffect(() => {
     async function getData() {
-      setIsLoading(true);
       getSession().then((res) => {
         if (res.gameSessions !== null && res.gameSessions.length > 0) {
           setSessionInfo(res.gameSessions);
@@ -40,21 +37,28 @@ const Edit = () => {
           );
         }
       });
-      setIsLoading(false);
     }
 
     getData();
 
-    setIsLoading(false);
     // eslint-disable-next-line
   }, []);
 
-  const [isLoading, setIsLoading] = useState(false);
   const [sessionInfo, setSessionInfo] = useState(location.state.sessionInfo);
   const [selected, setSelected] = useState(0);
 
   const handleSelect = (event) => {
     setSelected(event.target.value);
+    setSessionInfo(sessionInfo);
+    setValue(dayjs(sessionInfo[event.target.value].start));
+    setCourts(sessionInfo[event.target.value].courts.join(','));
+    setCost(sessionInfo[event.target.value].cost);
+    setDuration(
+      dayjs(sessionInfo[event.target.value].end).diff(
+        dayjs(sessionInfo[event.target.value].start),
+        'hour'
+      )
+    );
   };
   const [open, setOpen] = useState(false);
   const [alertMsg, setAlertMsg] = useState(null);
@@ -118,116 +122,109 @@ const Edit = () => {
   };
   return (
     <div>
-      {isLoading ? (
-        <Stack
-          spacing={2}
-          display='flex'
-          justifyContent='center'
-          alignItems='center'
-        >
-          <CircularProgress color='success' />
-        </Stack>
-      ) : sessionInfo === null || sessionInfo.length < 0 ? (
+      {sessionInfo === null || sessionInfo.length < 0 ? (
         <Error
           title={'No data found...'}
           subTitle={'Go make a new sessions before trying to edit one kay..?'}
         />
       ) : (
-        <Stack spacing={6} display='flex' justify='center' alignItems='center'>
-          <Box>
-            <Typography variant='h6' align='left' sx={{ mb: 1 }}>
-              Edit Session
-            </Typography>
-          </Box>
-          <Box>
-            <FormControl sx={{ m: 1, minWidth: { xs: 150, sm: 180, md: 200 } }}>
-              <InputLabel id='demo-simple-select-helper-label'>
-                Sessions
-              </InputLabel>
-              <Select
-                id='Session-payment'
-                value={selected}
-                label='Sessions'
-                color='primary'
-                onChange={handleSelect}
+        <div className='flex justify-center'>
+          <div className='rounded-[20px] flex justify-evenly items-center flex-col border border-green-400 space-y-9 w-[380px] '>
+            <p className=' text-center text-[30px] mt-4'>Edit Session</p>
+            <div>
+              <FormControl
+                sx={{ m: 1, minWidth: { xs: 150, sm: 180, md: 200 } }}
               >
-                {sessionInfo === null ? (
-                  <MenuItem value={0}>N/A</MenuItem>
-                ) : (
-                  sessionInfo.map((date, index) => (
-                    <MenuItem key={index} value={index}>
-                      {dayjs(date.end).format('DD/MM/YYYY ddd')}
-                    </MenuItem>
-                  ))
-                )}
-              </Select>
-            </FormControl>
-          </Box>
-          <Box>
-            <Typography variant='h6' align='left' sx={{ mb: 1 }}>
-              New date
-            </Typography>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <MobileDateTimePicker
-                sx={{ width: 250 }}
-                value={value}
-                label='Date'
-                onChange={(newValue) => {
-                  setValue(newValue);
-                }}
+                <InputLabel id='demo-simple-select-helper-label'>
+                  Sessions
+                </InputLabel>
+                <Select
+                  id='Session-payment'
+                  value={selected}
+                  label='Sessions'
+                  color='primary'
+                  onChange={handleSelect}
+                >
+                  {sessionInfo === null ? (
+                    <MenuItem value={0}>N/A</MenuItem>
+                  ) : (
+                    sessionInfo.map((date, index) => (
+                      <MenuItem key={index} value={index}>
+                        {dayjs(date.end).format('DD/MM/YYYY ddd')}
+                      </MenuItem>
+                    ))
+                  )}
+                </Select>
+              </FormControl>
+            </div>
+            <Box>
+              <Typography variant='h6' align='left' sx={{ mb: 1 }}>
+                New date
+              </Typography>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <MobileDateTimePicker
+                  sx={{ width: 250 }}
+                  value={value}
+                  label='Date'
+                  onChange={(newValue) => {
+                    setValue(newValue);
+                  }}
+                />
+              </LocalizationProvider>
+            </Box>
+            <Box>
+              <Typography variant='h6' align='left' sx={{ mb: 1 }}>
+                Session duration
+              </Typography>
+              <TextField
+                style={{ width: 250 }}
+                helperText='Duration of this session in hours'
+                id='duration'
+                value={duration}
+                variant='standard'
+                onChange={onChangeDuration}
               />
-            </LocalizationProvider>
-          </Box>
-          <Box>
-            <Typography variant='h6' align='left' sx={{ mb: 1 }}>
-              Session duration
-            </Typography>
-            <TextField
-              style={{ width: 250 }}
-              helperText='Duration of this session in hours'
-              id='duration'
-              value={duration}
-              variant='standard'
-              onChange={onChangeDuration}
-            />
-          </Box>
-          <Box>
-            <Typography variant='h6' align='left' sx={{ mb: 1 }}>
-              Court number
-            </Typography>
-            <TextField
-              style={{ width: 250 }}
-              id='text'
-              value={courts}
-              helperText='Seperate the numbers with a comma'
-              variant='standard'
-              onChange={onChange}
-            />
-          </Box>
+            </Box>
+            <Box>
+              <Typography variant='h6' align='left' sx={{ mb: 1 }}>
+                Court number
+              </Typography>
+              <TextField
+                style={{ width: 250 }}
+                id='text'
+                value={courts}
+                helperText='Seperate the numbers with a comma'
+                variant='standard'
+                onChange={onChange}
+              />
+            </Box>
 
-          <Box>
-            <Typography variant='h6' align='left' sx={{ mb: 1 }}>
-              Price per player
-            </Typography>
-            <TextField
-              style={{ width: 250 }}
-              id='text-price'
-              value={cost}
-              helperText='Optional, can be added later in edit'
-              variant='standard'
-              onChange={onCost}
-            />
-          </Box>
+            <Box>
+              <Typography variant='h6' align='left' sx={{ mb: 1 }}>
+                Price per player
+              </Typography>
+              <TextField
+                style={{ width: 250 }}
+                id='text-price'
+                value={cost}
+                helperText='Optional, can be added later in edit'
+                variant='standard'
+                onChange={onCost}
+              />
+            </Box>
 
-          <Button
-            variant='contained'
-            color='success'
-            size='large'
-            onClick={onConfirm}
-          >
-            Confirm
-          </Button>
-        </Stack>
+            <div className='p-6'>
+              <Button
+                variant='contained'
+                color='success'
+                size='large'
+                onClick={onConfirm}
+              >
+                Confirm
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
 
       <SpeedDialComponent />
