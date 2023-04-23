@@ -82,6 +82,7 @@
 [javascript]: https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E
 [webpack]: https://img.shields.io/badge/Webpack-8DD6F9?style=for-the-badge&logo=Webpack&logoColor=white
 [material-ui]: https://img.shields.io/badge/Material%20UI-007FFF?style=for-the-badge&logo=mui&logoColor=white
+[tailwind]: https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
 
 # About
 
@@ -91,12 +92,12 @@
 
 ## Tech Stack
 
-| Infrastructure                                    | Continuous Integration | Container Orchestration | Backend                      | Frontend         |
-| ------------------------------------------------- | ---------------------- | ----------------------- | ---------------------------- | ---------------- |
-| ![][aws] <br> ![][digitalocean] <br> ![][Proxmox] | ![][jenkins]           | ![][kubernetes]         | ![][mongodb]                 | ![][react]       |
-| ![][red-hat]                                      | ![][docker]            | ![][argocd]             | ![][typescript]              | ![][javascript]  |
-| ![][terraform] <br> ![][ansible]                  | ![][jest]              |                         | ![][nodejs]                  | ![][webpack]     |
-| ![][nginx] <br> ![][cloudflare]                   |                        |                         | ![][expressjs] <br> ![][jwt] | ![][material-ui] |
+| Infrastructure                                    | Continuous Integration | Container Orchestration | Backend                      | Frontend                            |
+| ------------------------------------------------- | ---------------------- | ----------------------- | ---------------------------- | ----------------------------------- |
+| ![][aws] <br> ![][digitalocean] <br> ![][Proxmox] | ![][jenkins]           | ![][kubernetes]         | ![][mongodb]                 | ![][react]                          |
+| ![][red-hat]                                      | ![][docker]            | ![][argocd]             | ![][typescript]              | ![][javascript]                     |
+| ![][terraform] <br> ![][ansible]                  | ![][jest]              |                         | ![][nodejs]                  | ![][webpack]                        |
+| ![][nginx] <br> ![][cloudflare]                   |                        |                         | ![][expressjs] <br> ![][jwt] | ![][tailwind] <br> ![][material-ui] |
 
 ## System Architecture
 
