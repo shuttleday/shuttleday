@@ -670,7 +670,7 @@ const HomePage = () => {
         >
           <SpeedDial
             sticky='true'
-            ariaLabel='SpeedDial openIcon example'
+            ariaLabel='SpeedDial openIcon'
             sx={{ position: 'absolute', bottom: 16, right: 16 }}
             icon={<SpeedDialIcon openIcon={<AccountCircleIcon />} />}
           >
