@@ -164,7 +164,7 @@ async function editSession(sessionData) {
   }
 }
 
-//
+//Gets receipts of players and modify it into custom object type for display
 async function getReceipts(id) {
   try {
     const response = await axios.get(
@@ -186,6 +186,21 @@ async function getReceipts(id) {
 
     return dataObj;
   } catch (error) {
+    throw error;
+  }
+}
+
+async function uploadQR(image) {
+  const formData = new FormData();
+  formData.append('my-qr', image);
+  try {
+    const response = await axios.post(
+      process.env.REACT_APP_API_LINK + '/admins/qr',
+      formData
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
     throw error;
   }
 }
@@ -241,4 +256,5 @@ export {
   createSession,
   editSession,
   getReceipts,
+  uploadQR,
 };

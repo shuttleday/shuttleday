@@ -25,7 +25,6 @@ import TabPanel from '@mui/lab/TabPanel';
 import IconButton from '@mui/material/IconButton';
 import { Button } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import Bank from '../img/BankQR.jpg';
@@ -47,6 +46,7 @@ import {
   SUCCESS,
   WARNING,
   admin,
+  Alert,
 } from '../constants';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -57,8 +57,10 @@ import ImageListItem from '@mui/material/ImageListItem';
 import ImageViewer from 'react-simple-image-viewer';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 import { BiErrorAlt } from 'react-icons/bi';
+import { green } from '@mui/material/colors';
 
 const HomePage = () => {
+  const color = green[400];
   const location = useLocation();
   let navigate = useNavigate();
 
@@ -113,6 +115,7 @@ const HomePage = () => {
   const [image, setImage] = useState(null);
   const [buttonOn, setButtonON] = useState(true);
 
+  //Checkbox logic for usernames----------------------------------------------------
   const [checked, setChecked] = React.useState(false);
   const handleCheck = () => {
     setChecked((prev) => (prev === true ? false : true));
@@ -122,6 +125,7 @@ const HomePage = () => {
     setButtonON(false);
     setImage(e.target.files[0]);
   };
+
   const onUpload = async () => {
     const res = await uploadReceipt(image, sessionInfo[selected]._id);
     if (res) {
@@ -182,10 +186,6 @@ const HomePage = () => {
     }
     // eslint-disable-next-line
   }, []);
-
-  const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
-  });
 
   const [alertMsg, setAlertMsg] = useState('');
 
@@ -681,7 +681,12 @@ const HomePage = () => {
         <SpeedDial
           sticky='true'
           ariaLabel='SpeedDial openIcon'
-          sx={{ position: 'absolute', bottom: 16, right: 16 }}
+          sx={{
+            position: 'absolute',
+            bottom: 16,
+            right: 16,
+            '& .MuiFab-primary': { backgroundColor: color },
+          }}
           icon={<SpeedDialIcon openIcon={<AccountCircleIcon />} />}
         >
           {render
