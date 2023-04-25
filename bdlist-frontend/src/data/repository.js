@@ -9,7 +9,6 @@ async function userCheck(email) {
     );
     return user;
   } catch (error) {
-    console.log(error);
     return false;
   }
 }
@@ -28,7 +27,6 @@ async function createAccount(username) {
     const user = response.data;
     return user;
   } catch (error) {
-    console.log(error);
     return 'error';
   }
 }
@@ -42,7 +40,6 @@ async function googleSignIn() {
     const user = response.data;
     return user;
   } catch (error) {
-    console.log(error);
     return null;
   }
 }

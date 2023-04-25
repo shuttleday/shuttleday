@@ -229,7 +229,6 @@ const HomePage = () => {
         });
     } else if (newValue === '2') {
       setQR(null);
-      console.log('here');
       getQR(sessionInfo[selected].payTo)
         .then((res) => {
           setQR(res.url);
