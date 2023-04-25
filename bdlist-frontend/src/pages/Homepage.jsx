@@ -69,6 +69,8 @@ const HomePage = () => {
       navigate('/details');
     } else if (operation === 'create') {
       navigate('/create');
+    } else if (operation === 'qr') {
+      navigate('/qr');
     } else if (operation === 'logout') {
       localStorage.removeItem('jwtToken_Login');
       localStorage.removeItem('refreshToken');

@@ -205,6 +205,33 @@ async function uploadQR(image) {
   }
 }
 
+async function editQR(image) {
+  const formData = new FormData();
+  formData.append('my-qr', image);
+  try {
+    const response = await axios.patch(
+      process.env.REACT_APP_API_LINK + '/admins/qr',
+      formData
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+async function getQR(email) {
+  try {
+    const response = await axios.get(
+      process.env.REACT_APP_API_LINK + `/admins/qr/${email}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 //Intercepts all request to the server and attaches the token to the header
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem('jwtToken_Login');
@@ -257,4 +284,6 @@ export {
   editSession,
   getReceipts,
   uploadQR,
+  editQR,
+  getQR,
 };
