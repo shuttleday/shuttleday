@@ -44,8 +44,8 @@ jobs:
         retention-days: 14
 
   deploy:
-    # Only run deploy stage if it's a push event
-    # if: github.event_name == 'push'
+    # Only run deploy stage if it's a push event or a manual trigger
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     permissions:
       id-token: write
       contents: read
