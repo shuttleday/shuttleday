@@ -47,7 +47,7 @@ jobs:
   semantic-release:
     needs: build
     name: Semantic Release
-    uses: .github/workflows/semantic-release.yml
+    uses: ./.github/workflows/semantic-release.yml
 
   deploy:
     name: Deploy
