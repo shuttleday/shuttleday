@@ -1,8 +1,16 @@
 name: Backend CI
 
 on:
-  - push
-  - pull_request
+  push:
+    paths:
+      - "bdlist-backend/"
+    branches:
+      - main
+  pull_request:
+    paths:
+      - "bdlist-backend/"
+    branches:
+      - main
 
 defaults:
   run:
@@ -44,9 +52,12 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
-        working-directory: ./bdlist-backend
+
+      - name: Run tests
+        run: echo "No tests to run"
 
       - name: Transpile TypeScript to JavaScript
         run: pnpm build
-        working-directory: ./bdlist-backend
-        
+
+      - name: Build Docker image
+        run: docker buildx build --push --platform linux/amd64,linux/arm64 --builder=build-container -t ghcr.io/shuttleday/api:$DESIRED_TAG -t ghcr.io/shuttleday/api .
