@@ -114,8 +114,8 @@
 
 # Read More
 
-[BACKEND_DEV.md](./docs/BACKEND_DEV.md)
+[Backend Development](bdlist-backend/README.md)
 
-[FRONTEND_DEV.md](./docs/FRONTEND_DEV.md)
+[FRONTEND_DEV.md](bdlist-frontend/README.md)
 
 [DEPLOYMENT.md](./docs/DEPLOYMENT.md)
