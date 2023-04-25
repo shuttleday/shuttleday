@@ -45,7 +45,7 @@ jobs:
 
   deploy:
     # Only run deploy stage if it's a push event
-    if: github.event_name == 'push'
+    # if: github.event_name == 'push'
     permissions:
       id-token: write
       contents: read
