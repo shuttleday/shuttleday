@@ -8,6 +8,7 @@ import {
   uploadReceipt,
   googleSignIn,
   getReceipts,
+  getQR,
 } from '../data/repository';
 
 import List from '@mui/material/List';
@@ -27,7 +28,6 @@ import { Button } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
-import Bank from '../img/BankQR.jpg';
 import Modal from '@mui/material/Modal';
 import Chip from '@mui/material/Chip';
 import ImageIcon from '@mui/icons-material/Image';
@@ -97,9 +97,11 @@ const HomePage = () => {
     p: 4,
   };
 
+  //Session infomation for display
   const [sessionInfo, setSessionInfo] = useState(null);
   const [selected, setSelected] = useState(0);
 
+  const [QR, setQR] = useState(null);
   //Used as a flag to see if the player has joined the specific session
   const [playerStat, setPlayerStat] = useState(true);
 
@@ -225,6 +227,16 @@ const HomePage = () => {
           setIsEmpty(true);
           setReceipts([]);
         });
+    } else if (newValue === '2') {
+      setQR(null);
+      console.log('here');
+      getQR(sessionInfo[selected].payTo)
+        .then((res) => {
+          setQR(res.url);
+        })
+        .catch((error) => {
+          setQR(undefined);
+        });
     }
   };
 
@@ -336,6 +348,15 @@ const HomePage = () => {
       } else {
         setPlayerStat(true);
       }
+    } else if (activeTab === '2') {
+      setQR(null);
+      getQR(sessionInfo[event.target.value].payTo)
+        .then((res) => {
+          setQR(res.url);
+        })
+        .catch((error) => {
+          setQR(undefined);
+        });
     } else if (activeTab === '3') {
       setReceipts(null);
       getReceipts(sessionInfo[event.target.value]._id)
@@ -528,6 +549,7 @@ const HomePage = () => {
                                       },
                                     }}
                                     component='span'
+                                    //eslint-disable-next-line
                                     className={
                                       player.userEmail ===
                                       sessionInfo[selected].payTo
@@ -571,38 +593,48 @@ const HomePage = () => {
             </TabPanel>
             {/* ---------------------------------------------------------------------------------------------------------------------------- */}
             <TabPanel value='2'>
-              {sessionInfo === null ? (
-                <Loading />
-              ) : (
-                <Stack spacing={1} justifyContent='center'>
-                  <InfoHeader
-                    sessionInfo={sessionInfo}
-                    selected={selected}
-                    handleSelect={handleSelect}
-                  />
-                  <Card className=' rounded-md flex items-center'>
-                    <CardMedia component='img' image={Bank} alt='QR-Code' />
-                  </Card>
+              <Stack spacing={1} justifyContent='center'>
+                <InfoHeader
+                  sessionInfo={sessionInfo}
+                  selected={selected}
+                  handleSelect={handleSelect}
+                />
 
-                  <Chip
-                    label={
-                      sessionInfo !== null
-                        ? '$' + sessionInfo[selected].cost + ' Per person.'
-                        : 'Not Avaliable'
-                    }
-                    color='success'
-                    variant='outlined'
-                  />
-                  <Button
-                    variant='contained'
-                    color='success'
-                    size='large'
-                    onClick={handleOpenModalImage}
-                  >
-                    Upload Receipt
-                  </Button>
-                </Stack>
-              )}
+                <Card className='rounded-md border border-green-400'>
+                  {QR === null ? (
+                    <div className='py-4 px-12  flex justify-evenly items-center flex-col h-[350px] lg:h-[500px]'>
+                      <Loading />
+                    </div>
+                  ) : QR === undefined ? (
+                    <div className='py-4 px-12  flex justify-center items-center flex-col h-[350px] lg:h-[500px]'>
+                      <BiErrorAlt className='h-[60px] w-[60px]' />
+                      <p className='text-center font-bold text-red-500 mt-3'>
+                        No QR avaliable. Contact the host
+                      </p>
+                    </div>
+                  ) : (
+                    <CardMedia component='img' image={QR} alt='QR-Code' />
+                  )}
+                </Card>
+
+                <Chip
+                  label={
+                    sessionInfo !== null
+                      ? '$' + sessionInfo[selected].cost + ' Per person.'
+                      : 'Not Avaliable'
+                  }
+                  color='success'
+                  variant='outlined'
+                />
+                <Button
+                  variant='contained'
+                  color='success'
+                  size='large'
+                  onClick={handleOpenModalImage}
+                >
+                  Upload Receipt
+                </Button>
+              </Stack>
             </TabPanel>
             <TabPanel value='3'>
               <Stack spacing={1}>
