@@ -19,6 +19,7 @@ defaults:
 
 jobs:
   build:
+    name: Build Static React Files
     runs-on: ubuntu-latest
 
     steps:
@@ -43,7 +44,13 @@ jobs:
         path: ./bdlist-frontend/build/
         retention-days: 14
 
+  semantic-release:
+    needs: build
+    name: Semantic Release
+    uses: .github/workflows/semantic-release.yml
+
   deploy:
+    name: Deploy
     # Only run deploy stage if it's a push event or a manual trigger
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     needs: build
@@ -68,4 +75,3 @@ jobs:
     
     - name: Push build artifacts to S3 bucket
       run: aws s3 sync build s3://shuttleday.info
-    
