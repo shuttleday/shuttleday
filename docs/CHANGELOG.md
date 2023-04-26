@@ -1,3 +1,10 @@
+## [1.0.5](https://github.com/shuttleday/shuttleday/compare/v1.0.4...v1.0.5) (2023-04-26)
+
+
+### Performance Improvements
+
+* **ci:** remove checkout step ([7e54a4e](https://github.com/shuttleday/shuttleday/commit/7e54a4eb4569a6161e41348999787aa4c454c1e7))
+
 ## [1.0.4](https://github.com/shuttleday/shuttleday/compare/v1.0.3...v1.0.4) (2023-04-26)
 
 
