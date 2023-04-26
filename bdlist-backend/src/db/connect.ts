@@ -27,11 +27,11 @@ export const client = new MongoClient(uri, {
 
 async function connectDb() {
   try {
-    log.info(`Attempting connection to: ${uri}`);
+    log.info(`MongoDB: Attempting connection to: ${uri}`);
     await client.connect();
-    log.info("Database connected successfully");
+    log.info("MongoDB: Connected successfully");
   } catch (error) {
-    log.error("Failed to connect to db");
+    log.error("MongoDB: Failed to connect");
     log.error(error);
     process.exit(1);
   }
@@ -39,11 +39,11 @@ async function connectDb() {
 
 async function disconnectDb() {
   try {
-    log.info(`Attempting to close connection to: ${uri}`);
+    log.info(`MongoDB: Attempting to close connection to: ${uri}`);
     await client.close();
-    log.info("Database disconnected successfully");
+    log.info("MongoDB: Disconnected successfully");
   } catch (error) {
-    log.error("Failed to disconnect from db");
+    log.error("MongoDB: Failed to disconnect");
     log.error(error);
     process.exit(1);
   }
