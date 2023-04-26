@@ -3,15 +3,11 @@ name: Backend CI
 on:
   workflow_dispatch:
   push:
-    paths:
-      - "bdlist-backend/"
-    branches:
-      - main
+    paths: [ "bdlist-backend/" ]
+    branches: [ main ]
   pull_request:
-    paths:
-      - "bdlist-backend/"
-    branches:
-      - main
+    paths: [ "bdlist-backend/" ]
+    branches: [ main ]
 
 defaults:
   run:

@@ -3,15 +3,11 @@ name: Frontend CI
 on:
   workflow_dispatch:
   push:
-    paths:
-      - "bdlist-frontend/"
-    branches:
-      - main
+    paths: [ "bdlist-frontend/" ]
+    branches: [ main ]
   pull_request:
-    paths:
-      - "bdlist-frontend/"
-    branches:
-      - main
+    paths: [ "bdlist-frontend/" ]
+    branches: [ main ]
     
 defaults:
   run:
