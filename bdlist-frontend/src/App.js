@@ -13,6 +13,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import HomePage from './pages/Homepage';
 import Dev from './pages/Dev';
 import QRManagement from './pages/QRManagement';
+import BugReport from './pages/BugReport';
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
@@ -63,6 +64,7 @@ function App() {
                 <Route path='/edit' element={<Edit />} />
                 <Route path='/dev' element={<Dev />} />
                 <Route path='/qr' element={<QRManagement />} />
+                <Route path='/report' element={<BugReport />} />
               </Routes>
             </>
           </div>
