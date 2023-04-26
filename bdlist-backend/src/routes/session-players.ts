@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { ObjectId, PullOperator, PushOperator } from "mongodb";
-import { GameSessions } from "../db/collections";
-import { ApiError } from "../utils/error-util";
+import { GameSessions } from "../db/collections.js";
+import { ApiError } from "../utils/error-util.js";
 
 const router = Router();
 

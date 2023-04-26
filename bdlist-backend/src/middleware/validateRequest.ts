@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from "express";
-import { processUploadedFiles } from "../utils/functions";
-import { UserType } from "../db/interfaces";
+import { processUploadedFiles } from "../utils/functions.js";
+import { UserType } from "../db/interfaces.js";
 import {
   requiredPOST,
   requiredGET,
   requiredPATCH,
   requiredMETHOD,
-} from "./validation";
-import { ApiError } from "../utils/error-util";
+} from "./validation.js";
+import { ApiError } from "../utils/error-util.js";
+import { fileTypeFromBuffer } from "file-type";
 
 const MB = 5;
 const FILE_SIZE_LIMIT = MB * 1024 * 1024;
@@ -52,8 +53,9 @@ export async function validateFileUpload(
     if (!req.files) throw new ApiError(401, "No image was uploaded");
     const file = processUploadedFiles(req.files!);
 
-    // If does not have image mime type, prevent from uploading
-    if (!file.mimetype.startsWith("image"))
+    // If the uploaded file does not have the mime type of image, prevent from uploading
+    const fileType = await fileTypeFromBuffer(file.data);
+    if (!fileType!.mime.startsWith("image"))
       throw new ApiError(400, "File is not an image");
 
     next();

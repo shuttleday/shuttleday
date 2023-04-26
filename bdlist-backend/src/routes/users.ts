@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
-import { Users } from "../db/collections";
-import { ApiError } from "../utils/error-util";
-import { adminCheck } from "../middleware/validateRequest";
+import { Users } from "../db/collections.js";
+import { ApiError } from "../utils/error-util.js";
+import { adminCheck } from "../middleware/validateRequest.js";
 
 const router = Router();
 

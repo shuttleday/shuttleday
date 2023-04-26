@@ -1,11 +1,11 @@
 import request from "supertest";
-import app from "../../setup";
-import { disconnectDb } from "../../db/connect";
+import app from "../../setup.js";
+import { disconnectDb } from "../../db/connect.js";
 import { NextFunction, Request } from "express";
 const api = request(app);
 
-import * as functions from "../../utils/functions";
-import { User } from "../../db/interfaces";
+import * as functions from "../../utils/functions.js";
+import { User } from "../../db/interfaces.js";
 
 jest.mock("../../middleware/authenticate", () => {
   return {

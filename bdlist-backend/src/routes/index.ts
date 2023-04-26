@@ -1,13 +1,13 @@
 import { Express } from "express";
 
-import gameSessionsRouter from "./game-sessions";
-import usersRouter from "./users";
-import authRouter from "./auth";
-import sessionPlayersRouter from "./session-players";
-import userPaymentsRouter from "./user-payments";
-import paymentReceiptsRouter from "./payment-receipts";
-import healthcheckRouter from "./healthcheck";
-import adminRouter from "./admins";
+import gameSessionsRouter from "./game-sessions.js";
+import usersRouter from "./users.js";
+import authRouter from "./auth.js";
+import sessionPlayersRouter from "./session-players.js";
+import userPaymentsRouter from "./user-payments.js";
+import paymentReceiptsRouter from "./payment-receipts.js";
+import healthcheckRouter from "./healthcheck.js";
+import adminRouter from "./admins.js";
 
 export default function (app: Express) {
   app.use("/auth", authRouter);

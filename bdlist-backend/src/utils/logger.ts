@@ -1,4 +1,4 @@
-const pino = require("pino");
+import { pino } from "pino";
 
 const dev = {
   translateTime: "yyyy-mm-dd HH:MM:ss.l",

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { verifyAccessToken } from "../utils/functions";
-import { ApiError } from "../utils/error-util";
-import { User } from "../db/interfaces";
+import { verifyAccessToken } from "../utils/functions.js";
+import { ApiError } from "../utils/error-util.js";
+import { User } from "../db/interfaces.js";
 
 const excludedPaths = [
   "/healthcheck",

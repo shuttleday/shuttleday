@@ -1,16 +1,16 @@
 import { NextFunction, Request, Response, Router } from "express";
-import { Users } from "../db/collections";
+import { Users } from "../db/collections.js";
 import {
   genAccessToken,
   genRefreshToken,
   validateGJwt,
   verifyRefreshToken,
   userExists,
-} from "../utils/functions";
-import { ApiError } from "../utils/error-util";
-import { validatePOST } from "../middleware/validateRequest";
+} from "../utils/functions.js";
+import { ApiError } from "../utils/error-util.js";
+import { validatePOST } from "../middleware/validateRequest.js";
 import { ObjectId } from "mongodb";
-import { User, UserType } from "../db/interfaces";
+import { User, UserType } from "../db/interfaces.js";
 
 const router = Router();
 

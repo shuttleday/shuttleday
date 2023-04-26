@@ -2,13 +2,13 @@ import { NextFunction, Request, Response, Router } from "express";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { ObjectId } from "mongodb";
 import fileUpload from "express-fileupload";
-import { processUploadedFiles, s3 } from "../utils/functions";
-import { GameSessions } from "../db/collections";
+import { processUploadedFiles, s3 } from "../utils/functions.js";
+import { GameSessions } from "../db/collections.js";
 import {
   fileSizeLimiter,
   validateFileUpload,
-} from "../middleware/validateRequest";
-import { ApiError } from "../utils/error-util";
+} from "../middleware/validateRequest.js";
+import { ApiError } from "../utils/error-util.js";
 
 const router = Router();
 

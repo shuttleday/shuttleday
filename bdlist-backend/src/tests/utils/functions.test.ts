@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
-import * as functions from "../../utils/functions";
-import { User } from "../../db/interfaces";
-import { UserType } from "../../db/interfaces";
+import * as functions from "../../utils/functions.js";
+import { User } from "../../db/interfaces.js";
+import { UserType } from "../../db/interfaces.js";
 
 describe("JWT functions", () => {
   it("returns a new access token from a User object", () => {

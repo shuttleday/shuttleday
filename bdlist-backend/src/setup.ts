@@ -3,14 +3,14 @@ import cors from "cors";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-import routes from "./routes/index";
-import { authenticate } from "./middleware/authenticate";
-import errorHandler from "./middleware/errorHandler";
+import routes from "./routes/index.js";
+import { authenticate } from "./middleware/authenticate.js";
+import errorHandler from "./middleware/errorHandler.js";
 import {
   validateGET,
   validatePATCH,
   validatePOST,
-} from "./middleware/validateRequest";
+} from "./middleware/validateRequest.js";
 
 export const app = express();
 

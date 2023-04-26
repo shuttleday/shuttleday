@@ -1,5 +1,5 @@
-import { client } from "./connect";
-import { User, GameSession } from "./interfaces";
+import { client } from "./connect.js";
+import { User, GameSession } from "./interfaces.js";
 
 const db = client.db("shuttleday-prod");
 

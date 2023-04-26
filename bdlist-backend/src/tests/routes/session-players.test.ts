@@ -1,10 +1,10 @@
 import request from "supertest";
-import app from "../../setup";
-import { disconnectDb } from "../../db/connect";
+import app from "../../setup.js";
+import { disconnectDb } from "../../db/connect.js";
 import { NextFunction, Request, Response } from "express";
 const api = request(app);
 
-import { User } from "../../db/interfaces";
+import { User } from "../../db/interfaces.js";
 
 // globally mock authenticate middleware
 jest.mock("../../middleware/authenticate", () => {

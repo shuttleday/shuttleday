@@ -1,19 +1,19 @@
 import { NextFunction, Request, Response, Router } from "express";
-import { ApiError } from "../utils/error-util";
+import { ApiError } from "../utils/error-util.js";
 import {
   adminCheck,
   fileSizeLimiter,
   validateFileUpload,
-} from "../middleware/validateRequest";
+} from "../middleware/validateRequest.js";
 import fileUpload from "express-fileupload";
-import { s3, processUploadedFiles } from "../utils/functions";
+import { s3, processUploadedFiles } from "../utils/functions.js";
 import {
   GetObjectCommand,
   PutObjectCommand,
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { Users } from "../db/collections";
+import { Users } from "../db/collections.js";
 
 const router = Router();
 // /admins

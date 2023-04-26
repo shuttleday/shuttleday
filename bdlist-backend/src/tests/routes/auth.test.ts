@@ -1,8 +1,8 @@
 import request from "supertest";
-import app from "../../setup";
-import { disconnectDb } from "../../db/connect";
+import app from "../../setup.js";
+import { disconnectDb } from "../../db/connect.js";
 import { Request, Response, NextFunction } from "express";
-import * as functions from "../../utils/functions";
+import * as functions from "../../utils/functions.js";
 import { TokenPayload } from "google-auth-library";
 const api = request(app);
 

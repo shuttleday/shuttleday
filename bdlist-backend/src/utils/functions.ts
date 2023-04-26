@@ -5,9 +5,9 @@ import fileUpload, { UploadedFile } from "express-fileupload";
 import jwt from "jsonwebtoken";
 
 import * as dotenv from "dotenv";
-import { Users } from "../db/collections";
-import { User } from "../db/interfaces";
-import { ApiError } from "./error-util";
+import { Users } from "../db/collections.js";
+import { User } from "../db/interfaces.js";
+import { ApiError } from "./error-util.js";
 dotenv.config();
 
 const CLIENT_ID = process.env.G_AUTH_CLIENT_ID;

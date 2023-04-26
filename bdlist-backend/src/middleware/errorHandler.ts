@@ -4,8 +4,8 @@ import {
   ApiError,
   apiErrorHandler,
   throwInternalServerError,
-} from "../utils/error-util";
-import log from "../utils/logger";
+} from "../utils/error-util.js";
+import log from "../utils/logger.js";
 
 const errorHandler = async (
   err: Error,

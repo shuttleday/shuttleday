@@ -1,9 +1,9 @@
 import request from "supertest";
-import app from "../../setup";
-import { disconnectDb } from "../../db/connect";
+import app from "../../setup.js";
+import { disconnectDb } from "../../db/connect.js";
 import { NextFunction } from "express";
 import { Request } from "express";
-import { UserType } from "../../db/interfaces";
+import { UserType } from "../../db/interfaces.js";
 import { ObjectId } from "mongodb";
 const api = request(app);
 

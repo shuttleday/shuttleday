@@ -1,5 +1,5 @@
 import request from "supertest";
-import app from "../../setup";
+import app from "../../setup.js";
 import version from "../../version.json";
 const api = request(app);
 
