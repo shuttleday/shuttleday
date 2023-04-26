@@ -143,7 +143,7 @@ async function createSession(sessionData) {
     );
     return response;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 }
 
@@ -157,7 +157,7 @@ async function editSession(sessionData) {
 
     return response;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 }
 

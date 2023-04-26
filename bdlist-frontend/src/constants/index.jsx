@@ -16,7 +16,7 @@ const admin = 'ADMIN';
 
 const adminActions = [
   { icon: <LogoutIcon />, name: 'Logout', operation: 'logout' },
-  { icon: <InfoIcon />, name: 'About', operation: 'about' },
+  // { icon: <InfoIcon />, name: 'About', operation: 'about' },
   { icon: <BugReportIcon />, name: 'Bug Report', operation: 'report' },
   { icon: <QrCode2Icon />, name: 'Manage QR', operation: 'qr' },
   { icon: <EditIcon />, name: 'Edit Session', operation: 'edit' },
@@ -27,11 +27,13 @@ const adminActions = [
 const userActions = [
   { icon: <LogoutIcon />, name: 'Logout', operation: 'logout' },
   { icon: <BugReportIcon />, name: 'Bug Report', operation: 'report' },
-  { icon: <InfoIcon />, name: 'About', operation: 'about' },
+  // { icon: <InfoIcon />, name: 'About', operation: 'about' },
 ];
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
 });
 
-export { adminActions, userActions, ERROR, SUCCESS, WARNING, admin, Alert };
+const RE = /^\d+(,\d+)*$/; //Format for input e.g. 1,2,3,4
+
+export { adminActions, userActions, ERROR, SUCCESS, WARNING, admin, Alert, RE };

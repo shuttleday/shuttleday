@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Stack from '@mui/material/Stack';
 import SpeedDialComponent from '../components/SpeedDialComponent';
 import Box from '@mui/material/Box';
 import dayjs from 'dayjs';
 import TextField from '@mui/material/TextField';
 import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
 import { Button } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { Typography } from '@mui/material';
 import { createSession } from '../data/repository';
+import { ERROR, SUCCESS, Alert, RE } from '../constants';
 
 const SessionCreate = () => {
   const [open, setOpen] = useState(false);
@@ -20,63 +20,57 @@ const SessionCreate = () => {
     setOpen(false);
   };
 
-  const [condition, setCondition] = useState('success');
+  const [condition, setCondition] = useState(SUCCESS);
 
-  const RE = /^\d+(,\d+)*$/; //Format for input e.g. 1,2,3,4
   const [value, setValue] = useState(dayjs());
-  const [courts, setCourts] = useState('0');
-  const [duration, setDuration] = useState(0);
-  const [cost, setCost] = useState(0);
-
-  const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
-  });
-
-  const onChange = (event) => {
-    setCourts(event.target.value);
-  };
-  const onChangeDuration = (event) => {
-    setDuration(event.target.value);
-  };
-  const onCost = (event) => {
-    setCost(event.target.value);
-  };
+  const courts = useRef();
+  const duration = useRef(0);
+  const cost = useRef(0);
+  const title = useRef('');
 
   const onCreate = async () => {
-    if (!RE.test(courts)) {
+    if (!RE.test(courts.current.value)) {
       setAlertMsg('Format for courts not valid');
-      setCondition('error');
+      setCondition(ERROR);
       setOpen(true);
       return;
     }
 
-    if (duration < 1) {
+    if (duration.current.value < 1) {
       setAlertMsg('Duration should have at least 1 hour');
-      setCondition('error');
+      setCondition(ERROR);
       setOpen(true);
       return;
     }
 
-    const courtList = courts.split(',').map(String);
+    if (title.current.value.length > 30) {
+      setAlertMsg('Title can only have 30 characters');
+      setCondition(ERROR);
+      setOpen(true);
+    }
+
+    const courtList = courts.current.value.split(',').map(String);
 
     const sessionData = {
       start: dayjs(value).toISOString(),
-      end: dayjs(value).add(duration, 'hour').toISOString(),
+      end: dayjs(value).add(duration.current.value, 'hour').toISOString(),
       courts: courtList,
-      cost: parseInt(cost),
+      cost: parseInt(cost.current.value),
+      title: title.current.value,
     };
 
-    const response = await createSession(sessionData);
+    createSession(sessionData)
+      .then((res) => {
+        setAlertMsg('Created session succesfully');
+        setCondition(SUCCESS);
+        setOpen(true);
+      })
+      .catch((error) => {
+        setAlertMsg(error.response.data.error);
+        setCondition(ERROR);
+        setOpen(true);
+      });
 
-    if (response) {
-      setAlertMsg('Created session succesfully');
-      setCondition('success');
-      setOpen(true);
-    } else {
-      setAlertMsg('Something went wrong');
-      setCondition('error');
-      setOpen(true);
-    }
     return;
   };
   return (
@@ -87,74 +81,95 @@ const SessionCreate = () => {
         justifyContent='center'
         alignItems='center'
       >
-        <Box>
-          <Typography variant='h6' align='left' sx={{ mb: 1 }}>
-            Choose date and time
-          </Typography>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <MobileDateTimePicker
-              sx={{ width: 250 }}
-              defaultValue={value}
-              label='Select Date'
-              onChange={(newValue) => {
-                setValue(newValue);
-              }}
+        <div className='rounded-[20px] flex justify-evenly items-center flex-col border border-green-400 space-y-9 w-[380px] '>
+          <p className=' text-center text-[30px] mt-4 underline underline-offset-4'>
+            Create Session
+          </p>
+          <Box>
+            <Typography variant='h6' align='left' sx={{ mb: 1 }}>
+              Choose date and time
+            </Typography>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <MobileDateTimePicker
+                sx={{ width: 250 }}
+                defaultValue={value}
+                label='Select Date'
+                onChange={(newValue) => {
+                  setValue(newValue);
+                }}
+              />
+            </LocalizationProvider>
+          </Box>
+          <Box>
+            <Typography variant='h6' align='left' sx={{ mb: 1 }}>
+              Session duration
+            </Typography>
+            <TextField
+              style={{ width: 250 }}
+              helperText='Duration of this session in hours'
+              id='duration'
+              label='Duration'
+              defaultValue='0'
+              variant='standard'
+              inputRef={duration}
             />
-          </LocalizationProvider>
-        </Box>
-        <Box>
-          <Typography variant='h6' align='left' sx={{ mb: 1 }}>
-            Session duration
-          </Typography>
-          <TextField
-            style={{ width: 250 }}
-            helperText='Duration of this session in hours'
-            id='duration'
-            label='Duration'
-            defaultValue='0'
-            variant='standard'
-            onChange={onChangeDuration}
-          />
-        </Box>
-        <Box>
-          <Typography variant='h6' align='left' sx={{ mb: 1 }}>
-            Court number
-          </Typography>
-          <TextField
-            style={{ width: 250 }}
-            id='court'
-            label='Courts'
-            defaultValue='0'
-            helperText='Seperate the numbers with a comma'
-            variant='standard'
-            onChange={onChange}
-          />
-        </Box>
+          </Box>
+          <Box>
+            <Typography variant='h6' align='left' sx={{ mb: 1 }}>
+              Court number
+            </Typography>
+            <TextField
+              style={{ width: 250 }}
+              id='court'
+              label='Courts'
+              defaultValue='0'
+              helperText='Seperate the numbers with a comma'
+              variant='standard'
+              inputRef={courts}
+            />
+          </Box>
 
-        <Box>
-          <Typography variant='h6' align='left' sx={{ mb: 1 }}>
-            Price per player
-          </Typography>
-          <TextField
-            style={{ width: 250 }}
-            id='text-price'
-            label='Price'
-            defaultValue='0'
-            helperText='Optional, can be added later in edit'
-            variant='standard'
-            onChange={onCost}
-          />
-        </Box>
+          <Box>
+            <Typography variant='h6' align='left' sx={{ mb: 1 }}>
+              Price per player
+            </Typography>
+            <TextField
+              style={{ width: 250 }}
+              id='text-price'
+              label='Price'
+              defaultValue='0'
+              helperText='Optional, can be added later in edit'
+              variant='standard'
+              inputRef={cost}
+            />
+          </Box>
 
-        <Button
-          variant='contained'
-          color='success'
-          size='large'
-          onClick={onCreate}
-        >
-          Create
-        </Button>
-        <br />
+          <Box>
+            <Typography variant='h6' align='left' sx={{ mb: 1 }}>
+              Title
+            </Typography>
+            <TextField
+              style={{ width: 250 }}
+              id='text-price'
+              label='Title'
+              defaultValue=''
+              multiline
+              rows={2}
+              helperText='Optional, can be added later in edit'
+              inputRef={title}
+            />
+          </Box>
+
+          <Button
+            variant='contained'
+            color='success'
+            size='large'
+            onClick={onCreate}
+          >
+            Create
+          </Button>
+          <br />
+        </div>
       </Stack>
 
       <SpeedDialComponent />

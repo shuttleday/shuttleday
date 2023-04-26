@@ -41,9 +41,11 @@ const InfoHeader = (props) => {
               onChange={props.handleSelect}
               style={{ borderRadius: '8px' }}
             >
-              {props.sessionInfo.map((date, index) => (
+              {props.sessionInfo.map((ses, index) => (
                 <MenuItem key={index} value={index}>
-                  {dayjs(date.end).format('DD/MM/YYYY ddd')}
+                  <p>
+                    {dayjs(ses.end).format('DD/MM/YY ddd')} - {`${ses.title}`}
+                  </p>
                 </MenuItem>
               ))}
             </Select>

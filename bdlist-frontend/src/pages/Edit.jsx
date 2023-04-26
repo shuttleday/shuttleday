@@ -8,7 +8,6 @@ import dayjs from 'dayjs';
 import TextField from '@mui/material/TextField';
 import Snackbar from '@mui/material/Snackbar';
 import Error from '../components/error';
-import MuiAlert from '@mui/material/Alert';
 import SpeedDialComponent from '../components/SpeedDialComponent';
 import { Button } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -17,6 +16,8 @@ import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { Typography } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import { editSession, getSession } from '../data/repository';
+
+import { Alert, ERROR, SUCCESS, RE } from '../constants';
 
 const Edit = () => {
   const location = useLocation();
@@ -29,6 +30,7 @@ const Edit = () => {
           setValue(dayjs(res.gameSessions[selected].start));
           setCourts(res.gameSessions[selected].courts.join(','));
           setCost(res.gameSessions[selected].cost);
+          setTitle(res.gameSessions[selected].title);
           setDuration(
             dayjs(res.gameSessions[selected].end).diff(
               dayjs(res.gameSessions[selected].start),
@@ -53,6 +55,7 @@ const Edit = () => {
     setValue(dayjs(sessionInfo[event.target.value].start));
     setCourts(sessionInfo[event.target.value].courts.join(','));
     setCost(sessionInfo[event.target.value].cost);
+    setTitle(sessionInfo[event.target.value].title);
     setDuration(
       dayjs(sessionInfo[event.target.value].end).diff(
         dayjs(sessionInfo[event.target.value].start),
@@ -66,22 +69,21 @@ const Edit = () => {
     setOpen(false);
   };
 
-  const RE = /^\d+(,\d+)*$/; //Format for input e.g. 1,2,3,4
-
   //Default values obtained from the given session infomation
-  const [condition, setCondition] = useState('success');
+  const [condition, setCondition] = useState(SUCCESS);
   const [value, setValue] = useState(null);
   const [courts, setCourts] = useState(null);
   const [cost, setCost] = useState(null);
   const [duration, setDuration] = useState(null);
+  const [title, setTitle] = useState(null);
+
+  const onTitle = (event) => {
+    setTitle(event.target.value);
+  };
 
   const onChangeDuration = (event) => {
     setDuration(event.target.value);
   };
-
-  const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
-  });
 
   const onChange = (event) => {
     setCourts(event.target.value);
@@ -94,11 +96,12 @@ const Edit = () => {
   const onConfirm = async () => {
     if (!RE.test(courts)) {
       setAlertMsg('Format for courts not valid');
-      setCondition('error');
+      setCondition(ERROR);
       setOpen(true);
     }
 
     const courtList = courts.split(',').map(String);
+
     const sessionData = {
       start: dayjs(value).toISOString(),
       end: dayjs(value).add(duration, 'hour').toISOString(),
@@ -106,19 +109,20 @@ const Edit = () => {
       cost: parseInt(cost),
       payTo: sessionInfo[selected].payTo,
       sessionId: sessionInfo[selected]._id,
+      title: title,
     };
 
-    const response = await editSession(sessionData);
-
-    if (response) {
-      setAlertMsg('Session edit succesful');
-      setCondition('success');
-      setOpen(true);
-    } else {
-      setAlertMsg('Something went wrong');
-      setCondition('error');
-      setOpen(true);
-    }
+    editSession(sessionData)
+      .then((res) => {
+        setAlertMsg('Session edit succesful');
+        setCondition(SUCCESS);
+        setOpen(true);
+      })
+      .catch((error) => {
+        setAlertMsg(error.response.data.error);
+        setCondition(ERROR);
+        setOpen(true);
+      });
   };
   return (
     <div>
@@ -210,6 +214,21 @@ const Edit = () => {
                 helperText='Optional, can be added later in edit'
                 variant='standard'
                 onChange={onCost}
+              />
+            </Box>
+
+            <Box>
+              <Typography variant='h6' align='left' sx={{ mb: 1 }}>
+                Title
+              </Typography>
+              <TextField
+                style={{ width: 250 }}
+                id='text-title'
+                value={title}
+                multiline
+                rows={2}
+                helperText='Optional, can be added later in edit'
+                onChange={onTitle}
               />
             </Box>
 
