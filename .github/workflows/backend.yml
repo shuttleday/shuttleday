@@ -18,7 +18,8 @@ defaults:
     working-directory: ./bdlist-backend
 
 jobs:
-  build-and-deploy:
+  transpile:
+    name: Transpile JavaScript to TypeScript
     runs-on: ubuntu-latest
 
     steps:
@@ -54,14 +55,42 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Run tests
-        run: echo "No tests to run"
-
       - name: Transpile TypeScript to JavaScript
         run: pnpm build
+
+      - name: Upload Transpiled Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: transpiled-api
+          path: ./bdlist-backend/dist/
+          retention-days: 14
+
+  semantic-release:
+    name: Semantic Release
+    needs: transpile
+    uses: ./.github/workflows/semantic-release.yml
+
+  dockerize:
+    name: Dockerize and Push Image
+    needs: semantic-release
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download transpiled artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: transpiled-api
+          path: "bdlist-backend/dist/"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build Docker image
-        run: docker buildx build --push --platform linux/amd64,linux/arm64 --builder=build-container -t ghcr.io/shuttleday/api:1.5 -t ghcr.io/shuttleday/api .
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: "ghcr.io/shuttleday/api:test"
