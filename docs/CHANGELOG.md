@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/shuttleday/shuttleday/compare/v1.0.3...v1.0.4) (2023-04-26)
+
+
+### Bug Fixes
+
+* check mimetype from bytes ([5bb4bf0](https://github.com/shuttleday/shuttleday/commit/5bb4bf0de6bf7da40d7ad579a5a7f8fc37c1d64a))
+
 ## [1.0.3](https://github.com/shuttleday/shuttleday/compare/v1.0.2...v1.0.3) (2023-04-26)
 
 
