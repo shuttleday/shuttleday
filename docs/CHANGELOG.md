@@ -1,3 +1,16 @@
+## [1.0.2](https://github.com/shuttleday/shuttleday/compare/v1.0.1...v1.0.2) (2023-04-26)
+
+
+### Bug Fixes
+
+* **ci:** correct reusable workflow syntax ([1cf5d39](https://github.com/shuttleday/shuttleday/commit/1cf5d3983dd7766a5b5a2df297e87eff95de4b3d))
+* **ci:** install frontend deps ([4ea2f53](https://github.com/shuttleday/shuttleday/commit/4ea2f534c18ab4b2b26fcf0802185f20b4d0fac6))
+* **ci:** provide perms for semantic release ([70cea19](https://github.com/shuttleday/shuttleday/commit/70cea1979f50de8ce1b77d88b4be7a40a68837b5))
+* **ci:** remove recursive flag ([bac33c4](https://github.com/shuttleday/shuttleday/commit/bac33c42ae70b33279233d90ca3b78c709ae6713))
+* **ci:** use correct target path for aws s3 sync ([4af0f5f](https://github.com/shuttleday/shuttleday/commit/4af0f5f516e860aace14a7361706d9520630d36f))
+* **ci:** use updated OIDC role ([66022f3](https://github.com/shuttleday/shuttleday/commit/66022f3635343fb8bcf31316de03392c6df77cfc))
+* use more verbose mongodb conn logging ([ee9da93](https://github.com/shuttleday/shuttleday/commit/ee9da9318c0c61aa4449e9b1c8d24b8e65182378))
+
 ## [1.0.1](https://github.com/shuttleday/shuttleday/compare/v1.0.0...v1.0.1) (2023-04-25)
 
 
