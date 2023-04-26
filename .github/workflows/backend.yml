@@ -62,6 +62,10 @@ jobs:
           retention-days: 14
 
   semantic-release:
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
     name: Semantic Release
     needs: transpile
     uses: ./.github/workflows/semantic-release.yml
