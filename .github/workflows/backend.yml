@@ -90,7 +90,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: ./
+          context: ./bdlist-backend/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: "ghcr.io/shuttleday/api:test"
