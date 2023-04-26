@@ -117,3 +117,20 @@ jobs:
         if: always()
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
+
+  deploy:
+    name: Trigger workflow in K8s repository
+    needs: dockerize
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.PAT_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: 'shuttleday',
+              repo: 'k8s',
+              workflow_id: 'update-manifest.yml',
+              ref: 'main',
+              inputs: '{ tag: ${{ env.GIT_TAG }} }'
+            })
