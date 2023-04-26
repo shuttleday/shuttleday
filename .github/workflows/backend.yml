@@ -76,8 +76,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-
       - name: Download transpiled artifacts
         uses: actions/download-artifact@v3
         with:
@@ -90,7 +88,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: ./bdlist-backend/Dockerfile
+          context: ./bdlist-backend/
           platforms: linux/amd64,linux/arm64
           push: true
           tags: "ghcr.io/shuttleday/api:test"
