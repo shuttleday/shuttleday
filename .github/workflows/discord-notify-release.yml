@@ -1,0 +1,19 @@
+name: Discord Notify Release
+
+on:
+  release:
+    
+jobs:
+  notify:
+    name: Notify Discord
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get tag
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: Send POST request to Discord Webhook
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          content: 'New release: ${{ env.RELEASE_VERSION }}'
