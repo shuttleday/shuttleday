@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/shuttleday/shuttleday/compare/v1.0.2...v1.0.3) (2023-04-26)
+
+
+### Bug Fixes
+
+* **ci:** use correct Dockerfile path ([4bfd537](https://github.com/shuttleday/shuttleday/commit/4bfd537ddd53023f6db69dd043ed429bd7b4ea21))
+
 ## [1.0.2](https://github.com/shuttleday/shuttleday/compare/v1.0.1...v1.0.2) (2023-04-26)
 
 
