@@ -102,6 +102,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/headscale
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
@@ -109,8 +120,11 @@ jobs:
           file: bdlist-backend/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/shuttleday/api:${{ env.GIT_TAG }}
+          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags }}
           github-token: $${{ github.token }}
+          build_args: |
+            VERSION=${{ steps.meta.outputs.version }}
 
       - name: Send Discord Notification
         uses: sarisia/actions-status-discord@v1
