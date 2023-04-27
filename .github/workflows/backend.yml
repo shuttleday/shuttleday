@@ -124,7 +124,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ steps.meta.outputs.tags }}
           github-token: $${{ github.token }}
-          build_args: |
+          build-args: |
             VERSION=${{ steps.meta.outputs.version }}
 
       - name: Send Discord Notification
