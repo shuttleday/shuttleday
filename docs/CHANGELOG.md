@@ -1,3 +1,19 @@
+# [1.1.0](https://github.com/shuttleday/shuttleday/compare/v1.0.5...v1.1.0) (2023-04-27)
+
+
+### Bug Fixes
+
+* **ci:** complete backend pipeline logic ([7adcae7](https://github.com/shuttleday/shuttleday/commit/7adcae736aeb4069b0b91d1e22f9207376bc2ff6))
+* **ci:** correct syntax for paths ([8f80bb4](https://github.com/shuttleday/shuttleday/commit/8f80bb42a79083ea6fa89d3f612d8d724777ec71))
+* **ci:** correct syntax for paths ([c67d899](https://github.com/shuttleday/shuttleday/commit/c67d8992c45e2b8f5645dc4c8d69b724861cce37))
+* **ci:** remove v from git tag ([22f7aee](https://github.com/shuttleday/shuttleday/commit/22f7aee542c98caf491a2bc212c0b4f7ef9ae403))
+
+
+### Features
+
+* add fileExt to file upload routes ([f5babbb](https://github.com/shuttleday/shuttleday/commit/f5babbb588e6147af20e367d88349e8af462e694))
+* add support for pdf uploads ([373a3f9](https://github.com/shuttleday/shuttleday/commit/373a3f95dfdf6889d54a1fd4082b11b9639db130)), closes [#33](https://github.com/shuttleday/shuttleday/issues/33)
+
 ## [1.0.5](https://github.com/shuttleday/shuttleday/compare/v1.0.4...v1.0.5) (2023-04-26)
 
 
