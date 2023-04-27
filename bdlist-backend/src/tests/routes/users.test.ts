@@ -22,7 +22,10 @@ jest.mock("../../middleware/authenticate", () => {
         username: "peepoo",
         createdAt: new Date(),
         userType: UserType.Admin,
-        hasQR: true,
+        QR: {
+          uploaded: false,
+          fileExt: null,
+        },
       };
       next();
     },

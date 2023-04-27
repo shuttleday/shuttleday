@@ -19,7 +19,10 @@ describe("JWT functions", () => {
       createdAt: new Date("2023-03-11T06:35:46.000Z"),
       accessToken: "sometoken",
       refreshToken: "someothertoken",
-      hasQR: false,
+      QR: {
+        uploaded: false,
+        fileExt: null,
+      },
     };
 
     const output = functions.genAccessToken(input);
