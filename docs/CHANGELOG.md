@@ -1,3 +1,10 @@
+## [1.1.4](https://github.com/shuttleday/shuttleday/compare/v1.1.3...v1.1.4) (2023-04-27)
+
+
+### Bug Fixes
+
+* **ci:** remove skip ci for release commits ([6af40d8](https://github.com/shuttleday/shuttleday/commit/6af40d8d1fd2658af2e4ef4d0404c6377bf2e667))
+
 ## [1.1.3](https://github.com/shuttleday/shuttleday/compare/v1.1.2...v1.1.3) (2023-04-27)
 
 
