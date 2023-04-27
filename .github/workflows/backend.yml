@@ -1,13 +1,10 @@
 name: Backend CI
 
 on:
-  workflow_dispatch:
   push:
-    paths: [ 'bdlist-backend/**' ]
-    branches: [ 'main' ]
-  pull_request:
-    paths: [ 'bdlist-backend/**' ]
-    branches: [ 'main' ]
+    tags:
+      - "*"
+  workflow_dispatch:
 
 defaults:
   run:
@@ -61,31 +58,19 @@ jobs:
           path: ./bdlist-backend/dist/
           retention-days: 14
 
-  semantic-release:
-    # Run only if the branch that triggered the workflow is main
-    if: github.ref_name == 'main'
-    permissions:
-      contents: write # to be able to publish a GitHub release
-      issues: write # to be able to comment on released issues
-      pull-requests: write # to be able to comment on released pull requests
-    name: Semantic Release
-    needs: transpile
-    uses: ./.github/workflows/semantic-release.yml
-
   dockerize:
     name: Dockerize and Push Image
-    needs: semantic-release
+    needs: transpile
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
       - name: Get current Git tag
-        # Gets the current tag and removes the prepended 'v'
         run: |
-          FULL_GIT_TAG=$(git describe --tags HEAD)
-          echo "GIT_TAG="${FULL_GIT_TAG#v}" " >> "$GITHUB_ENV"
+          echo "DOCKER_TAG=$(git describe --tags HEAD)" >> "$GITHUB_ENV"
 
       - name: Download transpiled artifacts
         uses: actions/download-artifact@v3
@@ -138,6 +123,15 @@ jobs:
     needs: dockerize
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Get current Git tag
+        # Gets the current tag and removes the prepended 'v'
+        run: |
+          FULL_GIT_TAG=$(git describe --tags HEAD)
+          echo "GIT_TAG="${FULL_GIT_TAG#v}" " >> "$GITHUB_ENV"
+
       - uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.PAT_TOKEN }}
@@ -147,5 +141,5 @@ jobs:
               repo: 'k8s',
               workflow_id: 'update-manifest.yml',
               ref: 'main',
-              inputs: '{ tag: ${{ env.GIT_TAG }} }'
+              inputs: { tag: ${{ env.GIT_TAG }} }
             })
