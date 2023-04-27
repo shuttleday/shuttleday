@@ -2,12 +2,9 @@ import { NextFunction, Request, Response, Router } from "express";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { ObjectId } from "mongodb";
 import fileUpload from "express-fileupload";
-import { processUploadedFiles, s3 } from "../utils/functions.js";
+import { s3 } from "../utils/functions.js";
 import { GameSessions } from "../db/collections.js";
-import {
-  fileSizeLimiter,
-  validateFileUpload,
-} from "../middleware/validateRequest.js";
+import { validateFileUpload } from "../middleware/validateRequest.js";
 import { ApiError } from "../utils/error-util.js";
 
 const router = Router();
@@ -17,7 +14,6 @@ router.post(
   "/",
   fileUpload(),
   validateFileUpload,
-  fileSizeLimiter,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await GameSessions.findOneAndUpdate(
@@ -52,13 +48,12 @@ router.post(
       );
 
       // Upload files to S3
-      const file = processUploadedFiles(req.files!);
       const filename = `${result.value._id}/${req.user.username}.${req.fileExt}`; // sessionId/username.fileExt
 
       const bucketParams = {
         Bucket: process.env.AWS_S3_BUCKET_NAME!,
         Key: filename,
-        Body: file.data,
+        Body: req.file.data,
       };
       const data = await s3.send(new PutObjectCommand(bucketParams));
 

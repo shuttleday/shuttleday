@@ -2,11 +2,10 @@ import { NextFunction, Request, Response, Router } from "express";
 import { ApiError } from "../utils/error-util.js";
 import {
   adminCheck,
-  fileSizeLimiter,
   validateFileUpload,
 } from "../middleware/validateRequest.js";
 import fileUpload from "express-fileupload";
-import { s3, processUploadedFiles } from "../utils/functions.js";
+import { s3 } from "../utils/functions.js";
 import {
   GetObjectCommand,
   PutObjectCommand,
@@ -50,7 +49,6 @@ router
     adminCheck,
     fileUpload(),
     validateFileUpload,
-    fileSizeLimiter,
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const result = await Users.findOne({ email: req.user.email });
@@ -59,13 +57,12 @@ router
         if (result.QR.uploaded)
           throw new ApiError(409, "You have already uploaded a QR");
 
-        const file = processUploadedFiles(req.files!);
         const filename = `${req.user.email}-QR.${req.fileExt}`; // some@email.com-QR.fileType
 
         const bucketParams = {
           Bucket: process.env.AWS_S3_BUCKET_NAME!,
           Key: filename,
-          Body: file.data,
+          Body: req.file.data,
         };
 
         const data = await s3.send(new PutObjectCommand(bucketParams));
@@ -100,7 +97,6 @@ router
     adminCheck,
     fileUpload(),
     validateFileUpload,
-    fileSizeLimiter,
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const result = await Users.findOne({ email: req.user.email });
@@ -109,14 +105,13 @@ router
         if (!result.QR.uploaded)
           throw new ApiError(404, "You have not uploaded a QR yet");
 
-        const file = processUploadedFiles(req.files!);
         const fileExt = result.QR.fileExt;
         const filename = `${req.user.email}-QR.${fileExt}`;
 
         const bucketParams = {
           Bucket: process.env.AWS_S3_BUCKET_NAME!,
           Key: filename,
-          Body: file.data,
+          Body: req.file.data,
         };
 
         const data = await s3.send(new PutObjectCommand(bucketParams));

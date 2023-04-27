@@ -11,6 +11,7 @@ declare global {
     export interface Request {
       user: User;
       fileExt?: FileExtension;
+      file?: fileUpload;
     }
   }
 }

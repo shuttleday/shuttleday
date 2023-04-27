@@ -53,6 +53,13 @@ export async function validateFileUpload(
     if (!req.files) throw new ApiError(401, "No image was uploaded");
     const file = processUploadedFiles(req.files!);
 
+    // check file size
+    if (file.size > FILE_SIZE_LIMIT)
+      throw new ApiError(
+        413,
+        `Uploaded file is over the file size limit of ${MB} MB`
+      );
+
     // If the uploaded file does not have the mime type of image or application/pdf, prevent from uploading
     const fileType = await fileTypeFromBuffer(file.data);
     if (
@@ -63,28 +70,9 @@ export async function validateFileUpload(
     )
       throw new ApiError(400, "File is not an image or a pdf");
 
-    // pass file extension to context for later processing
+    // pass file and extension to context for later processing
     req.fileExt = fileType!.ext;
-    next();
-  } catch (error) {
-    next(error);
-  }
-}
-
-export function fileSizeLimiter(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    const file = processUploadedFiles(req.files!);
-
-    if (file.size > FILE_SIZE_LIMIT)
-      throw new ApiError(
-        413,
-        `Uploaded file is over the file size limit of ${MB} MB`
-      );
-
+    req.file = file;
     next();
   } catch (error) {
     next(error);
