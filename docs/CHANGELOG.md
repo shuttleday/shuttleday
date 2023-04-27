@@ -1,3 +1,15 @@
+## [1.1.1](https://github.com/shuttleday/shuttleday/compare/v1.1.0...v1.1.1) (2023-04-27)
+
+
+### Bug Fixes
+
+* **ci:** prevent semantic-release hitting secondary rate limit ([639802d](https://github.com/shuttleday/shuttleday/commit/639802dee26877dc61991ec4c82c24e86d9d4fa7)), closes [/github.com/semantic-release/semantic-release/issues/2204#issuecomment-1486299917](https://github.com//github.com/semantic-release/semantic-release/issues/2204/issues/issuecomment-1486299917)
+
+
+### Performance Improvements
+
+* run processUploadedFiles at middleware level ([f0dd353](https://github.com/shuttleday/shuttleday/commit/f0dd35327e16b1db8f27b635649b357fd843adbf))
+
 # [1.1.0](https://github.com/shuttleday/shuttleday/compare/v1.0.5...v1.1.0) (2023-04-27)
 
 
