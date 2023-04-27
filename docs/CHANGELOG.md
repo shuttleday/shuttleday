@@ -1,3 +1,11 @@
+## [1.1.3](https://github.com/shuttleday/shuttleday/compare/v1.1.2...v1.1.3) (2023-04-27)
+
+
+### Bug Fixes
+
+* **ci:** change package name ([05100cb](https://github.com/shuttleday/shuttleday/commit/05100cb353a21e9e804a2593b71cfcb90bc10ab8))
+* **ci:** correct input field name ([c8e8dcb](https://github.com/shuttleday/shuttleday/commit/c8e8dcb248a679c4fcc1f2aa53a0aaad9ddc67d9))
+
 ## [1.1.2](https://github.com/shuttleday/shuttleday/compare/v1.1.1...v1.1.2) (2023-04-27)
 
 
