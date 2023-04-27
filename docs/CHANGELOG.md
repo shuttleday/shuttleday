@@ -1,3 +1,10 @@
+## [1.1.5](https://github.com/shuttleday/shuttleday/compare/v1.1.4...v1.1.5) (2023-04-27)
+
+
+### Reverts
+
+* Revert "chore(release): 1.1.4" ([2505d6b](https://github.com/shuttleday/shuttleday/commit/2505d6b46639106c8e79363392dbdff56604992d))
+
 ## [1.1.3](https://github.com/shuttleday/shuttleday/compare/v1.1.2...v1.1.3) (2023-04-27)
 
 
