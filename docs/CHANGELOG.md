@@ -1,3 +1,15 @@
+## [1.1.8](https://github.com/shuttleday/shuttleday/compare/v1.1.7...v1.1.8) (2023-04-27)
+
+
+### Bug Fixes
+
+* **ci:** fetch latest tag ([ef7614f](https://github.com/shuttleday/shuttleday/commit/ef7614ff1e65489052716f722543c736744b1186))
+
+
+### Reverts
+
+* Revert "fix(ci): remove skip ci for release commits" ([593d40f](https://github.com/shuttleday/shuttleday/commit/593d40f7434b92fdfc89a37f279b691db000b484))
+
 ## [1.1.7](https://github.com/shuttleday/shuttleday/compare/v1.1.6...v1.1.7) (2023-04-27)
 
 
