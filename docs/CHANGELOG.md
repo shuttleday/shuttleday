@@ -1,3 +1,11 @@
+## [1.1.7](https://github.com/shuttleday/shuttleday/compare/v1.1.6...v1.1.7) (2023-04-27)
+
+
+### Bug Fixes
+
+* **ci:** update docker tags ([cca8747](https://github.com/shuttleday/shuttleday/commit/cca8747de029e40fc0e0c67b99875eb893d27629))
+* **ci:** use value ([f55062b](https://github.com/shuttleday/shuttleday/commit/f55062b53f113636c1a6bf2e2c3d6aba7360139a))
+
 ## [1.1.6](https://github.com/shuttleday/shuttleday/compare/v1.1.5...v1.1.6) (2023-04-27)
 
 
