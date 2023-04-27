@@ -107,10 +107,12 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ghcr.io/${{ github.repository_owner }}/api
+          flavor: |
+            latest=true
           tags: |
-            type=semver,pattern={{version}},value=${{ env.GIT_TAG }}
-            type=semver,pattern={{major}}.{{minor}},value=${{ env.GIT_TAG }}
-            type=semver,pattern={{major}},value=${{ env.GIT_TAG }}
+            type=semver,pattern={{version}},value=${{ env.DOCKER_TAG }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ env.DOCKER_TAG }}
+            type=semver,pattern={{major}},value=${{ env.DOCKER_TAG }}
             type=sha
 
       - name: Build and push Docker image
@@ -137,6 +139,15 @@ jobs:
     needs: dockerize
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Get current Git tag
+        # Gets the current tag and removes the prepended 'v'
+        run: |
+          FULL_GIT_TAG=$(git describe --tags HEAD)
+          echo "GIT_TAG="${FULL_GIT_TAG#v}" " >> "$GITHUB_ENV"
+
       - uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.PAT_TOKEN }}
@@ -146,5 +157,5 @@ jobs:
               repo: 'k8s',
               workflow_id: 'update-manifest.yml',
               ref: 'main',
-              inputs: '{ tag: ${{ env.GIT_TAG }} }'
+              inputs: { 'tag': '${{ env.GIT_TAG }}' }
             })
