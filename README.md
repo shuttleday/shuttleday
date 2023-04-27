@@ -17,14 +17,8 @@
   </a>
 </p>
 
-<p>
-<a href="https://jenkins.pierreccesario.com/job/shuttleday-backend/">
-        <img src="https://jenkins.pierreccesario.com/buildStatus/icon?job=shuttleday-backend%2Fmain&subject=Backend%20Build">
-</a>
-<a href="https://jenkins.pierreccesario.com/job/shuttleday-frontend/">
-        <img src="https://jenkins.pierreccesario.com/buildStatus/icon?job=shuttleday-frontend&subject=Frontend%20Build">
-</a>
-</p>
+[![Backend CI](https://github.com/shuttleday/shuttleday/actions/workflows/backend.yml/badge.svg)](https://github.com/shuttleday/shuttleday/actions/workflows/backend.yml)
+[![Frontend CI](https://github.com/shuttleday/shuttleday/actions/workflows/frontend.yml/badge.svg)](https://github.com/shuttleday/shuttleday/actions/workflows/frontend.yml)
 
 <p>
 
@@ -46,16 +40,11 @@
       <ol>
         <li><a href="#background">Background</a></li>
         <li><a href="#tech-stack">Tech Stack</a></li>
-        <li><a href="#features">Features</a></li>
+        <li><a href="#cloud-architecture">Cloud Architecture</a></li>
+        <li><a href="#highlights">Highlights</a></li>
       </ol>
     </li>
-    <li><a href="#read-more">Read More</a>
-    <ol>
-        <li><a href="./docs/BACKEND_DEV.md">Backend README</a></li>
-        <li><a href="./docs/FRONTEND_DEV.md">Frontend README</a></li>
-        <li><a href="./docs/DEPLOYMENT.md">Deployment README</a></li>
-    </ol>
-    </li>
+    <li><a href="#read-more">Read More</a></li>
   </ol>
 </details>
 <hr/>
@@ -68,7 +57,7 @@
 [ansible]: https://img.shields.io/badge/Ansible-000000?style=for-the-badge&logo=ansible&logoColor=white
 [nginx]: https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white
 [cloudflare]: https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=Cloudflare&logoColor=white
-[jenkins]: https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=Jenkins&logoColor=white
+[github-actions]: https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white
 [jest]: https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white
 [docker]: https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white
 [kubernetes]: https://img.shields.io/badge/kubernetes-326ce5.svg?&style=for-the-badge&logo=kubernetes&logoColor=white
@@ -94,12 +83,12 @@
 
 | Infrastructure                                    | Continuous Integration | Container Orchestration | Backend                      | Frontend                            |
 | ------------------------------------------------- | ---------------------- | ----------------------- | ---------------------------- | ----------------------------------- |
-| ![][aws] <br> ![][digitalocean] <br> ![][Proxmox] | ![][jenkins]           | ![][kubernetes]         | ![][mongodb]                 | ![][react]                          |
+| ![][aws] <br> ![][digitalocean] <br> ![][Proxmox] | ![][github-actions]    | ![][kubernetes]         | ![][mongodb]                 | ![][react]                          |
 | ![][red-hat]                                      | ![][docker]            | ![][argocd]             | ![][typescript]              | ![][javascript]                     |
 | ![][terraform] <br> ![][ansible]                  | ![][jest]              |                         | ![][nodejs]                  | ![][webpack]                        |
 | ![][nginx] <br> ![][cloudflare]                   |                        |                         | ![][expressjs] <br> ![][jwt] | ![][tailwind] <br> ![][material-ui] |
 
-## System Architecture
+## Cloud Architecture
 
 ![](docs/images/systemArchitecture.webp)
 
@@ -116,6 +105,10 @@
 
 [Backend Development](bdlist-backend/README.md)
 
-[FRONTEND_DEV.md](bdlist-frontend/README.md)
+[Frontend Development](bdlist-frontend/README.md)
 
-[DEPLOYMENT.md](./docs/DEPLOYMENT.md)
+[Deployment and infrastructure](./docs/DEPLOYMENT.md)
+
+[Contributing](./docs/CONTRIBUTING.md)
+
+[Changelog](./docs/CHANGELOG.md)
