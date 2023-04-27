@@ -1,3 +1,11 @@
+## [1.1.2](https://github.com/shuttleday/shuttleday/compare/v1.1.1...v1.1.2) (2023-04-27)
+
+
+### Bug Fixes
+
+* **ci:** correct syntax for paths trigger ([923d701](https://github.com/shuttleday/shuttleday/commit/923d701da0713abc6ccec57c3a8a2e6a472ba3b6))
+* **ci:** strip v from git tag ([323530b](https://github.com/shuttleday/shuttleday/commit/323530bc73beabdd48b1a669db55d4e2a6230f37))
+
 ## [1.1.1](https://github.com/shuttleday/shuttleday/compare/v1.1.0...v1.1.1) (2023-04-27)
 
 
