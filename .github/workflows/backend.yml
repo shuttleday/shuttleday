@@ -1,13 +1,10 @@
 name: Backend CI
 
 on:
-  workflow_dispatch:
   push:
-    paths: [ 'bdlist-backend/**' ]
-    branches: [ 'main' ]
-  pull_request:
-    paths: [ 'bdlist-backend/**' ]
-    branches: [ 'main' ]
+    tags:
+      - "*"
+  workflow_dispatch:
 
 defaults:
   run:
@@ -61,17 +58,6 @@ jobs:
           path: ./bdlist-backend/dist/
           retention-days: 14
 
-  # semantic-release:
-  #   # Run only if the branch that triggered the workflow is main
-  #   if: github.ref_name == 'main'
-  #   permissions:
-  #     contents: write # to be able to publish a GitHub release
-  #     issues: write # to be able to comment on released issues
-  #     pull-requests: write # to be able to comment on released pull requests
-  #   name: Semantic Release
-  #   needs: transpile
-  #   uses: ./.github/workflows/semantic-release.yml
-
   dockerize:
     name: Dockerize and Push Image
     needs: transpile
@@ -108,9 +94,9 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository_owner }}/api
           tags: |
-            type=semver,pattern={{version}},value=$DOCKER_TAG
-            type=semver,pattern={{major}}.{{minor}},value=$DOCKER_TAG
-            type=semver,pattern={{major}},value=$DOCKER_TAG
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
             type=sha
 
       - name: Build and push Docker image
