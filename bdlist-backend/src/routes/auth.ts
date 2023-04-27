@@ -34,7 +34,10 @@ router.post(
         username: req.body.username,
         createdAt: new Date(),
         userType: UserType.Player,
-        hasQR: false,
+        QR: {
+          uploaded: false,
+          fileExt: null,
+        },
       };
 
       await Users.insertOne(document);

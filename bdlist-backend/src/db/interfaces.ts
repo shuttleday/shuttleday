@@ -1,8 +1,14 @@
+import { FileExtension } from "file-type";
 import { WithId, Document } from "mongodb";
 
 export enum UserType {
   Player = "PLAYER",
   Admin = "ADMIN",
+}
+
+interface QR {
+  uploaded: boolean;
+  fileExt: FileExtension | null;
 }
 
 export interface User extends WithId<Document> {
@@ -12,7 +18,7 @@ export interface User extends WithId<Document> {
   username: string;
   createdAt: Date;
   userType: UserType;
-  hasQR: boolean;
+  QR: QR;
 }
 
 export interface UserPayment extends WithId<Document> {
@@ -20,7 +26,7 @@ export interface UserPayment extends WithId<Document> {
   username: string;
   paid: boolean;
   paidAt: Date | undefined;
-  paymentImage?: string; // s3 link
+  fileExt: FileExtension | null;
 }
 
 export interface GameSession extends WithId<Document> {

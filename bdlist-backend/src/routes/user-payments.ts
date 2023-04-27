@@ -35,6 +35,7 @@ router.post(
           $set: {
             "players.$.paid": true,
             "players.$.paidAt": new Date(),
+            "players.$.fileExt": req.fileExt,
           },
         },
         { returnDocument: "after" }
@@ -52,7 +53,7 @@ router.post(
 
       // Upload files to S3
       const file = processUploadedFiles(req.files!);
-      const filename = `${result.value._id}/${req.user.username}.jpg`;
+      const filename = `${result.value._id}/${req.user.username}.${req.fileExt}`; // sessionId/username.fileExt
 
       const bucketParams = {
         Bucket: process.env.AWS_S3_BUCKET_NAME!,

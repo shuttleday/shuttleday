@@ -53,11 +53,18 @@ export async function validateFileUpload(
     if (!req.files) throw new ApiError(401, "No image was uploaded");
     const file = processUploadedFiles(req.files!);
 
-    // If the uploaded file does not have the mime type of image, prevent from uploading
+    // If the uploaded file does not have the mime type of image or application/pdf, prevent from uploading
     const fileType = await fileTypeFromBuffer(file.data);
-    if (!fileType!.mime.startsWith("image"))
-      throw new ApiError(400, "File is not an image");
+    if (
+      !(
+        fileType!.mime.startsWith("image") ||
+        fileType!.mime === "application/pdf"
+      )
+    )
+      throw new ApiError(400, "File is not an image or a pdf");
 
+    // pass file extension to context for later processing
+    req.fileExt = fileType!.ext;
     next();
   } catch (error) {
     next(error);

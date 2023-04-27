@@ -30,11 +30,11 @@ router.get(
       if (players.length === 0)
         throw new ApiError(404, "No players have paid for that session");
 
-      // Construct promises
+      // Construct promises to fetch files
       const promises = players.map((player) => {
         const command = new GetObjectCommand({
           Bucket: process.env.AWS_S3_BUCKET_NAME,
-          Key: `${gameSession._id}/${player.username}.jpg`,
+          Key: `${gameSession._id}/${player.username}.${player.fileExt}`,
         });
         return getSignedUrl(s3, command, { expiresIn: 3600 });
       });
@@ -47,9 +47,10 @@ router.get(
         const url = new URL(signedUrl);
         const pathname = url.pathname;
         const decodedPath = decodeURIComponent(pathname);
-        const usernameJpg = decodedPath.split("/")[2];
-        const username = usernameJpg.split(".")[0];
-        return { payer: username, signedUrl };
+        const usernameFileExt = decodedPath.split("/")[2];
+        const username = usernameFileExt.split(".")[0];
+        const fileExt = usernameFileExt.split(".")[1];
+        return { payer: username, signedUrl, fileExt };
       });
 
       res.status(200).json({ signedUrls: urlObjs });
