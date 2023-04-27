@@ -84,7 +84,8 @@ jobs:
       - name: Get current Git tag
         # Gets the current tag and removes the prepended 'v'
         run: |
-          echo "GIT_TAG="${$(git describe --tags HEAD):1}" " >> "$GITHUB_ENV"
+          FULL_GIT_TAG=$(git describe --tags HEAD)
+          echo "GIT_TAG="${FULL_GIT_TAG#v}" " >> "$GITHUB_ENV"
 
       - name: Download transpiled artifacts
         uses: actions/download-artifact@v3
