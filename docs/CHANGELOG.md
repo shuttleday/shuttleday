@@ -1,3 +1,15 @@
+## [1.1.6](https://github.com/shuttleday/shuttleday/compare/v1.1.5...v1.1.6) (2023-04-27)
+
+
+### Bug Fixes
+
+* **ci:** revert changes and reference semver var ([4eb7769](https://github.com/shuttleday/shuttleday/commit/4eb7769a3eabd8c06be739a443bdf77afed79278))
+
+
+### Reverts
+
+* Revert "test docker push" ([9a559c9](https://github.com/shuttleday/shuttleday/commit/9a559c9a52c6d30b0e8666b9d352f33124d846ce))
+
 ## [1.1.5](https://github.com/shuttleday/shuttleday/compare/v1.1.4...v1.1.5) (2023-04-27)
 
 
