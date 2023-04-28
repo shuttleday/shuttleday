@@ -1,3 +1,10 @@
+## [1.1.9](https://github.com/shuttleday/shuttleday/compare/v1.1.8...v1.1.9) (2023-04-28)
+
+
+### Bug Fixes
+
+* **ci:** fetch tags after sem release ([6a9f75f](https://github.com/shuttleday/shuttleday/commit/6a9f75fd14cd5ca2658248d1ddaddc19e366bfe1))
+
 ## [1.1.8](https://github.com/shuttleday/shuttleday/compare/v1.1.7...v1.1.8) (2023-04-27)
 
 
