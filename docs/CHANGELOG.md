@@ -1,3 +1,11 @@
+## [1.3.2](https://github.com/shuttleday/shuttleday/compare/v1.3.1...v1.3.2) (2023-04-28)
+
+
+### Bug Fixes
+
+* creating session will auto join session ([35ecc33](https://github.com/shuttleday/shuttleday/commit/35ecc33d59cd66a7c5c5e7c6365cc113d1ae154b))
+* edit qr bug fixed ([a545e53](https://github.com/shuttleday/shuttleday/commit/a545e53d4f589235a0c30973b6406e3e1665cae3))
+
 ## [1.3.1](https://github.com/shuttleday/shuttleday/compare/v1.3.0...v1.3.1) (2023-04-28)
 
 
