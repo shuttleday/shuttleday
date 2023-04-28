@@ -5,10 +5,12 @@ import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
 import HomeIcon from '@mui/icons-material/Home';
 import { useNavigate } from 'react-router-dom';
+import { green } from '@mui/material/colors';
 
 const SpeedDialComponent = () => {
   let navigate = useNavigate();
 
+  const color = green[400];
   const actions = [{ icon: <HomeIcon />, name: 'Home' }];
 
   function handleSpeedDial(operation) {
@@ -28,7 +30,12 @@ const SpeedDialComponent = () => {
       <SpeedDial
         sticky='true'
         ariaLabel='SpeedDial basic'
-        sx={{ position: 'absolute', bottom: 16, right: 16 }}
+        sx={{
+          position: 'absolute',
+          bottom: 16,
+          right: 16,
+          '& .MuiFab-primary': { backgroundColor: color },
+        }}
         icon={<SpeedDialIcon />}
       >
         {actions.map((action) => (

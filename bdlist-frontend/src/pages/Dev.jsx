@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { AdminWrapper } from '../hoc';
 const Dev = () => {
   let navigate = useNavigate();
 
@@ -27,4 +28,4 @@ const Dev = () => {
   );
 };
 
-export default Dev;
+export default AdminWrapper(Dev);

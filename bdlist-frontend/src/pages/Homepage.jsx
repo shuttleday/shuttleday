@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   userCheck,
   createAccount,
@@ -7,6 +7,8 @@ import {
   removeFromSession,
   uploadReceipt,
   googleSignIn,
+  getReceipts,
+  getQR,
 } from '../data/repository';
 
 import List from '@mui/material/List';
@@ -24,10 +26,8 @@ import TabPanel from '@mui/lab/TabPanel';
 import IconButton from '@mui/material/IconButton';
 import { Button } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
-import Bank from '../img/BankQR.jpg';
 import Modal from '@mui/material/Modal';
 import Chip from '@mui/material/Chip';
 import ImageIcon from '@mui/icons-material/Image';
@@ -38,32 +38,47 @@ import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import jwt_decode from 'jwt-decode';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import dayjs from 'dayjs';
 import Loading from '../components/Loading';
-import { actions, ERROR, SUCCESS, WARNING } from '../constants';
+import {
+  adminActions,
+  userActions,
+  ERROR,
+  SUCCESS,
+  WARNING,
+  admin,
+  Alert,
+} from '../constants';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { useLocation } from 'react-router-dom';
+import InfoHeader from '../components/InfoHeader';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
+import ImageViewer from 'react-simple-image-viewer';
+import ImageListItemBar from '@mui/material/ImageListItemBar';
+import { BiErrorAlt } from 'react-icons/bi';
+import { green } from '@mui/material/colors';
 
 const HomePage = () => {
+  const color = green[400];
   const location = useLocation();
   let navigate = useNavigate();
 
   function handleSpeedDial(operation) {
-    if (operation === 'payment') {
-      navigate('/receipt');
-    } else if (operation === 'details') {
+    if (operation === 'details') {
       navigate('/details');
-    } else if (operation === 'management') {
-      setCondition(ERROR);
-      setAlertMsg('Not avaliable');
-      setOpen(true);
     } else if (operation === 'create') {
       navigate('/create');
+    } else if (operation === 'qr') {
+      navigate('/qr');
+    } else if (operation === 'credits') {
+      navigate('/credits');
+    } else if (operation === 'report') {
+      navigate('/report');
+    } else if (operation === 'logout') {
+      localStorage.removeItem('jwtToken_Login');
+      localStorage.removeItem('refreshToken');
+      navigate('/Glogin');
     } else if (operation === 'edit') {
       navigate('/edit', {
         state: {
@@ -86,8 +101,12 @@ const HomePage = () => {
     p: 4,
   };
 
+  //Session infomation for display
   const [sessionInfo, setSessionInfo] = useState(null);
   const [selected, setSelected] = useState(0);
+
+  const [QR, setQR] = useState(null);
+  //Used as a flag to see if the player has joined the specific session
   const [playerStat, setPlayerStat] = useState(true);
 
   //Control logic for tabs----------------------------------------------------------
@@ -104,6 +123,7 @@ const HomePage = () => {
   const [image, setImage] = useState(null);
   const [buttonOn, setButtonON] = useState(true);
 
+  //Checkbox logic for usernames----------------------------------------------------
   const [checked, setChecked] = React.useState(false);
   const handleCheck = () => {
     setChecked((prev) => (prev === true ? false : true));
@@ -113,6 +133,7 @@ const HomePage = () => {
     setButtonON(false);
     setImage(e.target.files[0]);
   };
+
   const onUpload = async () => {
     const res = await uploadReceipt(image, sessionInfo[selected]._id);
     if (res) {
@@ -141,7 +162,6 @@ const HomePage = () => {
       async function getSessionData() {
         getSession().then((res) => {
           if (res.gameSessions.length > 0) {
-            console.log(res);
             setSessionInfo(res.gameSessions);
             setSelected(0);
             if (
@@ -165,7 +185,7 @@ const HomePage = () => {
           setOpen(true);
         }
 
-        if (user.data.userType === 'admin') {
+        if (user.data.userType === admin) {
           setRender(true);
         }
       });
@@ -175,14 +195,52 @@ const HomePage = () => {
     // eslint-disable-next-line
   }, []);
 
-  const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
-  });
-
   const [alertMsg, setAlertMsg] = useState('');
+
+  const [receipts, setReceipts] = useState(null);
+  const [isEmpty, setIsEmpty] = useState(false);
+  const [selectedImages, setSelectedImages] = useState(null);
+
+  const [currentImage, setCurrentImage] = useState(0);
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
+
+  const openImageViewer = useCallback(
+    (index) => {
+      setSelectedImages(receipts.viewableImage);
+      setCurrentImage(index);
+      setIsViewerOpen(true);
+      // eslint-disable-next-line
+    },
+    [receipts]
+  );
+
+  const closeImageViewer = () => {
+    setCurrentImage(0);
+    setIsViewerOpen(false);
+  };
 
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);
+    if (newValue === '3') {
+      getReceipts(sessionInfo[selected]._id)
+        .then((res) => {
+          setIsEmpty(false);
+          setReceipts(res);
+        })
+        .catch((error) => {
+          setIsEmpty(true);
+          setReceipts([]);
+        });
+    } else if (newValue === '2') {
+      setQR(null);
+      getQR(sessionInfo[selected].payTo)
+        .then((res) => {
+          setQR(res.url);
+        })
+        .catch((error) => {
+          setQR(undefined);
+        });
+    }
   };
 
   const onJoin = async () => {
@@ -281,15 +339,38 @@ const HomePage = () => {
 
   const handleSelect = (event) => {
     setSelected(event.target.value);
-    const user = jwt_decode(localStorage.getItem('jwtToken_Login'));
-    if (
-      sessionInfo[event.target.value].players.find(
-        (item) => item.userEmail === user.email
-      )
-    ) {
-      setPlayerStat(false);
-    } else {
-      setPlayerStat(true);
+
+    if (activeTab === '1') {
+      const user = jwt_decode(localStorage.getItem('jwtToken_Login'));
+      if (
+        sessionInfo[event.target.value].players.find(
+          (item) => item.userEmail === user.email
+        )
+      ) {
+        setPlayerStat(false);
+      } else {
+        setPlayerStat(true);
+      }
+    } else if (activeTab === '2') {
+      setQR(null);
+      getQR(sessionInfo[event.target.value].payTo)
+        .then((res) => {
+          setQR(res.url);
+        })
+        .catch((error) => {
+          setQR(undefined);
+        });
+    } else if (activeTab === '3') {
+      setReceipts(null);
+      getReceipts(sessionInfo[event.target.value]._id)
+        .then((res) => {
+          setIsEmpty(false);
+          setReceipts(res);
+        })
+        .catch((error) => {
+          setIsEmpty(true);
+          setReceipts([]);
+        });
     }
   };
   return (
@@ -410,6 +491,7 @@ const HomePage = () => {
               >
                 <Tab label='NameList' value='1' />
                 <Tab label='Payment' value='2' />
+                {render && <Tab label='Receipts' value='3' />}
               </TabList>
             </Box>
             <TabPanel value='1'>
@@ -417,48 +499,11 @@ const HomePage = () => {
                 <Loading />
               ) : (
                 <Stack spacing={1} justifyContent='center'>
-                  <div className='flex space-x-2'>
-                    <div className='bg-primary flex-1 rounded-md p-2 text-center border-green-400'>
-                      Courts <p>{sessionInfo[selected].courts.join(',')}</p>
-                    </div>
-                    <div className='bg-primary flex-1 rounded-md p-2 text-center border-green-400'>
-                      Time{' '}
-                      <p>
-                        {dayjs(sessionInfo[selected].start).format('hh:mm A')}
-                      </p>
-                    </div>
-                  </div>
-
-                  <Box sx={{ flexGrow: 1 }}>
-                    <div className=' bg-primary rounded-md w-full'>
-                      <FormControl
-                        sx={{
-                          minWidth: { xs: 150, sm: 180, md: 200 },
-                          flexGrow: 1,
-                        }}
-                        variant='filled'
-                        className=' w-full'
-                      >
-                        <InputLabel id='demo-simple-select-helper-label'>
-                          Sessions
-                        </InputLabel>
-                        <Select
-                          id='demo-simple-select-helper'
-                          value={selected}
-                          label='Sessions'
-                          color='primary'
-                          onChange={handleSelect}
-                          style={{ borderRadius: '8px' }}
-                        >
-                          {sessionInfo.map((date, index) => (
-                            <MenuItem key={index} value={index}>
-                              {dayjs(date.end).format('DD/MM/YYYY ddd')}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </div>
-                  </Box>
+                  <InfoHeader
+                    sessionInfo={sessionInfo}
+                    selected={selected}
+                    handleSelect={handleSelect}
+                  />
                   <List
                     sx={{
                       width: { xs: 272, sm: 452, lg: 452 },
@@ -495,6 +540,7 @@ const HomePage = () => {
                                 justifyContent: 'center',
                                 size: 30,
                               }}
+                              className='flex'
                               primary={
                                 <Fragment>
                                   <Typography
@@ -506,7 +552,13 @@ const HomePage = () => {
                                       },
                                     }}
                                     component='span'
-                                    color='text.primary'
+                                    //eslint-disable-next-line
+                                    className={
+                                      player.userEmail ===
+                                      sessionInfo[selected].payTo
+                                        ? 'text-yellow-400 grow'
+                                        : player.paid && 'text-green-400'
+                                    }
                                   >
                                     {player.username}
                                   </Typography>
@@ -544,44 +596,29 @@ const HomePage = () => {
             </TabPanel>
             {/* ---------------------------------------------------------------------------------------------------------------------------- */}
             <TabPanel value='2'>
-              <Stack
-                spacing={2}
-                direction='column'
-                alignItems='center'
-                justifyContent='center'
-              >
-                <Card
-                  sx={{
-                    width: { sx: 280, sm: 350, md: 400 },
-                    height: { sx: 280, sm: 590, md: 660 },
-                  }}
-                >
-                  <CardMedia component='img' image={Bank} alt='QR-Code' />
+              <Stack spacing={1} justifyContent='center'>
+                <InfoHeader
+                  sessionInfo={sessionInfo}
+                  selected={selected}
+                  handleSelect={handleSelect}
+                />
+
+                <Card className='rounded-md border border-green-400'>
+                  {QR === null ? (
+                    <div className='py-4 px-12  flex justify-evenly items-center flex-col h-[350px] lg:h-[500px]'>
+                      <Loading />
+                    </div>
+                  ) : QR === undefined ? (
+                    <div className='py-4 px-12  flex justify-center items-center flex-col h-[350px] lg:h-[500px]'>
+                      <BiErrorAlt className='h-[60px] w-[60px]' />
+                      <p className='text-center font-bold text-red-500 mt-3'>
+                        No QR avaliable. Contact the host
+                      </p>
+                    </div>
+                  ) : (
+                    <CardMedia component='img' image={QR} alt='QR-Code' />
+                  )}
                 </Card>
-                <FormControl
-                  sx={{ m: 1, minWidth: { xs: 150, sm: 180, md: 200 } }}
-                >
-                  <InputLabel id='demo-simple-select-helper-label'>
-                    Sessions
-                  </InputLabel>
-                  <Select
-                    id='Session-payment'
-                    value={selected}
-                    label='Sessions'
-                    color='primary'
-                    onChange={handleSelect}
-                  >
-                    {sessionInfo === null ? (
-                      <MenuItem value={0}>N/A</MenuItem>
-                    ) : (
-                      sessionInfo.map((date, index) => (
-                        <MenuItem key={index} value={index}>
-                          {dayjs(date.end).format('DD/MM/YYYY ddd')}
-                        </MenuItem>
-                      ))
-                    )}
-                  </Select>
-                </FormControl>
 
                 <Chip
                   label={
@@ -602,6 +639,56 @@ const HomePage = () => {
                 </Button>
               </Stack>
             </TabPanel>
+            <TabPanel value='3'>
+              <Stack spacing={1}>
+                <InfoHeader
+                  sessionInfo={sessionInfo}
+                  selected={selected}
+                  handleSelect={handleSelect}
+                />
+
+                {receipts === null ? (
+                  <Loading />
+                ) : isEmpty ? (
+                  <div className='py-4 px-12  flex justify-evenly items-center flex-col h-[350px] lg:h-[500px]'>
+                    <div className=' justify-center items-center '>
+                      <BiErrorAlt className='h-[60px] w-[60px]' />
+                    </div>
+
+                    <p className='text-center font-bold text-red-500 '>
+                      No receipts has been uploaded yet
+                    </p>
+                  </div>
+                ) : (
+                  <Box>
+                    <ImageList
+                      sx={{
+                        width: { sx: 240, sm: 450 },
+                        height: { sx: 200, sm: 300, md: 550 },
+                      }}
+                    >
+                      {receipts.urls.map((image, index) => (
+                        <ImageListItem key={index}>
+                          <img
+                            className='rounded-md'
+                            src={`${image.signedUrl}`}
+                            srcSet={`${image.signedUrl}`}
+                            alt={image.payer}
+                            onClick={() => openImageViewer(index)}
+                          />
+                          <ImageListItemBar
+                            title={image.payer}
+                            subtitle={''}
+                            className='rounded-md'
+                          />
+                        </ImageListItem>
+                      ))}
+                    </ImageList>
+                    <br />
+                  </Box>
+                )}
+              </Stack>
+            </TabPanel>
           </TabContext>
         </Box>
         <Snackbar
@@ -619,34 +706,60 @@ const HomePage = () => {
           </Alert>
         </Snackbar>
       </Stack>
-      {render && (
-        <Box
+      <Box
+        sx={{
+          transform: 'translateZ(0px)',
+          flexGrow: 1,
+          position: 'fixed',
+          bottom: 0,
+          width: 1.0,
+        }}
+      >
+        <SpeedDial
+          sticky='true'
+          ariaLabel='SpeedDial openIcon'
           sx={{
-            transform: 'translateZ(0px)',
-            flexGrow: 1,
-            position: 'fixed',
-            bottom: 0,
-            width: 1.0,
+            position: 'absolute',
+            bottom: 16,
+            right: 16,
+            '& .MuiFab-primary': { backgroundColor: color },
           }}
+          icon={<SpeedDialIcon openIcon={<AccountCircleIcon />} />}
         >
-          <SpeedDial
-            sticky='true'
-            ariaLabel='SpeedDial openIcon example'
-            sx={{ position: 'absolute', bottom: 16, right: 16 }}
-            icon={<SpeedDialIcon openIcon={<AccountCircleIcon />} />}
-          >
-            {actions.map((action) => (
-              <SpeedDialAction
-                key={action.name}
-                onClick={(e) => {
-                  handleSpeedDial(action.operation);
-                }}
-                icon={action.icon}
-                tooltipTitle={action.name}
-              />
-            ))}
-          </SpeedDial>
-        </Box>
+          {render
+            ? adminActions.map((action) => (
+                <SpeedDialAction
+                  key={action.name}
+                  onClick={(e) => {
+                    handleSpeedDial(action.operation);
+                  }}
+                  icon={action.icon}
+                  tooltipTitle={action.name}
+                />
+              ))
+            : userActions.map((action) => (
+                <SpeedDialAction
+                  key={action.name}
+                  onClick={(e) => {
+                    handleSpeedDial(action.operation);
+                  }}
+                  icon={action.icon}
+                  tooltipTitle={action.name}
+                />
+              ))}
+        </SpeedDial>
+      </Box>
+      {isViewerOpen && (
+        <ImageViewer
+          src={selectedImages}
+          currentIndex={currentImage}
+          onClose={closeImageViewer}
+          disableScroll={false}
+          backgroundStyle={{
+            backgroundColor: 'rgba(0,0,0,0.9)',
+          }}
+          closeOnClickOutside={true}
+        />
       )}
     </div>
   );
