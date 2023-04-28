@@ -41,6 +41,8 @@ jobs:
         retention-days: 14
 
   semantic-release:
+    # Only run deploy stage if it's a push event or a manual trigger
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     permissions:
       contents: write # to be able to publish a GitHub release
       issues: write # to be able to comment on released issues
