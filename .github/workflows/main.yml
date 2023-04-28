@@ -118,117 +118,25 @@ jobs:
   dockerize-backend:
     name: Dockerize and Push Backend Image
     needs: get-new-git-tag
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./bdlist-backend
-    steps:
-      - uses: actions/checkout@v3
-      - name: Download transpiled artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: transpiled-api
-          path: "bdlist-backend/dist/"
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ghcr.io/${{ github.repository_owner }}/api
-          flavor: |
-            latest=true
-          tags: |
-            type=semver,pattern={{version}},value=${{ needs.get-new-git-tag.outputs.tag }}
-            type=semver,pattern={{major}}.{{minor}},value=${{ needs.get-new-git-tag.outputs.tag }}
-            type=semver,pattern={{major}},value=${{ needs.get-new-git-tag.outputs.tag }}
-            type=sha
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: bdlist-backend
-          file: bdlist-backend/Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: true
-          labels: ${{ steps.meta.outputs.labels }}
-          tags: ${{ steps.meta.outputs.tags }}
-          github-token: $${{ github.token }}
-          build-args: |
-            VERSION=${{ steps.meta.outputs.version }}
-
-      - name: Send Discord Notification
-        uses: sarisia/actions-status-discord@v1
-        if: always()
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+    uses: ./.github/workflows/dockerize.yml
+    with:
+      git-tag: ${{ needs.get-new-git-tag.outputs.tag }}$
+      working-directory: bdlist-backend
+      artifact-name: transpiled-api
+      artifact-download-path: bdlist-backend/dist
+      image-name: api
 
   dockerize-frontend:
     name: Dockerize and Push Frontend Image
     needs: get-new-git-tag
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./bdlist-frontend
+    uses: ./.github/workflows/dockerize.yml
+    with:
+      git-tag: ${{ needs.get-new-git-tag.outputs.tag }}$
+      working-directory: bdlist-frontend
+      artifact-name: static-react-build
+      artifact-download-path: bdlist-frontend/build
+      image-name: frontend
 
-    steps:
-      - uses: actions/checkout@v3
-      - name: Download transpiled artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: static-react-build
-          path: "bdlist-frontend/build/"
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ghcr.io/${{ github.repository_owner }}/frontend
-          flavor: |
-            latest=true
-          tags: |
-            type=semver,pattern={{version}},value=${{ needs.get-new-git-tag.outputs.tag }}
-            type=semver,pattern={{major}}.{{minor}},value=${{ needs.get-new-git-tag.outputs.tag }}
-            type=semver,pattern={{major}},value=${{ needs.get-new-git-tag.outputs.tag }}
-            type=sha
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: bdlist-frontend
-          file: bdlist-frontend/Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: true
-          labels: ${{ steps.meta.outputs.labels }}
-          tags: ${{ steps.meta.outputs.tags }}
-          github-token: $${{ github.token }}
-          build-args: |
-            VERSION=${{ steps.meta.outputs.version }}
-
-      - name: Send Discord Notification
-        uses: sarisia/actions-status-discord@v1
-        if: always()
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
 
   deploy:
     name: Trigger K8s manifest update in K8s repository
