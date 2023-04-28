@@ -80,7 +80,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Get tags
-        run: git pull origin master
+        run: git pull origin main
 
       - name: Get current Git tag
         run: |
