@@ -1,3 +1,10 @@
+## [1.1.12](https://github.com/shuttleday/shuttleday/compare/v1.1.11...v1.1.12) (2023-04-28)
+
+
+### Bug Fixes
+
+* **ci:** manually git pull semantic release commit ([258791e](https://github.com/shuttleday/shuttleday/commit/258791eba59c433d75fec3fafd707c0e67eda18c))
+
 ## [1.1.11](https://github.com/shuttleday/shuttleday/compare/v1.1.10...v1.1.11) (2023-04-28)
 
 
