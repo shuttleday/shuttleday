@@ -6,31 +6,9 @@ on:
     branches: [ 'main' ]
 
 jobs:
-  changes:
-    name: Check changed files
-    runs-on: ubuntu-latest
-    # Required permissions
-    permissions:
-      pull-requests: read
-    # Set job outputs to values from filter step
-    outputs:
-      backend: ${{ steps.filter.outputs.backend }}
-      frontend: ${{ steps.filter.outputs.frontend }}
-    steps:
-    # For pull requests it's not necessary to checkout the code
-    - uses: dorny/paths-filter@v2
-      id: filter
-      with:
-        filters: |
-          backend:
-            - 'bdlist-backend/**'
-          frontend:
-            - 'bdlist-frontend/**'
-
   transpile-backend:
     name: Transpile TypeScript to JavaScript
     needs: changes
-    if: ${{ needs.changes.outputs.backend == 'true' }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -82,7 +60,6 @@ jobs:
   build-react-app:
     name: Build Static React Files
     needs: changes
-    if: ${{ needs.changes.outputs.frontend == 'true' }}
     runs-on: ubuntu-latest
     defaults:
       run:
