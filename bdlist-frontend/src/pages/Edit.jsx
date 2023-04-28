@@ -18,6 +18,7 @@ import { useLocation } from 'react-router-dom';
 import { editSession, getSession } from '../data/repository';
 
 import { Alert, ERROR, SUCCESS, RE } from '../constants';
+import { AdminWrapper } from '../hoc';
 
 const Edit = () => {
   const location = useLocation();
@@ -266,4 +267,4 @@ const Edit = () => {
   );
 };
 
-export default Edit;
+export default AdminWrapper(Edit);

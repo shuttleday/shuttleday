@@ -12,7 +12,7 @@ import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { Typography } from '@mui/material';
 import { createSession } from '../data/repository';
 import { ERROR, SUCCESS, Alert, RE } from '../constants';
-
+import { AdminWrapper } from '../hoc';
 const SessionCreate = () => {
   const [open, setOpen] = useState(false);
   const [alertMsg, setAlertMsg] = useState(null);
@@ -191,4 +191,4 @@ const SessionCreate = () => {
   );
 };
 
-export default SessionCreate;
+export default AdminWrapper(SessionCreate);

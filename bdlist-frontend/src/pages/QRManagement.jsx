@@ -17,6 +17,7 @@ import { amber } from '@mui/material/colors';
 import SpeedDialComponent from '../components/SpeedDialComponent';
 import jwt_decode from 'jwt-decode';
 import { BiErrorAlt } from 'react-icons/bi';
+import { AdminWrapper } from '../hoc';
 
 const QRManagement = () => {
   const color = amber[700];
@@ -283,4 +284,4 @@ const QRManagement = () => {
   );
 };
 
-export default QRManagement;
+export default AdminWrapper(QRManagement);
