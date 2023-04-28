@@ -1,3 +1,10 @@
+## [1.1.14](https://github.com/shuttleday/shuttleday/compare/v1.1.13...v1.1.14) (2023-04-28)
+
+
+### Bug Fixes
+
+* **ci:** add git fetch prune unshallow to get tag ([6f25f4d](https://github.com/shuttleday/shuttleday/commit/6f25f4d2b8a9c4bee462770b2824bc96d1b463eb))
+
 ## [1.1.13](https://github.com/shuttleday/shuttleday/compare/v1.1.12...v1.1.13) (2023-04-28)
 
 
