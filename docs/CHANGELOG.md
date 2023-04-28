@@ -1,3 +1,10 @@
+## [1.3.4](https://github.com/shuttleday/shuttleday/compare/v1.3.3...v1.3.4) (2023-04-28)
+
+
+### Bug Fixes
+
+* **ci:** remove needs option ([f2031c4](https://github.com/shuttleday/shuttleday/commit/f2031c440dccb498f208d9a33afea205ba793191))
+
 ## [1.3.3](https://github.com/shuttleday/shuttleday/compare/v1.3.2...v1.3.3) (2023-04-28)
 
 
