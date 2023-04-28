@@ -1,0 +1,279 @@
+name: Backend CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ 'main' ]
+
+jobs:
+  changes:
+    name: Check changed files
+    runs-on: ubuntu-latest
+    # Required permissions
+    permissions:
+      pull-requests: read
+    # Set job outputs to values from filter step
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+    # For pull requests it's not necessary to checkout the code
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          backend:
+            - 'bdlist-backend/**'
+          frontend:
+            - 'bdlist-frontend/**'
+
+  transpile-backend:
+    name: Transpile TypeScript to JavaScript
+    needs: changes
+    if: ${{ needs.changes.outputs.backend == 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./bdlist-backend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 7
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Transpile TypeScript to JavaScript
+        run: pnpm build
+
+      - name: Upload Transpiled Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: transpiled-api
+          path: ./bdlist-backend/dist/
+          retention-days: 14
+
+  build-react-app:
+    name: Build Static React Files
+    needs: changes
+    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./bdlist-frontend
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build Frontend
+      run: npm run build
+      env:
+        REACT_APP_CLIENT_ID: ${{ secrets.REACT_APP_CLIENT_ID }}
+        REACT_APP_API_LINK: ${{ secrets.REACT_APP_API_LINK }}
+
+    - name: Upload React artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: static-react-build
+        path: ./bdlist-frontend/build/
+        retention-days: 14  
+  
+  semantic-release:
+    needs: [ build-react-app, transpile-backend]
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+    name: Semantic Release
+    uses: ./.github/workflows/semantic-release.yml
+  
+  get-new-git-tag:
+    name: Get New Git Tag
+    needs: semantic-release
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.get-tag.outputs.git_tag }}
+
+    steps:
+      - uses: actions/checkout@v3
+      # fetches commits pushed by previous job
+      # https://github.com/actions/checkout/issues/439#issuecomment-779010780
+      - run: git pull origin main 
+      # ensures that the checkout is unshallow and has tags for git describe
+      # https://github.com/actions/checkout/issues/206#issuecomment-607496604 
+      - run: git fetch --prune --unshallow --tags 
+      - name: Get current Git tag
+        id: get-tag
+        run: |
+          echo "git_tag=$(git describe --tags HEAD)" >> "$GITHUB_OUTPUT"
+
+  dockerize-backend:
+    name: Dockerize and Push Backend Image
+    needs: get-new-git-tag
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./bdlist-backend
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download transpiled artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: transpiled-api
+          path: "bdlist-backend/dist/"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/api
+          flavor: |
+            latest=true
+          tags: |
+            type=semver,pattern={{version}},value=${{ needs.get-new-git-tag.outputs.tag }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ needs.get-new-git-tag.outputs.tag }}
+            type=semver,pattern={{major}},value=${{ needs.get-new-git-tag.outputs.tag }}
+            type=sha
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: bdlist-backend
+          file: bdlist-backend/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags }}
+          github-token: $${{ github.token }}
+          build-args: |
+            VERSION=${{ steps.meta.outputs.version }}
+
+      - name: Send Discord Notification
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+
+  dockerize-frontend:
+    name: Dockerize and Push Frontend Image
+    needs: get-new-git-tag
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./bdlist-frontend
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download transpiled artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: static-react-build
+          path: "bdlist-frontend/build/"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/frontend
+          flavor: |
+            latest=true
+          tags: |
+            type=semver,pattern={{version}},value=${{ needs.get-new-git-tag.outputs.tag }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ needs.get-new-git-tag.outputs.tag }}
+            type=semver,pattern={{major}},value=${{ needs.get-new-git-tag.outputs.tag }}
+            type=sha
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: bdlist-frontend
+          file: bdlist-frontend/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags }}
+          github-token: $${{ github.token }}
+          build-args: |
+            VERSION=${{ steps.meta.outputs.version }}
+
+      - name: Send Discord Notification
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+
+  deploy:
+    name: Trigger K8s manifest update in K8s repository
+    needs: [dockerize-backend, dockerize-frontend, get-new-git-tag]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      # Gets the current tag and removes the prepended 'v'
+      # https://stackoverflow.com/a/73257160/17645610
+      - run: |
+          FULL_TAG=${{ needs.get-new-git-tag.outputs.tag }}
+          echo "GIT_TAG="${FULL_TAG#v}" " >> "$GITHUB_ENV"
+
+      - uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.PAT_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: 'shuttleday',
+              repo: 'k8s',
+              workflow_id: 'update-manifest.yml',
+              ref: 'main',
+              inputs: { 'tag': '${{ env.GIT_TAG }}' }
+            })
