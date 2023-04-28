@@ -1,3 +1,11 @@
+## [1.3.5](https://github.com/shuttleday/shuttleday/compare/v1.3.4...v1.3.5) (2023-04-28)
+
+
+### Bug Fixes
+
+* **ci:** remove typo in git tag arg ([8b9be67](https://github.com/shuttleday/shuttleday/commit/8b9be677c935b8aab504d150f66dfc16a67283ff))
+* **ci:** use dynamic workflow name ([5ef5f6f](https://github.com/shuttleday/shuttleday/commit/5ef5f6f0894774df671cd0ebc55c7efb2a819c60))
+
 ## [1.3.4](https://github.com/shuttleday/shuttleday/compare/v1.3.3...v1.3.4) (2023-04-28)
 
 
