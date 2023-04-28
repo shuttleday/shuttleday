@@ -1,3 +1,28 @@
+# [1.3.0](https://github.com/shuttleday/shuttleday/compare/v1.2.2...v1.3.0) (2023-04-28)
+
+
+### Bug Fixes
+
+* **ci:** ensure only pushes or dispatches trigger semantic release job ([9412bec](https://github.com/shuttleday/shuttleday/commit/9412becac80075f865793e1a0fe3f01f1ef106f0))
+* display for host qr changed ([6dc5bc3](https://github.com/shuttleday/shuttleday/commit/6dc5bc32974ba4f3897d2c50b4a5b65457149b99))
+* fixed edit page preset values ([7e7166c](https://github.com/shuttleday/shuttleday/commit/7e7166c13f3be1cc97adacfd94b8f857bd6f9a25))
+* fixed user speed dial ([39166a5](https://github.com/shuttleday/shuttleday/commit/39166a5b7f669be856652aed21dd603dd4e7c024))
+* user speed dial render fixed ([ba88dca](https://github.com/shuttleday/shuttleday/commit/ba88dca497d986fdf4c07d17f7ee4ead8e25b424))
+
+
+### Features
+
+* added credits and title to login page ([44d9f25](https://github.com/shuttleday/shuttleday/commit/44d9f251aed14ba6dde2cbaf3aac7bd0d43275c8))
+* admin qr update completed ([5f1147c](https://github.com/shuttleday/shuttleday/commit/5f1147ce23296dd358c87706bf5d4fb4ef5e0025))
+* color indicators added ([8ef2828](https://github.com/shuttleday/shuttleday/commit/8ef28281bdd333fac5b79f8ffd205bc384441cfb))
+* completed [#29](https://github.com/shuttleday/shuttleday/issues/29) ([bf6daa3](https://github.com/shuttleday/shuttleday/commit/bf6daa3cd288dcefdaf8fd557d759e3118d5b4ce))
+* create sessions and edit additional field ([ad7f160](https://github.com/shuttleday/shuttleday/commit/ad7f160954044d6aa963881cb88311c0fd3d9b35))
+* Credits page implemented and styled ([755cb82](https://github.com/shuttleday/shuttleday/commit/755cb822ae99a294c7b46e2c7572f2dd028ab645))
+* display version number for [#21](https://github.com/shuttleday/shuttleday/issues/21) completed ([996dd7e](https://github.com/shuttleday/shuttleday/commit/996dd7e56d33c3f2b325a4ffc802a576f825fdfb))
+* implemented logout feature ([4bf9285](https://github.com/shuttleday/shuttleday/commit/4bf9285be87d514c2759ae32605fe757c015eb6e))
+* QR upload page completed ([4aafc97](https://github.com/shuttleday/shuttleday/commit/4aafc9703efb2e031fdbba9fe0122ba79e823c62))
+* receipt page moved into homepage ([be0ea2e](https://github.com/shuttleday/shuttleday/commit/be0ea2e550735ef60b665a0e5e9adc9db42a49e6))
+
 ## [1.2.2](https://github.com/shuttleday/shuttleday/compare/v1.2.1...v1.2.2) (2023-04-28)
 
 
