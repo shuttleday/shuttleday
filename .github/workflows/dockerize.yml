@@ -26,7 +26,7 @@ on:
       
 jobs:
   dockerize-app:
-    name: Dockerize and Push Frontend Image
+    name: ${{ inputs.image-name }}
     runs-on: ubuntu-latest
     defaults:
       run:
