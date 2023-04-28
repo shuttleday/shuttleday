@@ -79,9 +79,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Get tags
-        run: git pull origin main
-      - run: git fetch --prune --unshallow --tags
+      # fetches commits pushed by previous job
+      # https://github.com/actions/checkout/issues/439#issuecomment-779010780
+      - run: git pull origin main 
+      # ensures that the checkout is unshallow and has tags for git describe
+      # https://github.com/actions/checkout/issues/206#issuecomment-607496604 
+      - run: git fetch --prune --unshallow --tags 
 
       - name: Get current Git tag
         run: |
