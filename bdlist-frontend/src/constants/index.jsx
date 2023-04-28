@@ -43,7 +43,7 @@ const adminActions = [
 const userActions = [
   { icon: <LogoutIcon />, name: 'Logout', operation: 'logout' },
   { icon: <BugReportIcon />, name: 'Bug Report', operation: 'report' },
-  { icon: <InfoIcon />, name: 'About', operation: 'about' },
+  { icon: <InfoIcon />, name: 'Credits', operation: 'credits' },
 ];
 
 const Alert = React.forwardRef(function Alert(props, ref) {
