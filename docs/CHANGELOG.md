@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/shuttleday/shuttleday/compare/v1.3.0...v1.3.1) (2023-04-28)
+
+
+### Bug Fixes
+
+* use host email when retrieving qr code ([9329da5](https://github.com/shuttleday/shuttleday/commit/9329da5148f1eefe10ec77e93b560f7fc2df463d))
+
 # [1.3.0](https://github.com/shuttleday/shuttleday/compare/v1.2.2...v1.3.0) (2023-04-28)
 
 
