@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/shuttleday/shuttleday/compare/v1.2.0...v1.2.1) (2023-04-28)
+
+
+### Bug Fixes
+
+* **ci:** add checkout step for k8s trigger job ([0566912](https://github.com/shuttleday/shuttleday/commit/056691253d225d8df1870e81c41162cffb9af6c4))
+
 # [1.2.0](https://github.com/shuttleday/shuttleday/compare/v1.1.14...v1.2.0) (2023-04-28)
 
 
