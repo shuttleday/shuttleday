@@ -27,7 +27,6 @@ on:
 jobs:
   dockerize-app:
     name: Dockerize and Push Frontend Image
-    needs: get-new-git-tag
     runs-on: ubuntu-latest
     defaults:
       run:
