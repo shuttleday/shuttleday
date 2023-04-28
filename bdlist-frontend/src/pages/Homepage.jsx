@@ -71,6 +71,8 @@ const HomePage = () => {
       navigate('/create');
     } else if (operation === 'qr') {
       navigate('/qr');
+    } else if (operation === 'credits') {
+      navigate('/credits');
     } else if (operation === 'report') {
       navigate('/report');
     } else if (operation === 'logout') {
