@@ -152,6 +152,7 @@ jobs:
     needs: [dockerize, get-new-git-tag]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       # Gets the current tag and removes the prepended 'v'
       - run: echo "GIT_TAG="${${{ needs.get-new-git-tag.outputs.tag }}#v}" " >> "$GITHUB_ENV"
 
