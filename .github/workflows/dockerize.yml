@@ -75,9 +75,3 @@ jobs:
           github-token: $${{ github.token }}
           build-args: |
             VERSION=${{ steps.meta.outputs.version }}
-
-      - name: Send Discord Notification
-        uses: sarisia/actions-status-discord@v1
-        if: always()
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
