@@ -31,7 +31,7 @@ router
       const fileExt = result.QR.fileExt;
       const command = new GetObjectCommand({
         Bucket: process.env.AWS_S3_BUCKET_NAME,
-        Key: `${req.user.email}-QR.${fileExt}`,
+        Key: `${email}-QR.${fileExt}`,
       });
       const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
 
