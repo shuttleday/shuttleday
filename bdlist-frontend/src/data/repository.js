@@ -141,7 +141,7 @@ async function createSession(sessionData) {
       process.env.REACT_APP_API_LINK + '/game-sessions',
       sessionData
     );
-    return response;
+    return response.data;
   } catch (error) {
     throw error;
   }

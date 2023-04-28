@@ -10,7 +10,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { Typography } from '@mui/material';
-import { createSession } from '../data/repository';
+import { createSession, joinSession } from '../data/repository';
 import { ERROR, SUCCESS, Alert, RE } from '../constants';
 import { AdminWrapper } from '../hoc';
 const SessionCreate = () => {
@@ -61,11 +61,13 @@ const SessionCreate = () => {
 
     createSession(sessionData)
       .then((res) => {
+        joinSession(res.result.insertedId).then((res) => {});
         setAlertMsg('Created session succesfully');
         setCondition(SUCCESS);
         setOpen(true);
       })
       .catch((error) => {
+        console.log(error);
         setAlertMsg(error.response.data.error);
         setCondition(ERROR);
         setOpen(true);
