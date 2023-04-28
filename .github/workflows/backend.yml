@@ -15,7 +15,7 @@ defaults:
 
 jobs:
   transpile:
-    name: Transpile JavaScript to TypeScript
+    name: Transpile TypeScript to JavaScript
     runs-on: ubuntu-latest
 
     steps:
