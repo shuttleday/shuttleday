@@ -204,7 +204,7 @@ async function uploadQR(image) {
 
 async function editQR(image) {
   const formData = new FormData();
-  formData.append('my-qr', image);
+  formData.append('file', image);
   try {
     const response = await axios.patch(
       process.env.REACT_APP_API_LINK + '/admins/qr',

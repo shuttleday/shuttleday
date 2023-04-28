@@ -214,7 +214,7 @@ const QRManagement = () => {
 
                 <Chip
                   icon={<InfoIcon />}
-                  label={'Current QR'}
+                  label={'New QR'}
                   color='success'
                   variant='outlined'
                 />
@@ -270,7 +270,7 @@ const QRManagement = () => {
                     disabled={buttonOn}
                     onClick={handleEdit}
                   >
-                    Upload QR
+                    Update QR
                   </Button>
                 </div>
               </div>
