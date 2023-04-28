@@ -1,3 +1,12 @@
+## [1.3.3](https://github.com/shuttleday/shuttleday/compare/v1.3.2...v1.3.3) (2023-04-28)
+
+
+### Bug Fixes
+
+* **ci:** remove path checking ([17fe43f](https://github.com/shuttleday/shuttleday/commit/17fe43f7f24356016c3250661e69d2d4ab858566))
+* **ci:** rename main ci ([e670fc7](https://github.com/shuttleday/shuttleday/commit/e670fc7f7d8b0e7024772238bcdde5826d44a381))
+* **ci:** workflow level path checks ([b1622e7](https://github.com/shuttleday/shuttleday/commit/b1622e7d8410cef16b6dc132b4b17f04b4244054))
+
 ## [1.3.2](https://github.com/shuttleday/shuttleday/compare/v1.3.1...v1.3.2) (2023-04-28)
 
 
