@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/shuttleday/shuttleday/compare/v1.2.1...v1.2.2) (2023-04-28)
+
+
+### Bug Fixes
+
+* **ci:** reference git tag correctly for deploy job ([e68dcf9](https://github.com/shuttleday/shuttleday/commit/e68dcf94ce1b1a9f0ca9461f34b133d23e7fa4b8))
+
 ## [1.2.1](https://github.com/shuttleday/shuttleday/compare/v1.2.0...v1.2.1) (2023-04-28)
 
 
