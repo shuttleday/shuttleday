@@ -154,7 +154,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       # Gets the current tag and removes the prepended 'v'
-      - run: echo "GIT_TAG="${${{ needs.get-new-git-tag.outputs.tag }}#v}" " >> "$GITHUB_ENV"
+      # https://stackoverflow.com/a/73257160/17645610
+      - run: |
+          FULL_TAG=${{ needs.get-new-git-tag.outputs.tag }}
+          echo "GIT_TAG="${FULL_TAG#v}" " >> "$GITHUB_ENV"
 
       - uses: actions/github-script@v6
         with:
