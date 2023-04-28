@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/shuttleday/shuttleday/compare/v1.1.14...v1.2.0) (2023-04-28)
+
+
+### Features
+
+* add comments for git tag steps ([ce3542b](https://github.com/shuttleday/shuttleday/commit/ce3542b996f7bcff78663bb9502ad584b0e70110))
+
 ## [1.1.14](https://github.com/shuttleday/shuttleday/compare/v1.1.13...v1.1.14) (2023-04-28)
 
 
