@@ -4,6 +4,9 @@ module.exports = {
   important: '#root',
   theme: {
     extend: {
+      fontFamily: {
+        name: ['Saira'],
+      },
       colors: {
         primary: '#22c55e',
         secondary: '#aaa6c3',
@@ -14,7 +17,22 @@ module.exports = {
       boxShadow: {
         card: '0px 35px 120px -15px #211e35',
       },
+      animation: {
+        text: 'text 5s ease infinite',
+      },
+      keyframes: {
+        text: {
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'left center',
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center',
+          },
+        },
+      },
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/line-clamp')],
 };

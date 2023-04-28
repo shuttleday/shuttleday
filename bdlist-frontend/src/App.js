@@ -9,10 +9,12 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Header from './components/header';
 import { CssBaseline } from '@mui/material';
 import Edit from './pages/Edit';
-import ReceiptProof from './pages/ReceiptProof';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import HomePage from './pages/Homepage';
 import Dev from './pages/Dev';
+import QRManagement from './pages/QRManagement';
+import BugReport from './pages/BugReport';
+import Credits from './pages/Credits';
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
@@ -49,7 +51,7 @@ function App() {
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <div justify='center'>
+          <div>
             <Header />
             <>
               <Routes>
@@ -61,8 +63,10 @@ function App() {
                 <Route path='/details' element={<Details />} />
                 <Route path='/create' element={<SessionCreate />} />
                 <Route path='/edit' element={<Edit />} />
-                <Route path='/receipt' element={<ReceiptProof />} />
                 <Route path='/dev' element={<Dev />} />
+                <Route path='/qr' element={<QRManagement />} />
+                <Route path='/report' element={<BugReport />} />
+                <Route path='/credits' element={<Credits />} />
               </Routes>
             </>
           </div>

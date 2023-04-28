@@ -9,7 +9,6 @@ async function userCheck(email) {
     );
     return user;
   } catch (error) {
-    console.log(error);
     return false;
   }
 }
@@ -28,7 +27,6 @@ async function createAccount(username) {
     const user = response.data;
     return user;
   } catch (error) {
-    console.log(error);
     return 'error';
   }
 }
@@ -42,7 +40,6 @@ async function googleSignIn() {
     const user = response.data;
     return user;
   } catch (error) {
-    console.log(error);
     return null;
   }
 }
@@ -64,7 +61,9 @@ async function getSession() {
     let modify = response.data;
     for (var i = 0; i < modify.gameSessions.length; i++) {
       let courtList = modify.gameSessions[i].courts.map((str) => Number(str));
+      const players = modify.gameSessions[i].players.slice().reverse();
       modify.gameSessions.court = courtList;
+      modify.gameSessions.players = players;
     }
 
     return modify;
@@ -130,10 +129,12 @@ async function getUsers() {
     const users = response.data;
     return users.result;
   } catch (error) {
+    console.log(error);
     return null;
   }
 }
 
+//Creates a session only if an admin is making the request
 async function createSession(sessionData) {
   try {
     const response = await axios.post(
@@ -142,10 +143,11 @@ async function createSession(sessionData) {
     );
     return response;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 }
 
+//Edit existing sessions
 async function editSession(sessionData) {
   try {
     const response = await axios.patch(
@@ -155,37 +157,75 @@ async function editSession(sessionData) {
 
     return response;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 }
 
-async function getReceipts(ids) {
+//Gets receipts of players and modify it into custom object type for display
+async function getReceipts(id) {
   try {
-    let list = [];
-    for (var i = 0; i < ids.length; i++) {
-      const response = await axios.get(
-        process.env.REACT_APP_API_LINK + '/payment-receipts',
-        {
-          params: { sessionId: ids[i]._id },
-        }
-      );
-
-      let images = [];
-      for (var j = 0; j < response.data.signedUrls.length; j++) {
-        images.push(response.data.signedUrls[j].signedUrl);
+    const response = await axios.get(
+      process.env.REACT_APP_API_LINK + '/payment-receipts',
+      {
+        params: { sessionId: id },
       }
-      const dataObj = {
-        id: ids[i]._id,
-        urls: response.data.signedUrls,
-        date: ids[i].end,
-        viewableImage: images,
-      };
-      list.push(dataObj);
+    );
+
+    let images = [];
+    for (var j = 0; j < response.data.signedUrls.length; j++) {
+      images.push(response.data.signedUrls[j].signedUrl);
     }
-    return list;
+
+    const dataObj = {
+      urls: response.data.signedUrls,
+      viewableImage: images,
+    };
+
+    return dataObj;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function uploadQR(image) {
+  const formData = new FormData();
+  formData.append('my-qr', image);
+  try {
+    const response = await axios.post(
+      process.env.REACT_APP_API_LINK + '/admins/qr',
+      formData
+    );
+    return response.data;
   } catch (error) {
     console.log(error);
-    return [];
+    throw error;
+  }
+}
+
+async function editQR(image) {
+  const formData = new FormData();
+  formData.append('my-qr', image);
+  try {
+    const response = await axios.patch(
+      process.env.REACT_APP_API_LINK + '/admins/qr',
+      formData
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+async function getQR(email) {
+  try {
+    const response = await axios.get(
+      process.env.REACT_APP_API_LINK + `/admins/qr/${email}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 }
 
@@ -240,4 +280,7 @@ export {
   createSession,
   editSession,
   getReceipts,
+  uploadQR,
+  editQR,
+  getQR,
 };

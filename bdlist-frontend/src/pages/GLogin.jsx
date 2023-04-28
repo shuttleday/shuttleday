@@ -31,12 +31,15 @@ const GLogin = () => {
       display='flex'
       justifyContent='center'
       alignItems='center'
-      className='mt-20'
+      className='mt-15 md:mt-20'
     >
+      <h3 className='text-[30px] shadow-sm py-3 underline decoration-green-400 animate-bounce underline-offset-8'>
+        Welcome to Shuttleday
+      </h3>
       <Tilt>
         <div
           options={{ max: 45, scale: 1, speed: 450 }}
-          className='rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border border-green-400 shadow-card md:h-[300px] lg:h-[400px]'
+          className='rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border border-green-400 shadow-card h-[450px] lg:h-[500px]'
         >
           <h3 className='text-[20px] font-bold text-center font-sans'>
             Login with
@@ -56,6 +59,16 @@ const GLogin = () => {
           </div>
         </div>
       </Tilt>
+      <p className=' font-light text-[15px] text-center absolute inset-x-4 bottom-4'>
+        Created by :{' '}
+        <a href='https://pierreccesario.com/' className=' text-cyan-400'>
+          Pierre Cesario
+        </a>{' '}
+        and{' '}
+        <a href='https://www.tjonathan.com/' className=' text-cyan-400'>
+          Jonathan Teh
+        </a>
+      </p>
     </Stack>
   );
 };
