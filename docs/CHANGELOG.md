@@ -1,3 +1,10 @@
+## [1.1.11](https://github.com/shuttleday/shuttleday/compare/v1.1.10...v1.1.11) (2023-04-28)
+
+
+### Bug Fixes
+
+* **ci:** remove fetch depth for dockerize checkout ([f6a13a8](https://github.com/shuttleday/shuttleday/commit/f6a13a8126d95a872149077f33da088f0846d2b2))
+
 ## [1.1.10](https://github.com/shuttleday/shuttleday/compare/v1.1.9...v1.1.10) (2023-04-28)
 
 
