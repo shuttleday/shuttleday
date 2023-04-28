@@ -1,3 +1,10 @@
+## [1.1.13](https://github.com/shuttleday/shuttleday/compare/v1.1.12...v1.1.13) (2023-04-28)
+
+
+### Bug Fixes
+
+* **ci:** update git ref to origin ([55f171d](https://github.com/shuttleday/shuttleday/commit/55f171d20b99e5a5298877edc047e37caeb22d6d))
+
 ## [1.1.12](https://github.com/shuttleday/shuttleday/compare/v1.1.11...v1.1.12) (2023-04-28)
 
 
