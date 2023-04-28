@@ -82,7 +82,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Get tags
-        run: git fetch --tags origin
+        run: git fetch --prune --unshallow --tags
 
       - name: Get current Git tag
         run: |
