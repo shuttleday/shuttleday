@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
   push:
     branches: [ 'main' ]
+    paths: [ "bdlist-backend/**", "bdlist-frontend/**" ]
 
 jobs:
   transpile-backend:
     name: Transpile TypeScript to JavaScript
-    needs: changes
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -59,7 +59,6 @@ jobs:
 
   build-react-app:
     name: Build Static React Files
-    needs: changes
     runs-on: ubuntu-latest
     defaults:
       run:
