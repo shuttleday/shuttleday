@@ -1,3 +1,11 @@
+## [1.1.10](https://github.com/shuttleday/shuttleday/compare/v1.1.9...v1.1.10) (2023-04-28)
+
+
+### Bug Fixes
+
+* **ci:** remove fetch depth option for checkout ([41c0c70](https://github.com/shuttleday/shuttleday/commit/41c0c70e8c54e5b7ed311c083484bd9e299bfac5))
+* **ci:** rename transpile step ([eea4d22](https://github.com/shuttleday/shuttleday/commit/eea4d229560eb37a4d3865f63573eef96908be82))
+
 ## [1.1.9](https://github.com/shuttleday/shuttleday/compare/v1.1.8...v1.1.9) (2023-04-28)
 
 
