@@ -14,11 +14,16 @@ import {
 
 export const app = express();
 
+const corsOptions = {
+  origin: "https://shuttleday.info",
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
 // Parse requests of content-type - application/json.
 app.use(express.json());
 
 // Enable CORS on all routes
-app.use(cors());
+app.use(cors(corsOptions));
 
 // Authentication middleware
 app.use(authenticate);
