@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/shuttleday/shuttleday/compare/v1.4.0...v1.4.1) (2023-04-29)
+
+
+### Bug Fixes
+
+* **ci:** expose port 80 on frontend docker image ([85b026e](https://github.com/shuttleday/shuttleday/commit/85b026ed0f0a7b339a75bbdee24dfe18f3581f6b))
+
 # [1.4.0](https://github.com/shuttleday/shuttleday/compare/v1.3.5...v1.4.0) (2023-04-29)
 
 
