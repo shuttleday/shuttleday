@@ -174,7 +174,7 @@ jobs:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
 
   semantic-release:
-    needs: [ build-react-app, transpile-backend]
+    needs: [ deploy ]
     permissions:
       contents: write # to be able to publish a GitHub release
       issues: write # to be able to comment on released issues
