@@ -24,7 +24,7 @@ jobs:
       new-release-version: ${{ steps.get-next-version.outputs.new-release-version }}
 
   transpile-backend:
-    name: Transpile TypeScript to JavaScript
+    name: Transpile TS to JS
     runs-on: ubuntu-latest
     defaults:
       run:
