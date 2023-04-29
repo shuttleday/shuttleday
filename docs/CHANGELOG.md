@@ -1,3 +1,22 @@
+# [1.4.0](https://github.com/shuttleday/shuttleday/compare/v1.3.5...v1.4.0) (2023-04-29)
+
+
+### Bug Fixes
+
+* **ci:** allow dry runs on staging branch ([1a51e60](https://github.com/shuttleday/shuttleday/commit/1a51e604506b9c9bc4669cecd92344d529425587))
+* **ci:** only use {{version}} for rc tags ([08dbe92](https://github.com/shuttleday/shuttleday/commit/08dbe9242c07102a4236011dd16fae37d157e3ea))
+* **ci:** remove env vars from npm build ([454a2ec](https://github.com/shuttleday/shuttleday/commit/454a2ec4eed4ed419d6cbf0aebb8535567bc52f5))
+* **ci:** rename deploy stage ([cdac8c5](https://github.com/shuttleday/shuttleday/commit/cdac8c5999cbc87718fcb3db4ea1989dafebcf7a))
+* **ci:** run semantic-release only after deploy job ([ffd5f85](https://github.com/shuttleday/shuttleday/commit/ffd5f8512bec2dba62ebcc10d0a5e18e75952731))
+* **ci:** use pnpm for get-next-version ([d7609c7](https://github.com/shuttleday/shuttleday/commit/d7609c7e160e5eaf484ae0ecdd0c3b1e9ef8f297))
+* **ci:** use pnpm get-next-version in release workflow ([ca59948](https://github.com/shuttleday/shuttleday/commit/ca59948ffff3d2a7f38f77f2dacc98d31f4d5ec3))
+* **ci:** use unique ids for steps ([78c6b1c](https://github.com/shuttleday/shuttleday/commit/78c6b1c2fe1f0fcd9319d2e14bc313993975ac99))
+
+
+### Features
+
+* add origin for cors ([05de16a](https://github.com/shuttleday/shuttleday/commit/05de16a0b7d3e551212651c581637a8f227e68bf))
+
 ## [1.3.5](https://github.com/shuttleday/shuttleday/compare/v1.3.4...v1.3.5) (2023-04-28)
 
 
