@@ -8,6 +8,7 @@ on:
 
 jobs:
   get-next-version:
+    name: Get Next Semantic Version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -125,7 +126,7 @@ jobs:
         retention-days: 14  
 
   dockerize-backend:
-    name: Dockerize and Push Backend Image
+    name: Build and Push
     needs: [transpile-backend, get-next-version]
     uses: ./.github/workflows/dockerize.yml
     with:
@@ -137,7 +138,7 @@ jobs:
       release-candidate: true
 
   dockerize-frontend:
-    name: Dockerize and Push Frontend Image
+    name: Build and Push
     needs: [build-react-app, get-next-version]
     uses: ./.github/workflows/dockerize.yml
     with:
