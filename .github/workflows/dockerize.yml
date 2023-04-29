@@ -56,7 +56,7 @@ jobs:
 
       - name: Docker meta for prerelease
         if: ${{ inputs.release-candidate }}
-        id: meta
+        id: meta-prerelease
         uses: docker/metadata-action@v4
         with:
           images: ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}
@@ -70,7 +70,7 @@ jobs:
 
       - name: Docker meta for release
         if: ${{ ! inputs.release-candidate }}
-        id: meta
+        id: meta-release
         uses: docker/metadata-action@v4
         with:
           images: ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}
@@ -82,15 +82,30 @@ jobs:
             type=semver,pattern={{major}},value=${{ inputs.git-tag }}
             type=sha
 
-      - name: Build and push Docker image
+      - name: Build and push prerelease Docker image
+        if: ${{ inputs.release-candidate }}
         uses: docker/build-push-action@v4
         with:
           context: ${{ inputs.working-directory }}
           file: ${{ inputs.working-directory }}/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          labels: ${{ steps.meta.outputs.labels }}
-          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta-prerelease.outputs.labels }}
+          tags: ${{ steps.meta-prerelease.outputs.tags }}
           github-token: $${{ github.token }}
           build-args: |
-            VERSION=${{ steps.meta.outputs.version }}
+            VERSION=${{ steps.meta-prerelease.outputs.version }}
+
+      - name: Build and push release Docker image
+        if: ${{ ! inputs.release-candidate }}
+        uses: docker/build-push-action@v4
+        with:
+          context: ${{ inputs.working-directory }}
+          file: ${{ inputs.working-directory }}/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          labels: ${{ steps.meta-release.outputs.labels }}
+          tags: ${{ steps.meta-release.outputs.tags }}
+          github-token: $${{ github.token }}
+          build-args: |
+            VERSION=${{ steps.meta-release.outputs.version }}
