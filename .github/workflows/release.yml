@@ -1,4 +1,4 @@
-name: Main CI
+name: Release CI
 
 on:
   workflow_dispatch:
@@ -7,6 +7,22 @@ on:
     paths: [ "bdlist-backend/**", "bdlist-frontend/**" ]
 
 jobs:
+  get-next-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm ci
+      - run: npx semantic-release --dry-run
+        id: get-next-version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      new-release-published: ${{ steps.get-next-version.outputs.new-release-published }}
+      new-release-version: ${{ steps.get-next-version.outputs.new-release-version }}
+
   transpile-backend:
     name: Transpile TypeScript to JavaScript
     runs-on: ubuntu-latest
@@ -82,7 +98,55 @@ jobs:
         name: static-react-build
         path: ./bdlist-frontend/build/
         retention-days: 14  
-  
+
+  dockerize-backend:
+    name: Dockerize and Push Backend Image
+    needs: [transpile-backend, get-next-version]
+    uses: ./.github/workflows/dockerize.yml
+    with:
+      git-tag: v${{ needs.get-next-version.outputs.new-release-version }}
+      working-directory: bdlist-backend
+      artifact-name: transpiled-api
+      artifact-download-path: bdlist-backend/dist
+      image-name: api
+      release-candidate: false
+
+  dockerize-frontend:
+    name: Dockerize and Push Frontend Image
+    needs: [build-react-app, get-next-version]
+    uses: ./.github/workflows/dockerize.yml
+    with:
+      git-tag: v${{ needs.get-next-version.outputs.new-release-version }}
+      working-directory: bdlist-frontend
+      artifact-name: static-react-build
+      artifact-download-path: bdlist-frontend/build
+      image-name: frontend
+      release-candidate: false
+
+  deploy:
+    name: Trigger K8s staging manifest update in K8s repository
+    needs: [dockerize-backend, dockerize-frontend, get-next-version]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.PAT_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: 'shuttleday',
+              repo: 'k8s',
+              workflow_id: 'update-production.yml',
+              ref: 'main',
+              inputs: { 'tag': '${{ needs.get-next-version.outputs.new-release-version }}' }
+            })
+            
+      - name: Send Discord Notification
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+
   semantic-release:
     needs: [ build-react-app, transpile-backend]
     permissions:
@@ -91,76 +155,3 @@ jobs:
       pull-requests: write # to be able to comment on released pull requests
     name: Semantic Release
     uses: ./.github/workflows/semantic-release.yml
-  
-  get-new-git-tag:
-    name: Get New Git Tag
-    needs: semantic-release
-    runs-on: ubuntu-latest
-    outputs:
-      tag: ${{ steps.get-tag.outputs.git_tag }}
-
-    steps:
-      - uses: actions/checkout@v3
-      # fetches commits pushed by previous job
-      # https://github.com/actions/checkout/issues/439#issuecomment-779010780
-      - run: git pull origin main 
-      # ensures that the checkout is unshallow and has tags for git describe
-      # https://github.com/actions/checkout/issues/206#issuecomment-607496604 
-      - run: git fetch --prune --unshallow --tags 
-      - name: Get current Git tag
-        id: get-tag
-        run: |
-          echo "git_tag=$(git describe --tags HEAD)" >> "$GITHUB_OUTPUT"
-
-  dockerize-backend:
-    name: Dockerize and Push Backend Image
-    needs: get-new-git-tag
-    uses: ./.github/workflows/dockerize.yml
-    with:
-      git-tag: ${{ needs.get-new-git-tag.outputs.tag }}
-      working-directory: bdlist-backend
-      artifact-name: transpiled-api
-      artifact-download-path: bdlist-backend/dist
-      image-name: api
-
-  dockerize-frontend:
-    name: Dockerize and Push Frontend Image
-    needs: get-new-git-tag
-    uses: ./.github/workflows/dockerize.yml
-    with:
-      git-tag: ${{ needs.get-new-git-tag.outputs.tag }}
-      working-directory: bdlist-frontend
-      artifact-name: static-react-build
-      artifact-download-path: bdlist-frontend/build
-      image-name: frontend
-
-
-  deploy:
-    name: Trigger K8s manifest update in K8s repository
-    needs: [dockerize-backend, dockerize-frontend, get-new-git-tag]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      # Gets the current tag and removes the prepended 'v'
-      # https://stackoverflow.com/a/73257160/17645610
-      - run: |
-          FULL_TAG=${{ needs.get-new-git-tag.outputs.tag }}
-          echo "GIT_TAG="${FULL_TAG#v}" " >> "$GITHUB_ENV"
-
-      - uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.PAT_TOKEN }}
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-              owner: 'shuttleday',
-              repo: 'k8s',
-              workflow_id: 'update-manifest.yml',
-              ref: 'main',
-              inputs: { 'tag': '${{ env.GIT_TAG }}' }
-            })
-            
-      - name: Send Discord Notification
-        uses: sarisia/actions-status-discord@v1
-        if: always()
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
