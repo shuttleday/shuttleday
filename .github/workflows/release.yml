@@ -150,7 +150,7 @@ jobs:
       release-candidate: false
 
   deploy:
-    name: Trigger K8s staging manifest update in K8s repository
+    name: Trigger K8s production manifest update in K8s repository
     needs: [dockerize-backend, dockerize-frontend, get-next-version]
     runs-on: ubuntu-latest
     steps:
