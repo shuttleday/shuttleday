@@ -17,7 +17,7 @@
   </a>
 </p>
 
-[![Main CI](https://github.com/shuttleday/shuttleday/actions/workflows/main.yml/badge.svg)](https://github.com/shuttleday/shuttleday/actions/workflows/main.yml)
+[![Release CI](https://github.com/shuttleday/shuttleday/actions/workflows/release.yml/badge.svg)](https://github.com/shuttleday/shuttleday/actions/workflows/release.yml)
 
 <p>
 
