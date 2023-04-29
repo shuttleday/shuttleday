@@ -1,0 +1,148 @@
+name: Prerelease CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ 'staging' ]
+    paths: [ "bdlist-backend/**", "bdlist-frontend/**" ]
+
+jobs:
+  get-next-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm ci
+      - run: npx semantic-release --dry-run
+        id: get-next-version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      new-release-published: ${{ steps.get-next-version.outputs.new-release-published }}
+      new-release-version: ${{ steps.get-next-version.outputs.new-release-version }}
+
+  transpile-backend:
+    name: Transpile TypeScript to JavaScript
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./bdlist-backend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 7
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Transpile TypeScript to JavaScript
+        run: pnpm build
+
+      - name: Upload Transpiled Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: transpiled-api
+          path: ./bdlist-backend/dist/
+          retention-days: 14
+
+  build-react-app:
+    name: Build Static React Files
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./bdlist-frontend
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build Frontend
+      run: npm run build
+
+    - name: Upload React artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: static-react-build
+        path: ./bdlist-frontend/build/
+        retention-days: 14  
+
+  dockerize-backend:
+    name: Dockerize and Push Backend Image
+    needs: [transpile-backend, get-next-version]
+    uses: ./.github/workflows/dockerize.yml
+    with:
+      git-tag: v${{ needs.get-next-version.outputs.new-release-version }}
+      working-directory: bdlist-backend
+      artifact-name: transpiled-api
+      artifact-download-path: bdlist-backend/dist
+      image-name: api
+      release-candidate: true
+
+  dockerize-frontend:
+    name: Dockerize and Push Frontend Image
+    needs: [build-react-app, get-next-version]
+    uses: ./.github/workflows/dockerize.yml
+    with:
+      git-tag: v${{ needs.get-next-version.outputs.new-release-version }}
+      working-directory: bdlist-frontend
+      artifact-name: static-react-build
+      artifact-download-path: bdlist-frontend/build
+      image-name: frontend
+      release-candidate: true
+
+  deploy:
+    name: Trigger K8s staging manifest update in K8s repository
+    needs: [dockerize-backend, dockerize-frontend, get-next-version]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.PAT_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: 'shuttleday',
+              repo: 'k8s',
+              workflow_id: 'update-staging.yml',
+              ref: 'main',
+              inputs: { 'tag': '${{ needs.get-next-version.outputs.new-release-version }}' }
+            })
+            
+      - name: Send Discord Notification
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
