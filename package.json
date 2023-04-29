@@ -1,7 +1,6 @@
 {
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1"
   },
   "release": {
@@ -12,12 +11,6 @@
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
-      [
-        "@semantic-release/exec",
-        {
-          "verifyReleaseCmd": "echo \"NEXT_RELEASE_VERSION=${nextRelease.version}\" >> $GITHUB_ENV"
-        }
-      ],
       [
         "@semantic-release/changelog",
         {
