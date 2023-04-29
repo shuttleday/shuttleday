@@ -1,3 +1,10 @@
+## [1.4.4](https://github.com/shuttleday/shuttleday/compare/v1.4.3...v1.4.4) (2023-04-29)
+
+
+### Bug Fixes
+
+* **ci:** move env vars to correct step ([953f140](https://github.com/shuttleday/shuttleday/commit/953f140746c18b44b95babf28facbaa238f768a2))
+
 ## [1.4.3](https://github.com/shuttleday/shuttleday/compare/v1.4.2...v1.4.3) (2023-04-29)
 
 
