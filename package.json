@@ -1,7 +1,8 @@
 {
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/git": "^10.0.1"
+    "@semantic-release/git": "^10.0.1",
+    "semantic-release-export-data": "^1.0.1"
   },
   "release": {
     "branches": [
@@ -11,6 +12,7 @@
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
+      "semantic-release-export-data",
       [
         "@semantic-release/changelog",
         {
