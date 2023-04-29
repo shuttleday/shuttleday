@@ -114,12 +114,12 @@ jobs:
     
     - name: Install dependencies
       run: npm install
-      env:
-        REACT_APP_CLIENT_ID: ${{ secrets.REACT_APP_CLIENT_ID }}
-        REACT_APP_API_LINK: ${{ secrets.REACT_APP_API_LINK }}
 
     - name: Build Frontend
       run: npm run build
+      env:
+        REACT_APP_CLIENT_ID: ${{ secrets.REACT_APP_CLIENT_ID }}
+        REACT_APP_API_LINK: ${{ secrets.REACT_APP_API_LINK }}
 
     - name: Upload React artifacts
       uses: actions/upload-artifact@v3
