@@ -1,3 +1,10 @@
+## [1.4.3](https://github.com/shuttleday/shuttleday/compare/v1.4.2...v1.4.3) (2023-04-29)
+
+
+### Bug Fixes
+
+* **ci:** inject frontend envvars at build time ([8c01693](https://github.com/shuttleday/shuttleday/commit/8c01693f90a933dff9363cd66a1ad8ad586cc109))
+
 ## [1.4.2](https://github.com/shuttleday/shuttleday/compare/v1.4.1...v1.4.2) (2023-04-29)
 
 
