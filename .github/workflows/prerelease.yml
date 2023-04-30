@@ -143,7 +143,7 @@ jobs:
 
   dockerize-frontend:
     name: Build and Push
-    if: ${{ steps.get-next-version.outputs.new-release-published }}
+    if: ${{ needs.get-next-version.outputs.new-release-published }}
     needs: [build-react-app, get-next-version]
     uses: ./.github/workflows/dockerize.yml
     with:
