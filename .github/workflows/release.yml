@@ -130,6 +130,7 @@ jobs:
 
   dockerize-backend:
     name: Dockerize and Push Backend Image
+    if: ${{ steps.get-next-version.outputs.new-release-published }}
     needs: [transpile-backend, get-next-version]
     uses: ./.github/workflows/dockerize.yml
     with:
@@ -142,6 +143,7 @@ jobs:
 
   dockerize-frontend:
     name: Dockerize and Push Frontend Image
+    if: ${{ steps.get-next-version.outputs.new-release-published }}
     needs: [build-react-app, get-next-version]
     uses: ./.github/workflows/dockerize.yml
     with:
