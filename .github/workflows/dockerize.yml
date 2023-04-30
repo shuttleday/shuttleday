@@ -60,7 +60,6 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}
-          provenance: false
           flavor: |
             latest=false
           tags: |
@@ -75,7 +74,6 @@ jobs:
           images: ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}
           flavor: |
             latest=true
-          provenance: false
           tags: |
             type=semver,pattern={{version}},value=${{ inputs.git-tag }}
             type=semver,pattern={{major}}.{{minor}},value=${{ inputs.git-tag }}
@@ -89,6 +87,7 @@ jobs:
           context: ${{ inputs.working-directory }}
           file: ${{ inputs.working-directory }}/Dockerfile
           platforms: linux/amd64,linux/arm64
+          provenance: false
           push: true
           labels: ${{ steps.meta-prerelease.outputs.labels }}
           tags: ${{ steps.meta-prerelease.outputs.tags }}
@@ -103,6 +102,7 @@ jobs:
           context: ${{ inputs.working-directory }}
           file: ${{ inputs.working-directory }}/Dockerfile
           platforms: linux/amd64,linux/arm64
+          provenance: false
           push: true
           labels: ${{ steps.meta-release.outputs.labels }}
           tags: ${{ steps.meta-release.outputs.tags }}
