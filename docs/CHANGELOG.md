@@ -1,3 +1,10 @@
+## [1.4.5](https://github.com/shuttleday/shuttleday/compare/v1.4.4...v1.4.5) (2023-04-30)
+
+
+### Bug Fixes
+
+* **infra:** redirect 404 errors to index.html ([811f02b](https://github.com/shuttleday/shuttleday/commit/811f02b1388cb7c9c468a1dadcfea0718be57a6c))
+
 ## [1.4.4](https://github.com/shuttleday/shuttleday/compare/v1.4.3...v1.4.4) (2023-04-29)
 
 
