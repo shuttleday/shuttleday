@@ -118,14 +118,14 @@ jobs:
     - name: Build Frontend
       run: npm run build
       env:
-        REACT_APP_CLIENT_ID: ${{ secrets.REACT_APP_CLIENT_ID }}
-        REACT_APP_API_LINK: ${{ secrets.REACT_APP_API_LINK }}
+        VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
+        VITE_API_LINK: ${{ secrets.VITE_API_LINK }}
 
     - name: Upload React artifacts
       uses: actions/upload-artifact@v3
       with:
         name: static-react-build
-        path: ./bdlist-frontend/build/
+        path: ./bdlist-frontend/dist/
         retention-days: 14  
 
   dockerize-backend:
@@ -150,7 +150,7 @@ jobs:
       git-tag: v${{ needs.get-next-version.outputs.new-release-version }}
       working-directory: bdlist-frontend
       artifact-name: static-react-build
-      artifact-download-path: bdlist-frontend/build
+      artifact-download-path: bdlist-frontend/dist
       image-name: frontend
       release-candidate: true
 
