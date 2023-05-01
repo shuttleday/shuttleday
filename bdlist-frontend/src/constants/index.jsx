@@ -52,6 +52,20 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 const RE = /^\d+(,\d+)*$/; //Format for input e.g. 1,2,3,4
 
+//Modal style
+const styleImage = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: { xs: 360, sm: 450, md: 900 },
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  borderRadius: '16px',
+  boxShadow: 24,
+  p: 4,
+};
+
 export {
   adminActions,
   userActions,
@@ -62,4 +76,5 @@ export {
   Alert,
   RE,
   info,
+  styleImage,
 };
