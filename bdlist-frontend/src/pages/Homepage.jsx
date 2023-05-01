@@ -47,6 +47,7 @@ import {
   WARNING,
   admin,
   Alert,
+  styleImage,
 } from '../constants';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -87,19 +88,6 @@ const HomePage = () => {
       });
     }
   }
-
-  //Modal style
-  const styleImage = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: { xs: 400, sm: 500, md: 900 },
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-  };
 
   //Session infomation for display
   const [sessionInfo, setSessionInfo] = useState(null);
