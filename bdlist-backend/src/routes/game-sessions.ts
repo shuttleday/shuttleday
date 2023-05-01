@@ -62,42 +62,45 @@ router
       }
     }
   )
-  .patch(async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      // Validate courts key
-      if (!(req.body.courts instanceof Array))
-        throw new ApiError(400, "courts key must be of type string[]");
-      for (const elem of req.body.courts) {
-        if (typeof elem !== "string")
+  .patch(
+    adminCheck,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        // Validate courts key
+        if (!(req.body.courts instanceof Array))
           throw new ApiError(400, "courts key must be of type string[]");
-      }
+        for (const elem of req.body.courts) {
+          if (typeof elem !== "string")
+            throw new ApiError(400, "courts key must be of type string[]");
+        }
 
-      if (typeof req.body.cost !== "number")
-        throw new ApiError(400, "cost key must be of type number");
+        if (typeof req.body.cost !== "number")
+          throw new ApiError(400, "cost key must be of type number");
 
-      // Update and return new document
-      const result = await GameSessions.findOneAndUpdate(
-        { _id: new ObjectId(req.body.sessionId) },
-        {
-          $set: {
-            start: new Date(req.body.start),
-            end: new Date(req.body.end),
-            cost: req.body.cost as number,
-            payTo: req.body.payTo,
-            courts: req.body.courts as string[],
-            title: req.body.title,
+        // Update and return new document
+        const result = await GameSessions.findOneAndUpdate(
+          { _id: new ObjectId(req.body.sessionId) },
+          {
+            $set: {
+              start: new Date(req.body.start),
+              end: new Date(req.body.end),
+              cost: req.body.cost as number,
+              payTo: req.body.payTo,
+              courts: req.body.courts as string[],
+              title: req.body.title,
+            },
           },
-        },
-        { returnDocument: "after" }
-      );
-      if (result.value === null)
-        throw new ApiError(404, "No session with that id");
+          { returnDocument: "after" }
+        );
+        if (result.value === null)
+          throw new ApiError(404, "No session with that id");
 
-      res.status(200).json({ result: result.value });
-    } catch (error) {
-      next(error);
+        res.status(200).json({ result: result.value });
+      } catch (error) {
+        next(error);
+      }
     }
-  });
+  );
 
 // Get game session by id
 router.get(
