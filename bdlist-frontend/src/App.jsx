@@ -47,7 +47,7 @@ function App() {
     [mode]
   );
   return (
-    <GoogleOAuthProvider clientId={`${process.env.REACT_APP_CLIENT_ID}`}>
+    <GoogleOAuthProvider clientId={`${import.meta.env.VITE_CLIENT_ID}`}>
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
           <CssBaseline />

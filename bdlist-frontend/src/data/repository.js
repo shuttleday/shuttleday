@@ -1,12 +1,12 @@
 import axios from 'axios';
 import dayjs from 'dayjs';
 
+const serverAdd = import.meta.env.VITE_API_LINK;
+
 //Checks if an user exist in the db
 async function userCheck(email) {
   try {
-    const user = await axios.get(
-      `${process.env.REACT_APP_API_LINK}/users/${email}`
-    );
+    const user = await axios.get(`${serverAdd}/users/${email}`);
     return user;
   } catch (error) {
     return false;
@@ -21,7 +21,7 @@ async function createAccount(username) {
 
   try {
     const response = await axios.post(
-      process.env.REACT_APP_API_LINK + '/auth/register',
+      import.meta.env.VITE_API_LINK + '/auth/register',
       data
     );
     const user = response.data;
@@ -34,12 +34,11 @@ async function createAccount(username) {
 //Sends the google jwt token for verification and returns a refresh token and access token
 async function googleSignIn() {
   try {
-    const response = await axios.post(
-      process.env.REACT_APP_API_LINK + '/auth/signin'
-    );
+    const response = await axios.post(serverAdd + '/auth/signin');
     const user = response.data;
     return user;
   } catch (error) {
+    console.log(error);
     return null;
   }
 }
@@ -51,12 +50,9 @@ async function getSession() {
     const past = today.subtract(8, 'day');
     const future = today.add(8, 'day');
 
-    const response = await axios.get(
-      process.env.REACT_APP_API_LINK + '/game-sessions',
-      {
-        params: { fromDate: past.toISOString(), toDate: future.toISOString() },
-      }
-    );
+    const response = await axios.get(serverAdd + '/game-sessions', {
+      params: { fromDate: past.toISOString(), toDate: future.toISOString() },
+    });
 
     let modify = response.data;
     for (var i = 0; i < modify.gameSessions.length; i++) {
@@ -78,10 +74,7 @@ async function joinSession(sessionId) {
     const data = {
       sessionId: sessionId,
     };
-    const response = await axios.post(
-      process.env.REACT_APP_API_LINK + '/session-players',
-      data
-    );
+    const response = await axios.post(serverAdd + '/session-players', data);
     return response.data.players;
   } catch (error) {
     console.log(error);
@@ -94,10 +87,9 @@ async function joinSession(sessionId) {
 //https://stackoverflow.com/questions/51069552/axios-delete-request-with-request-body-and-headers
 async function removeFromSession(sessionId) {
   try {
-    const response = await axios.delete(
-      process.env.REACT_APP_API_LINK + '/session-players',
-      { data: { sessionId: sessionId } }
-    );
+    const response = await axios.delete(serverAdd + '/session-players', {
+      data: { sessionId: sessionId },
+    });
     return response.data.players;
   } catch (error) {
     console.log(error);
@@ -111,10 +103,7 @@ async function uploadReceipt(image, sessionId) {
   formData.append('receipt', image);
   formData.append('sessionId', sessionId);
   try {
-    const response = await axios.post(
-      process.env.REACT_APP_API_LINK + '/user-payments',
-      formData
-    );
+    const response = await axios.post(serverAdd + '/user-payments', formData);
     return response.data;
   } catch (error) {
     console.log(error);
@@ -125,7 +114,7 @@ async function uploadReceipt(image, sessionId) {
 //Simple get all user function for admins to see
 async function getUsers() {
   try {
-    const response = await axios.get(process.env.REACT_APP_API_LINK + '/users');
+    const response = await axios.get(serverAdd + '/users');
     const users = response.data;
     return users.result;
   } catch (error) {
@@ -138,7 +127,7 @@ async function getUsers() {
 async function createSession(sessionData) {
   try {
     const response = await axios.post(
-      process.env.REACT_APP_API_LINK + '/game-sessions',
+      serverAdd + '/game-sessions',
       sessionData
     );
     return response.data;
@@ -151,7 +140,7 @@ async function createSession(sessionData) {
 async function editSession(sessionData) {
   try {
     const response = await axios.patch(
-      process.env.REACT_APP_API_LINK + '/game-sessions',
+      serverAdd + '/game-sessions',
       sessionData
     );
 
@@ -164,12 +153,9 @@ async function editSession(sessionData) {
 //Gets receipts of players and modify it into custom object type for display
 async function getReceipts(id) {
   try {
-    const response = await axios.get(
-      process.env.REACT_APP_API_LINK + '/payment-receipts',
-      {
-        params: { sessionId: id },
-      }
-    );
+    const response = await axios.get(serverAdd + '/payment-receipts', {
+      params: { sessionId: id },
+    });
 
     let images = [];
     for (var j = 0; j < response.data.signedUrls.length; j++) {
@@ -191,10 +177,7 @@ async function uploadQR(image) {
   const formData = new FormData();
   formData.append('my-qr', image);
   try {
-    const response = await axios.post(
-      process.env.REACT_APP_API_LINK + '/admins/qr',
-      formData
-    );
+    const response = await axios.post(serverAdd + '/admins/qr', formData);
     return response.data;
   } catch (error) {
     console.log(error);
@@ -206,10 +189,7 @@ async function editQR(image) {
   const formData = new FormData();
   formData.append('file', image);
   try {
-    const response = await axios.patch(
-      process.env.REACT_APP_API_LINK + '/admins/qr',
-      formData
-    );
+    const response = await axios.patch(serverAdd + '/admins/qr', formData);
     return response.data;
   } catch (error) {
     console.log(error);
@@ -219,9 +199,7 @@ async function editQR(image) {
 
 async function getQR(email) {
   try {
-    const response = await axios.get(
-      process.env.REACT_APP_API_LINK + `/admins/qr/${email}`
-    );
+    const response = await axios.get(serverAdd + `/admins/qr/${email}`);
     return response.data;
   } catch (error) {
     console.log(error);
@@ -248,7 +226,7 @@ axios.interceptors.response.use(
 
       try {
         const newToken = await axios.post(
-          process.env.REACT_APP_API_LINK + '/auth/refreshToken',
+          serverAdd + '/auth/refreshToken',
           refreshToken
         );
         localStorage.setItem('jwtToken_Login', newToken.data.accessToken);
