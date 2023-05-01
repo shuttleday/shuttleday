@@ -1,3 +1,14 @@
+## [1.4.6](https://github.com/shuttleday/shuttleday/compare/v1.4.5...v1.4.6) (2023-05-01)
+
+
+### Bug Fixes
+
+* **ci:** correct expression syntax ([059703b](https://github.com/shuttleday/shuttleday/commit/059703b4c560bfc32830e101f799bb404a5c9f50))
+* **ci:** correct syntax for if condition ([a034455](https://github.com/shuttleday/shuttleday/commit/a03445511a4385f4abfa568bd45082eb537388d4))
+* **ci:** move provenence flag to build and push action ([e7c15a5](https://github.com/shuttleday/shuttleday/commit/e7c15a52bfc402ed3b043d6e7aa8b425569ec2bc))
+* **ci:** prevent publishing unknown OS/Arch ([7b0d189](https://github.com/shuttleday/shuttleday/commit/7b0d189a05deb21650cf7026e2e7897865a44926)), closes [/github.com/docker/build-push-action/issues/820#issuecomment-1486849546](https://github.com//github.com/docker/build-push-action/issues/820/issues/issuecomment-1486849546)
+* **ci:** use correct syntax for job outputs ([7d8d6bb](https://github.com/shuttleday/shuttleday/commit/7d8d6bb68c637a3938e6f5d884ee80fbf641ca1c))
+
 ## [1.4.5](https://github.com/shuttleday/shuttleday/compare/v1.4.4...v1.4.5) (2023-04-30)
 
 
