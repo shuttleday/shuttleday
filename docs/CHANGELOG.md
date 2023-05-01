@@ -1,3 +1,11 @@
+## [1.4.7](https://github.com/shuttleday/shuttleday/compare/v1.4.6...v1.4.7) (2023-05-01)
+
+
+### Bug Fixes
+
+* add admin check to patch game sessions ([3953243](https://github.com/shuttleday/shuttleday/commit/3953243275d6787bc61326e7c9fd7b4f56893fd4))
+* added disclaimer for login page ([b832158](https://github.com/shuttleday/shuttleday/commit/b83215850df34c87873298ac5a2a55674838a67a))
+
 ## [1.4.6](https://github.com/shuttleday/shuttleday/compare/v1.4.5...v1.4.6) (2023-05-01)
 
 
