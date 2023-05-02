@@ -40,6 +40,26 @@ router
   // Remove player from game session
   .delete(async (req: Request, res: Response, next: NextFunction) => {
     try {
+      // Get target game session
+      const gameSession = await GameSessions.findOne({
+        _id: new ObjectId(req.body.sessionId),
+        "players.userEmail": { $in: [req.user.email] },
+      });
+
+      if (!gameSession) throw new ApiError(404, "User is not in this session");
+
+      // Deny removal if it's 48 hours before the start date
+      const startDate = gameSession.start;
+      const currentDate = new Date(); // date at time of request
+      const diffMs = Math.abs(startDate.getTime() - currentDate.getTime());
+      const diffHours = diffMs / (1000 * 60 * 60);
+      if (diffHours < 48)
+        throw new ApiError(
+          403,
+          "Cannot leave from game session 48 hours before it starts"
+        );
+
+      // Remove user from session
       const result = await GameSessions.findOneAndUpdate(
         {
           _id: new ObjectId(req.body.sessionId),
@@ -54,9 +74,8 @@ router
         },
         { returnDocument: "after" }
       );
-
       if (result.value === null)
-        throw new ApiError(404, "User is not in this session");
+        throw new ApiError(500, "Internal server error");
 
       res.status(200).json({ players: result.value?.players });
       next();
