@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/shuttleday/shuttleday/compare/v1.5.0...v1.5.1) (2023-05-02)
+
+
+### Bug Fixes
+
+* prevent players from leaving after session end ([4e8ba9e](https://github.com/shuttleday/shuttleday/commit/4e8ba9ed757a79ab327cfb3ea8d2cfddaefda5cd))
+
 # [1.5.0](https://github.com/shuttleday/shuttleday/compare/v1.4.7...v1.5.0) (2023-05-02)
 
 
