@@ -68,7 +68,7 @@
 [jwt]: https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white
 [react]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [javascript]: https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E
-[webpack]: https://img.shields.io/badge/Webpack-8DD6F9?style=for-the-badge&logo=Webpack&logoColor=white
+[vite]: https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E
 [material-ui]: https://img.shields.io/badge/Material%20UI-007FFF?style=for-the-badge&logo=mui&logoColor=white
 [tailwind]: https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
 
@@ -80,12 +80,12 @@
 
 ## Tech Stack
 
-| Infrastructure                                    | Continuous Integration | Container Orchestration | Backend                      | Frontend                            |
-| ------------------------------------------------- | ---------------------- | ----------------------- | ---------------------------- | ----------------------------------- |
-| ![][aws] <br> ![][digitalocean] <br> ![][Proxmox] | ![][github-actions]    | ![][kubernetes]         | ![][mongodb]                 | ![][react]                          |
-| ![][red-hat]                                      | ![][docker]            | ![][argocd]             | ![][typescript]              | ![][javascript]                     |
-| ![][terraform] <br> ![][ansible]                  | ![][jest]              |                         | ![][nodejs]                  | ![][webpack]                        |
-| ![][nginx] <br> ![][cloudflare]                   |                        |                         | ![][expressjs] <br> ![][jwt] | ![][tailwind] <br> ![][material-ui] |
+| Infrastructure                                    | Continuous Integration | Container Orchestration | Backend                      | Frontend                  |
+| ------------------------------------------------- | ---------------------- | ----------------------- | ---------------------------- | ------------------------- |
+| ![][aws] <br> ![][digitalocean] <br> ![][Proxmox] | ![][github-actions]    | ![][kubernetes]         | ![][mongodb]                 | ![][react] <br> ![][vite] |
+| ![][red-hat]                                      | ![][docker]            | ![][argocd]             | ![][typescript]              | ![][javascript]           |
+| ![][terraform] <br> ![][ansible]                  | ![][jest]              |                         | ![][nodejs]                  | ![][tailwind]             |
+| ![][nginx] <br> ![][cloudflare]                   |                        |                         | ![][expressjs] <br> ![][jwt] | ![][material-ui]          |
 
 ## Cloud Architecture
 
