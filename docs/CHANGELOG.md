@@ -1,3 +1,16 @@
+# [1.5.0](https://github.com/shuttleday/shuttleday/compare/v1.4.7...v1.5.0) (2023-05-02)
+
+
+### Bug Fixes
+
+* added 2 day restriction for bailing ([3fcfb9e](https://github.com/shuttleday/shuttleday/commit/3fcfb9e0afbf2d2564c922c6eb2eb17b2277cdc6))
+* ensure game session end date is after start date ([09c5409](https://github.com/shuttleday/shuttleday/commit/09c5409cf92ad9c95b66a9af38cd1b7b1e70686e))
+
+
+### Features
+
+* deny session exit 48 hours before start date ([dd95811](https://github.com/shuttleday/shuttleday/commit/dd95811a9c47d763b7122256793abcae428937b9))
+
 ## [1.4.7](https://github.com/shuttleday/shuttleday/compare/v1.4.6...v1.4.7) (2023-05-01)
 
 
