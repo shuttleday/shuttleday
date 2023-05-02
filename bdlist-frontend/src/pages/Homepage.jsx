@@ -59,6 +59,7 @@ import ImageViewer from 'react-simple-image-viewer';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 import { BiErrorAlt } from 'react-icons/bi';
 import { green } from '@mui/material/colors';
+import dayjs from 'dayjs';
 
 const HomePage = () => {
   const color = green[400];
@@ -89,7 +90,7 @@ const HomePage = () => {
     }
   }
 
-  //Session infomation for display
+  //Session information for display
   const [sessionInfo, setSessionInfo] = useState(null);
   const [selected, setSelected] = useState(0);
 
@@ -110,6 +111,8 @@ const HomePage = () => {
   //Control logic for Images--------------------------------------------------------
   const [image, setImage] = useState(null);
   const [buttonOn, setButtonON] = useState(true);
+
+  const [bail, setBail] = useState(false);
 
   //Checkbox logic for usernames----------------------------------------------------
   const [checked, setChecked] = React.useState(false);
@@ -160,6 +163,16 @@ const HomePage = () => {
               setPlayerStat(false);
             } else {
               setPlayerStat(true);
+            }
+
+            if (
+              dayjs().isAfter(
+                dayjs(res.gameSessions[selected].end).subtract(2, 'day')
+              )
+            ) {
+              setBail(true);
+            } else {
+              setBail(false);
             }
           }
         });
@@ -233,6 +246,7 @@ const HomePage = () => {
 
   const onJoin = async () => {
     const newPlayerList = await joinSession(sessionInfo[selected]._id);
+
     if (newPlayerList) {
       let oldData = sessionInfo;
       oldData[selected].players = newPlayerList;
@@ -335,6 +349,15 @@ const HomePage = () => {
           (item) => item.userEmail === user.email
         )
       ) {
+        if (
+          dayjs().isAfter(
+            dayjs(sessionInfo[event.target.value].end).subtract(2, 'day')
+          )
+        ) {
+          setBail(true);
+        } else {
+          setBail(false);
+        }
         setPlayerStat(false);
       } else {
         setPlayerStat(true);
@@ -575,6 +598,7 @@ const HomePage = () => {
                       color={ERROR}
                       size='large'
                       onClick={onRemove}
+                      disabled={bail}
                     >
                       Remove
                     </Button>
