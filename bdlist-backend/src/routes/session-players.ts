@@ -51,12 +51,12 @@ router
       // Deny removal if it's 48 hours before the start date
       const startDate = gameSession.start;
       const currentDate = new Date(); // date at time of request
-      const diffMs = Math.abs(startDate.getTime() - currentDate.getTime());
+      const diffMs = startDate.getTime() - currentDate.getTime();
       const diffHours = diffMs / (1000 * 60 * 60);
       if (diffHours < 48)
         throw new ApiError(
           403,
-          "Cannot leave from game session 48 hours before it starts"
+          "Cannot leave the game session because the start date is less than 48 hours away or the session has ended"
         );
 
       // Remove user from session
