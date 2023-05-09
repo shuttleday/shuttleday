@@ -60,6 +60,7 @@ import ImageListItemBar from '@mui/material/ImageListItemBar';
 import { BiErrorAlt } from 'react-icons/bi';
 import { green } from '@mui/material/colors';
 import dayjs from 'dayjs';
+import Tilt from 'react-parallax-tilt';
 
 const HomePage = () => {
   const color = green[400];
@@ -174,6 +175,8 @@ const HomePage = () => {
             } else {
               setBail(false);
             }
+          } else {
+            setSessionInfo(undefined);
           }
         });
       }
@@ -501,13 +504,29 @@ const HomePage = () => {
                 variant='fullWidth'
               >
                 <Tab label='NameList' value='1' />
-                <Tab label='Payment' value='2' />
-                {render && <Tab label='Receipts' value='3' />}
+
+                {sessionInfo != null && <Tab label='Payment' value='2' />}
+                {render && sessionInfo != null && (
+                  <Tab label='Receipts' value='3' />
+                )}
               </TabList>
             </Box>
             <TabPanel value='1'>
               {sessionInfo === null ? (
                 <Loading />
+              ) : sessionInfo === undefined ? (
+                <Tilt>
+                  <div className='flex justify-center'>
+                    <div
+                      options={{ max: 45, scale: 1, speed: 450 }}
+                      className='rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border border-green-400 shadow-card w-[340px] h-[480px] lg:h-[500px]'
+                    >
+                      <p className='text-[20px] font-bold text-center font-sans'>
+                        No sessions avaliable yet.
+                      </p>
+                    </div>
+                  </div>
+                </Tilt>
               ) : (
                 <Stack spacing={1} justifyContent='center'>
                   <InfoHeader
@@ -634,7 +653,7 @@ const HomePage = () => {
 
                 <Chip
                   label={
-                    sessionInfo !== null
+                    sessionInfo != null
                       ? '$' + sessionInfo[selected].cost + ' Per person.'
                       : 'Not Avaliable'
                   }
