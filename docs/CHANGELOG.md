@@ -1,3 +1,11 @@
+## [1.5.2](https://github.com/shuttleday/shuttleday/compare/v1.5.1...v1.5.2) (2023-05-10)
+
+
+### Bug Fixes
+
+* "No sessions" component added ([be41fbf](https://github.com/shuttleday/shuttleday/commit/be41fbf86536acf48303420208ac12a3720e5cea))
+* loading bug fixed for edit page ([6129a69](https://github.com/shuttleday/shuttleday/commit/6129a69b7b7442b597716334b30a02d49f8cd8e1))
+
 ## [1.5.1](https://github.com/shuttleday/shuttleday/compare/v1.5.0...v1.5.1) (2023-05-02)
 
 
