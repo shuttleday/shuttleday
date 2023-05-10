@@ -14,19 +14,16 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { Typography } from '@mui/material';
-import { useLocation } from 'react-router-dom';
 import { editSession, getSession } from '../data/repository';
-
 import { Alert, ERROR, SUCCESS, RE } from '../constants';
 import { AdminWrapper } from '../hoc';
+import Loading from '../components/Loading';
 
 const Edit = () => {
-  const location = useLocation();
-
   useEffect(() => {
     async function getData() {
       getSession().then((res) => {
-        if (res.gameSessions !== null && res.gameSessions.length > 0) {
+        if (res.gameSessions.length > 0) {
           setSessionInfo(res.gameSessions);
           setValue(dayjs(res.gameSessions[selected].start));
           setCourts(res.gameSessions[selected].courts.join(','));
@@ -38,6 +35,8 @@ const Edit = () => {
               'hour'
             )
           );
+        } else {
+          setSessionInfo(undefined);
         }
       });
     }
@@ -47,7 +46,7 @@ const Edit = () => {
     // eslint-disable-next-line
   }, []);
 
-  const [sessionInfo, setSessionInfo] = useState(location.state.sessionInfo);
+  const [sessionInfo, setSessionInfo] = useState(null);
   const [selected, setSelected] = useState(0);
 
   const handleSelect = (event) => {
@@ -127,7 +126,9 @@ const Edit = () => {
   };
   return (
     <div>
-      {sessionInfo === null || sessionInfo.length < 0 ? (
+      {sessionInfo === null ? (
+        <Loading />
+      ) : sessionInfo === undefined ? (
         <Error
           title={'No data found...'}
           subTitle={'Go make a new sessions before trying to edit one kay..?'}
