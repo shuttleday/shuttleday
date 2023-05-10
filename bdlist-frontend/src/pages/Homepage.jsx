@@ -83,11 +83,7 @@ const HomePage = () => {
       localStorage.removeItem('refreshToken');
       navigate('/Glogin');
     } else if (operation === 'edit') {
-      navigate('/edit', {
-        state: {
-          sessionInfo: sessionInfo,
-        },
-      });
+      navigate('/edit');
     }
   }
 
