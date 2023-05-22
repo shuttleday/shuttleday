@@ -138,7 +138,7 @@ const HomePage = () => {
   //--------------------------------------------------------------------------------
 
   useEffect(() => {
-    if (localStorage.getItem('jwtToken_Login') === null) {
+    if (localStorage.getItem('jwtToken_Login') == null) {
       navigate('/GLogin');
     } else if (localStorage.getItem('jwtToken_Login') === 'USER NOT FOUND') {
       const googleToken = jwt_decode(location.state.googleToken);
