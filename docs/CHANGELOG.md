@@ -1,3 +1,10 @@
+## [1.5.3](https://github.com/shuttleday/shuttleday/compare/v1.5.2...v1.5.3) (2023-05-22)
+
+
+### Bug Fixes
+
+* token detection fixed ([e6f5021](https://github.com/shuttleday/shuttleday/commit/e6f5021bdcaf8d3a75d9fa98d5a4e165c2c3ac14))
+
 ## [1.5.2](https://github.com/shuttleday/shuttleday/compare/v1.5.1...v1.5.2) (2023-05-10)
 
 
