@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/shuttleday/shuttleday/compare/v1.5.3...v1.6.0) (2023-05-24)
+
+
+### Features
+
+* inject frontend envvars at runtime ([d282ff6](https://github.com/shuttleday/shuttleday/commit/d282ff6a899023f8d11fbcd2eb10a802d3d34d41))
+
 ## [1.5.3](https://github.com/shuttleday/shuttleday/compare/v1.5.2...v1.5.3) (2023-05-22)
 
 
