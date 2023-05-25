@@ -28,4 +28,4 @@ const Dev = () => {
   );
 };
 
-export default AdminWrapper(Dev);
+export default Dev;
