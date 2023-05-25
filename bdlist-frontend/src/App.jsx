@@ -15,6 +15,7 @@ import Dev from './pages/Dev';
 import QRManagement from './pages/QRManagement';
 import BugReport from './pages/BugReport';
 import Credits from './pages/Credits';
+import Rooms from './pages/Rooms';
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
@@ -56,8 +57,7 @@ function App() {
             <>
               <Routes>
                 <Route path='/' element={<HomePage />} />
-
-                {/* <Route path='/auth' element={<Authentication />} /> */}
+                <Route path='/rooms' element={<Rooms />} />
                 <Route path='/Glogin' element={<GLogin />} />
                 <Route path='*' element={<NotFound />} />
                 <Route path='/details' element={<Details />} />

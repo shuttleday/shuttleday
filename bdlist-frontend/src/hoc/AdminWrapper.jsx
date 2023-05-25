@@ -7,7 +7,7 @@ const AdminWrapper = (Component) =>
   function HOC() {
     let navigate = useNavigate();
     useEffect(() => {
-      if (localStorage.getItem('jwtToken_Login') === null) {
+      if (localStorage.getItem('jwtToken_Login') == null) {
         navigate('/GLogin');
       }
       const user = jwt_decode(localStorage.getItem('jwtToken_Login'));
