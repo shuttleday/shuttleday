@@ -1,15 +1,22 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { ObjectId, PullOperator, PushOperator } from "mongodb";
-import { GameSessions } from "../db/collections.js";
+import { GameSessions, Rooms } from "../db/collections.js";
 import { ApiError } from "../utils/error-util.js";
 
 const router = Router();
 
 router
-  .route("/")
+  .route("/rooms/:roomId/sessions/:sessionId")
   // Add player to game session
   .post(async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const roomId = req.params.roomId;
+      const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
+      if (!room) throw new ApiError(404, "Room with that ID doesn't exist");
+
+      if (!room.playerList.includes(req.user.email))
+        throw new ApiError(403, "You are not in this session's room");
+
       const result = await GameSessions.findOneAndUpdate(
         {
           _id: new ObjectId(req.body.sessionId),
@@ -40,6 +47,13 @@ router
   // Remove player from game session
   .delete(async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const roomId = req.params.roomId;
+      const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
+      if (!room) throw new ApiError(404, "Room with that ID doesn't exist");
+
+      if (!room.playerList.includes(req.user.email))
+        throw new ApiError(403, "You are not in this session's room");
+
       // Get target game session
       const gameSession = await GameSessions.findOne({
         _id: new ObjectId(req.body.sessionId),
