@@ -43,6 +43,7 @@ export interface GameSession extends WithId<Document> {
 export interface Room extends WithId<Document> {
   name: string;
   description?: string;
-  creator: User;
+  creator: string; // email
   createdAt: Date;
+  updatedAt: Date;
 }
