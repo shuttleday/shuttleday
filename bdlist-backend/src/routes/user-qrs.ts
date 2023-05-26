@@ -131,7 +131,6 @@ router
 
       const filename = `userQRs/${req.user.email}-QR.${result.QR.fileExt}`;
 
-      console.log(filename);
       const bucketParams = {
         Bucket: process.env.AWS_S3_BUCKET_NAME!,
         Key: filename,
