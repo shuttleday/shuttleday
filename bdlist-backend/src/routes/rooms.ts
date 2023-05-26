@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { ObjectId } from "mongodb";
 import { Rooms } from "../db/collections.js";
-import { adminCheck } from "../middleware/validateRequest.js";
 import { Room } from "../db/interfaces.js";
 import { ApiError } from "../utils/error-util.js";
+import crypto from "crypto";
 
 const router = Router();
 
@@ -29,8 +29,11 @@ router
       name: req.body.name,
       description: req.body.description,
       creator: req.user.email,
+      adminList: [req.user.email],
+      playerList: [req.user.email],
       createdAt: new Date(),
       updatedAt: new Date(),
+      password: crypto.randomBytes(5).toString("base64url"),
     };
 
     try {
@@ -62,30 +65,27 @@ router
     }
   })
   // Update room by id
-  .patch(
-    adminCheck,
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        // Update and return new document
-        const result = await Rooms.findOneAndUpdate(
-          { _id: new ObjectId(req.params.roomId) },
-          {
-            $set: {
-              name: req.body.name,
-              description: req.body.description,
-              updatedAt: new Date(),
-            },
+  .patch(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Update and return new document
+      const result = await Rooms.findOneAndUpdate(
+        { _id: new ObjectId(req.params.roomId) },
+        {
+          $set: {
+            name: req.body.name,
+            description: req.body.description,
+            updatedAt: new Date(),
           },
-          { returnDocument: "after" }
-        );
-        if (result.value === null)
-          throw new ApiError(404, "No room with that id");
+        },
+        { returnDocument: "after" }
+      );
+      if (result.value === null)
+        throw new ApiError(404, "No room with that id");
 
-        res.status(200).json({ result: result.value });
-      } catch (error) {
-        next(error);
-      }
+      res.status(200).json({ result: result.value });
+    } catch (error) {
+      next(error);
     }
-  );
+  });
 
 export default router;
