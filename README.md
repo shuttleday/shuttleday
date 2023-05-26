@@ -89,7 +89,6 @@
 
 ## Cloud Architecture
 
-Updated as of v1.6.0
 ![](docs/images/systemArchitecture.webp)
 
 ## Highlights
