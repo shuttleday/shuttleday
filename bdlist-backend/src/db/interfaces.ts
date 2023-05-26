@@ -1,11 +1,6 @@
 import { FileExtension } from "file-type";
 import { WithId, Document } from "mongodb";
 
-export enum UserType {
-  Player = "PLAYER",
-  Admin = "ADMIN",
-}
-
 interface QR {
   uploaded: boolean;
   fileExt: FileExtension | null;

@@ -3,7 +3,6 @@ import app from "../../setup.js";
 import { disconnectDb } from "../../db/connect.js";
 import { NextFunction } from "express";
 import { Request } from "express";
-import { UserType } from "../../db/interfaces.js";
 import { ObjectId } from "mongodb";
 const api = request(app);
 
@@ -21,7 +20,6 @@ jest.mock("../../middleware/authenticate", () => {
         lastName: "Hello",
         username: "peepoo",
         createdAt: new Date(),
-        userType: UserType.Admin,
         QR: {
           uploaded: false,
           fileExt: null,
@@ -39,7 +37,6 @@ const userTeh = {
   lastName: "Teh",
   username: "Kirix",
   createdAt: "2023-03-19T10:11:51.693Z",
-  userType: "PLAYER",
 };
 
 const userPie = {
@@ -49,7 +46,6 @@ const userPie = {
   lastName: "Cesario",
   username: "PScoriae",
   createdAt: "2023-03-19T10:00:31.171Z",
-  userType: "PLAYER",
 };
 
 const userYunjin = {
@@ -59,7 +55,6 @@ const userYunjin = {
   lastName: "Huh",
   username: "jenaissante",
   createdAt: "2023-03-19T10:00:31.171Z",
-  userType: "ADMIN",
 };
 
 // DB teardown so that Jest exits gracefully

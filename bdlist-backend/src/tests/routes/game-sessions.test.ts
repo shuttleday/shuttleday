@@ -13,7 +13,6 @@ jest.mock("../../middleware/authenticate", () => {
     ...jest.requireActual("../../middleware/authenticate"),
     // skip JWT auth
     authenticate: (req: Request, res: Response, next: NextFunction) => {
-      req.user = { userType: "ADMIN" } as User;
       next();
     },
   };

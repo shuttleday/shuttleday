@@ -19,7 +19,6 @@ db["users"].insertMany([
     lastName: "Cesario",
     username: "PScoriae",
     createdAt: new Date("2023-03-19T10:00:31.171Z"),
-    userType: "PLAYER",
   },
   {
     _id: ObjectId("6416dfe71b2a978617f9c27f"),
@@ -28,7 +27,6 @@ db["users"].insertMany([
     lastName: "Teh",
     username: "Kirix",
     createdAt: new Date("2023-03-19T10:11:51.693Z"),
-    userType: "PLAYER",
   },
   {
     _id: ObjectId("6416e081090bb857e3384aa3"),
@@ -37,7 +35,6 @@ db["users"].insertMany([
     lastName: "Huh",
     username: "jenaissante",
     createdAt: new Date("2023-03-19T10:00:31.171Z"),
-    userType: "ADMIN",
   },
 ]);
 

@@ -82,7 +82,6 @@ describe("POST /auth/register", () => {
           lastName: "Kim",
           username: "_chaechae_1",
           createdAt: expect.any(String),
-          userType: "PLAYER",
         }),
       })
     );
