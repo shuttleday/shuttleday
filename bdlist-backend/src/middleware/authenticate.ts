@@ -34,7 +34,6 @@ export const authenticate = async (
       lastName: decodedUser.lastName,
       username: decodedUser.username,
       createdAt: decodedUser.createdAt,
-      userType: decodedUser.userType,
       QR: decodedUser.QR,
     };
     req.user = currentUser;
