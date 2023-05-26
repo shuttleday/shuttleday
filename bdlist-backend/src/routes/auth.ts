@@ -10,7 +10,7 @@ import {
 import { ApiError } from "../utils/error-util.js";
 import { validatePOST } from "../middleware/validateRequest.js";
 import { ObjectId } from "mongodb";
-import { User, UserType } from "../db/interfaces.js";
+import { User } from "../db/interfaces.js";
 
 const router = Router();
 
@@ -33,7 +33,6 @@ router.post(
         lastName: decoded?.family_name!,
         username: req.body.username,
         createdAt: new Date(),
-        userType: UserType.Player,
         QR: {
           uploaded: false,
           fileExt: null,
