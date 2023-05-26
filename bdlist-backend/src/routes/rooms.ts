@@ -17,7 +17,18 @@ router
       if (rooms.length === 0)
         throw new ApiError(404, "No rooms have been made");
 
-      res.status(200).json({ rooms });
+      const modifiedRooms = rooms.map((room) => {
+        return {
+          id: room._id,
+          name: room.name,
+          description: room.description,
+          creatorEmail: room.creatorEmail,
+          creatorUsername: room.creatorUsername,
+          playerCount: room.playerList.length,
+        };
+      });
+
+      res.status(200).json({ rooms: modifiedRooms });
       next();
     } catch (error) {
       next(error);
@@ -29,7 +40,8 @@ router
       _id: new ObjectId(),
       name: req.body.name,
       description: req.body.description,
-      creator: req.user.email,
+      creatorEmail: req.user.email,
+      creatorUsername: req.user.username,
       adminList: [req.user.email],
       playerList: [req.user.email],
       createdAt: new Date(),
@@ -61,13 +73,22 @@ router
 
       if (!room) throw new ApiError(404, "Room with that id does not exist");
 
-      res.status(200).json(room);
+      const modifiedRoom = {
+        id: room._id,
+        name: room.name,
+        description: room.description,
+        creatorEmail: room.creatorEmail,
+        creatorUsername: room.creatorUsername,
+        playerCount: room.playerList.length,
+      };
+
+      res.status(200).json(modifiedRoom);
       next();
     } catch (error) {
       next(error);
     }
   })
-  // Update room by id
+  // Update room details by id
   .patch(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const roomId = req.params.roomId;
