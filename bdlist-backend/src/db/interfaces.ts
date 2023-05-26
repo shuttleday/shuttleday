@@ -39,3 +39,10 @@ export interface GameSession extends WithId<Document> {
   createdAt: Date;
   title?: string;
 }
+
+export interface Room extends WithId<Document> {
+  name: string;
+  description?: string;
+  creator: User;
+  createdAt: Date;
+}
