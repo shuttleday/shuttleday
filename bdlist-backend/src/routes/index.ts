@@ -4,18 +4,18 @@ import gameSessionsRouter from "./game-sessions.js";
 import usersRouter from "./users.js";
 import authRouter from "./auth.js";
 import sessionPlayersRouter from "./session-players.js";
-import userPaymentsRouter from "./user-payments.js";
-import paymentReceiptsRouter from "./payment-receipts.js";
+import paymentsRouter from "./payments.js";
+import roomsRouter from "./rooms.js";
 import healthcheckRouter from "./healthcheck.js";
 import adminRouter from "./admins.js";
 
 export default function (app: Express) {
   app.use("/auth", authRouter);
-  app.use("/users", usersRouter);
-  app.use("/game-sessions", gameSessionsRouter);
-  app.use("/session-players", sessionPlayersRouter);
-  app.use("/user-payments", userPaymentsRouter);
-  app.use("/payment-receipts", paymentReceiptsRouter);
+  app.use("/", usersRouter);
+  app.use("/", gameSessionsRouter);
+  app.use("/", sessionPlayersRouter);
+  app.use("/", paymentsRouter);
+  app.use("/rooms", roomsRouter);
   app.use("/healthcheck", healthcheckRouter);
   app.use("/admins", adminRouter);
 }
