@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { processUploadedFiles } from "../utils/functions.js";
-import { UserType } from "../db/interfaces.js";
 import {
   requiredPOST,
   requiredGET,
@@ -26,21 +25,6 @@ export async function validateNewGameSessionDate(
 
     if (endDate < startDate)
       throw new ApiError(400, "End date cannot be before start date");
-
-    next();
-  } catch (error) {
-    next(error);
-  }
-}
-
-export async function adminCheck(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    if (req.user.userType !== UserType.Admin)
-      throw new ApiError(403, "You must be an admin to access this resource");
 
     next();
   } catch (error) {
