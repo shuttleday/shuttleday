@@ -113,7 +113,7 @@ router
         if (data.$metadata.httpStatusCode !== 200)
           throw new Error("Could not upload to S3");
 
-        res.status(201).json({ filename, fileExt });
+        res.status(201).json({ filename: filename.split("/")[1], fileExt });
         next();
       } catch (error) {
         next(error);
@@ -129,9 +129,12 @@ router
       if (!result.QR.uploaded)
         throw new ApiError(404, "You have not uploaded a QR yet");
 
+      const filename = `userQRs/${req.user.email}-QR.${result.QR.fileExt}`;
+
+      console.log(filename);
       const bucketParams = {
         Bucket: process.env.AWS_S3_BUCKET_NAME!,
-        Key: `userQRs/${req.user.email}-QR.${req.fileExt}`,
+        Key: filename,
       };
 
       const data = await s3.send(new DeleteObjectCommand(bucketParams));
