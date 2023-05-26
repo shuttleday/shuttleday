@@ -7,7 +7,7 @@ import sessionPlayersRouter from "./session-players.js";
 import paymentsRouter from "./payments.js";
 import roomsRouter from "./rooms.js";
 import healthcheckRouter from "./healthcheck.js";
-import adminRouter from "./admins.js";
+import userQrsRouter from "./user-qrs.js";
 
 export default function (app: Express) {
   app.use("/auth", authRouter);
@@ -17,5 +17,5 @@ export default function (app: Express) {
   app.use("/", paymentsRouter);
   app.use("/rooms", roomsRouter);
   app.use("/healthcheck", healthcheckRouter);
-  app.use("/admins", adminRouter);
+  app.use("/", userQrsRouter);
 }
