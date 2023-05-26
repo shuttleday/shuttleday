@@ -38,7 +38,7 @@ router
 
         const gameSessionResult = await GameSessions.findOneAndUpdate(
           {
-            _id: new ObjectId(req.params.sessionId),
+            _id: new ObjectId(sessionId),
             players: {
               $elemMatch: {
                 userEmail: req.user.email,
@@ -68,7 +68,7 @@ router
         );
 
         // Upload files to S3
-        const filename = `${room!._id}/${gameSessionResult.value._id}/${
+        const filename = `room-${room!._id}/${gameSessionResult.value._id}/${
           req.user.username
         }.${req.fileExt}`; // roomId/sessionId/username.fileExt
 
@@ -131,14 +131,12 @@ router
 
       // Construct promises to fetch files
       const promises = players.map((player) => {
-        const filename = `${room!._id}/${gameSession._id}/${player.username}.${
-          player.fileExt
-        }`; // roomId/sessionId/username.fileExt
+        const filename = `room-${room!._id}/${gameSession._id}/${
+          player.username
+        }.${player.fileExt}`; // roomId/sessionId/username.fileExt
         const command = new GetObjectCommand({
           Bucket: process.env.AWS_S3_BUCKET_NAME,
-          Key: `${room!._id}/${gameSession._id}/${player.username}.${
-            player.fileExt
-          }`,
+          Key: filename,
         });
         return getSignedUrl(s3, command, { expiresIn: 3600 });
       });
@@ -151,7 +149,7 @@ router
         const url = new URL(signedUrl);
         const pathname = url.pathname;
         const decodedPath = decodeURIComponent(pathname);
-        const usernameFileExt = decodedPath.split("/")[2];
+        const usernameFileExt = decodedPath.split("/")[3];
         const username = usernameFileExt.split(".")[0];
         const fileExt = usernameFileExt.split(".")[1];
         return { payer: username, signedUrl, fileExt };
