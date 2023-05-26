@@ -4,6 +4,7 @@ import { Rooms } from "../db/collections.js";
 import { Room } from "../db/interfaces.js";
 import { ApiError } from "../utils/error-util.js";
 import crypto from "crypto";
+import { isValidObjectId } from "../utils/functions.js";
 
 const router = Router();
 
@@ -51,6 +52,8 @@ router
   .get(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const roomId = req.params.roomId;
+      if (!isValidObjectId(roomId))
+        throw new ApiError(400, "Not a valid room ID");
 
       const room = await Rooms.findOne({
         _id: new ObjectId(roomId),
@@ -67,9 +70,12 @@ router
   // Update room by id
   .patch(async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const roomId = req.params.roomId;
+      if (!isValidObjectId(roomId))
+        throw new ApiError(400, "Not a valid room ID");
       // Update and return new document
       const result = await Rooms.findOneAndUpdate(
-        { _id: new ObjectId(req.params.roomId) },
+        { _id: new ObjectId(roomId) },
         {
           $set: {
             name: req.body.name,

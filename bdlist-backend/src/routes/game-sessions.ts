@@ -3,7 +3,7 @@ import { ObjectId, Filter } from "mongodb";
 import { GameSessions, Rooms } from "../db/collections.js";
 import { validateNewGameSessionDate } from "../middleware/validateRequest.js";
 import { GameSession } from "../db/interfaces.js";
-import { validateDates } from "../utils/functions.js";
+import { isValidObjectId, validateDates } from "../utils/functions.js";
 import { ApiError } from "../utils/error-util.js";
 
 const router = Router();
@@ -13,10 +13,14 @@ router
   .route("/rooms/:roomId/sessions")
   .get(async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const roomId = req.params.roomId;
+      if (!isValidObjectId(roomId))
+        throw new ApiError(400, "Not a valid room ID");
+
       // Build query
       const { fromDate, toDate } = validateDates(req);
       const query: Filter<GameSession> = {
-        roomId: req.params.roomId,
+        roomId,
         start: {
           $gte: fromDate,
           $lte: toDate,
@@ -46,6 +50,8 @@ router
         // check if requester is an admin of the room by roomId
         const userEmail = req.user.email;
         const roomId = req.params.roomId;
+        if (!isValidObjectId(roomId))
+          throw new ApiError(400, "Not a valid room ID");
 
         const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
         if (!room) throw new ApiError(404, "No room with that ID");
@@ -65,7 +71,7 @@ router
           createdAt: new Date(),
           payTo: req.user.email,
           title: req.body.title,
-          roomId: req.params.roomId,
+          roomId,
         };
 
         const result = await GameSessions.insertOne(document);
@@ -92,6 +98,8 @@ router
       // check if requester is an admin of the room by roomId
       const userEmail = req.user.email;
       const roomId = req.params.roomId;
+      if (!isValidObjectId(roomId))
+        throw new ApiError(400, "Not a valid room ID");
 
       const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
       if (!room) throw new ApiError(404, "No room with that ID");
@@ -129,7 +137,10 @@ router.get(
   "/sessions/:sessionId",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      // ID validation
       const sessionId = req.params.sessionId;
+      if (!isValidObjectId(sessionId))
+        throw new ApiError(400, "Not a valid session ID");
 
       const gameSession = await GameSessions.findOne({
         _id: new ObjectId(sessionId),

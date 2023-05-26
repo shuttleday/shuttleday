@@ -3,7 +3,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { ObjectId } from "mongodb";
 import fileUpload from "express-fileupload";
-import { s3 } from "../utils/functions.js";
+import { isValidObjectId, s3 } from "../utils/functions.js";
 import { GameSessions, Rooms } from "../db/collections.js";
 import { validateFileUpload } from "../middleware/validateRequest.js";
 import { ApiError } from "../utils/error-util.js";
@@ -19,6 +19,8 @@ router
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const sessionId = req.params.sessionId;
+        if (!isValidObjectId(sessionId))
+          throw new ApiError(400, "Not a valid session ID");
 
         const gameSession = await GameSessions.findOne({
           _id: new ObjectId(sessionId),
@@ -102,6 +104,9 @@ router
     try {
       // Get session
       const sessionId = req.params.sessionId;
+      if (!isValidObjectId(sessionId))
+        throw new ApiError(400, "Not a valid session ID");
+
       const gameSession = await GameSessions.findOne({
         _id: new ObjectId(sessionId),
       });

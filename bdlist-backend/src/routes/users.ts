@@ -2,6 +2,7 @@ import { NextFunction, Request, Response, Router } from "express";
 import { Rooms, Users } from "../db/collections.js";
 import { ApiError } from "../utils/error-util.js";
 import { ObjectId } from "mongodb";
+import { isValidObjectId } from "../utils/functions.js";
 
 const router = Router();
 
@@ -12,6 +13,8 @@ router.get(
     try {
       const email = req.params.email;
       const roomId = req.params.roomId;
+      if (!isValidObjectId(roomId))
+        throw new ApiError(400, "Not a valid room ID");
       const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
       if (!room) throw new ApiError(404, "No room with that ID");
 
@@ -36,6 +39,8 @@ router
   .get(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const roomId = req.params.roomId;
+      if (!isValidObjectId(roomId))
+        throw new ApiError(400, "Not a valid room ID");
       const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
       if (!room) throw new ApiError(404, "No room with that ID");
       const roomPlayerList = room?.playerList;
@@ -53,6 +58,8 @@ router
   .post(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const roomId = req.params.roomId;
+      if (!isValidObjectId(roomId))
+        throw new ApiError(400, "Not a valid room ID");
       const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
       if (!room) throw new ApiError(404, "No room with that ID");
 
@@ -82,6 +89,8 @@ router
   .delete(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const roomId = req.params.roomId;
+      if (!isValidObjectId(roomId))
+        throw new ApiError(400, "Not a valid room ID");
       const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
       if (!room) throw new ApiError(404, "No room with that ID");
 

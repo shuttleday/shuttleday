@@ -8,6 +8,7 @@ import * as dotenv from "dotenv";
 import { Users } from "../db/collections.js";
 import { User } from "../db/interfaces.js";
 import { ApiError } from "./error-util.js";
+import { ObjectId } from "mongodb";
 dotenv.config();
 
 const CLIENT_ID = process.env.G_AUTH_CLIENT_ID;
@@ -98,4 +99,8 @@ export function verifyRefreshToken(token: string) {
 export async function userExists(email: string) {
   const userExists = await Users.findOne({ email });
   return userExists !== null;
+}
+
+export function isValidObjectId(str: string) {
+  return ObjectId.isValid(str);
 }

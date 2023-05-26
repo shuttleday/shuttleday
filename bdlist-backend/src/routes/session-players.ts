@@ -2,6 +2,7 @@ import { NextFunction, Request, Response, Router } from "express";
 import { ObjectId, PullOperator, PushOperator } from "mongodb";
 import { GameSessions, Rooms } from "../db/collections.js";
 import { ApiError } from "../utils/error-util.js";
+import { isValidObjectId } from "../utils/functions.js";
 
 const router = Router();
 
@@ -11,6 +12,12 @@ router
   .post(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const roomId = req.params.roomId;
+      const sessionId = req.params.sessionId;
+      if (!isValidObjectId(roomId))
+        throw new ApiError(400, "Not a valid room ID");
+      if (!isValidObjectId(sessionId))
+        throw new ApiError(400, "Not a valid session ID");
+
       const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
       if (!room) throw new ApiError(404, "Room with that ID doesn't exist");
 
@@ -19,7 +26,7 @@ router
 
       const result = await GameSessions.findOneAndUpdate(
         {
-          _id: new ObjectId(req.body.sessionId),
+          _id: new ObjectId(sessionId),
           "players.userEmail": { $nin: [req.user.email] },
         },
         {
@@ -48,6 +55,12 @@ router
   .delete(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const roomId = req.params.roomId;
+      const sessionId = req.params.sessionId;
+      if (!isValidObjectId(roomId))
+        throw new ApiError(400, "Not a valid room ID");
+      if (!isValidObjectId(sessionId))
+        throw new ApiError(400, "Not a valid session ID");
+
       const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
       if (!room) throw new ApiError(404, "Room with that ID doesn't exist");
 
@@ -56,7 +69,7 @@ router
 
       // Get target game session
       const gameSession = await GameSessions.findOne({
-        _id: new ObjectId(req.body.sessionId),
+        _id: new ObjectId(sessionId),
         "players.userEmail": { $in: [req.user.email] },
       });
 
@@ -76,7 +89,7 @@ router
       // Remove user from session
       const result = await GameSessions.findOneAndUpdate(
         {
-          _id: new ObjectId(req.body.sessionId),
+          _id: new ObjectId(sessionId),
           "players.userEmail": { $in: [req.user.email] },
         },
         {
