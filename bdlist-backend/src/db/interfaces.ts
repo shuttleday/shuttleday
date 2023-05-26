@@ -17,7 +17,6 @@ export interface User extends WithId<Document> {
   lastName: string;
   username: string;
   createdAt: Date;
-  userType: UserType;
   QR: QR;
 }
 
@@ -37,7 +36,8 @@ export interface GameSession extends WithId<Document> {
   payTo: string; // email
   courts: string[];
   createdAt: Date;
-  title?: string;
+  title: string;
+  roomId: string;
 }
 
 export interface Room extends WithId<Document> {
@@ -46,4 +46,7 @@ export interface Room extends WithId<Document> {
   creator: string; // email
   createdAt: Date;
   updatedAt: Date;
+  adminList: string[]; // list of emails
+  playerList: string[];
+  password: string;
 }
