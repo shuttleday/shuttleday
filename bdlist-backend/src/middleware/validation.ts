@@ -7,6 +7,7 @@ export const requiredPOST: requiredMETHOD = {
   "/game-sessions": ["start", "end", "cost", "courts"],
   "/session-players": ["sessionId"],
   "/refreshToken": ["refreshToken"],
+  "/rooms": ["name"],
 };
 
 export const requiredGET: requiredMETHOD = {
@@ -15,4 +16,5 @@ export const requiredGET: requiredMETHOD = {
 
 export const requiredPATCH: requiredMETHOD = {
   "/game-sessions": ["sessionId", "start", "end", "cost", "payTo", "courts"],
+  "/rooms": ["name"],
 };
