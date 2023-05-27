@@ -92,11 +92,12 @@ router
   .patch(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const roomId = req.params.roomId;
+      const userEmail = req.user.email;
       if (!isValidObjectId(roomId))
         throw new ApiError(400, "Not a valid room ID");
       // Update and return new document
       const result = await Rooms.findOneAndUpdate(
-        { _id: new ObjectId(roomId) },
+        { _id: new ObjectId(roomId), adminList: { $in: [userEmail] } },
         {
           $set: {
             name: req.body.name,
@@ -110,6 +111,31 @@ router
         throw new ApiError(404, "No room with that id");
 
       res.status(200).json({ result: result.value });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+// Get room password by id
+router
+  .route("/:roomId/password")
+  .get(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // check if requester is an admin of the room by roomId
+      const userEmail = req.user.email;
+      const roomId = req.params.roomId;
+      if (!isValidObjectId(roomId))
+        throw new ApiError(400, "Not a valid room ID");
+
+      const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
+      if (!room) throw new ApiError(404, "No room with that ID");
+
+      const roomAdminList = room.adminList;
+      if (!roomAdminList.includes(userEmail))
+        throw new ApiError(403, "You are not an admin of this room");
+
+      res.status(200).json(room);
+      next();
     } catch (error) {
       next(error);
     }
