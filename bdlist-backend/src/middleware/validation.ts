@@ -10,7 +10,9 @@ export const requiredPOST: requiredMETHOD = {
   "/rooms": ["name"],
 };
 
-export const requiredGET: requiredMETHOD = {};
+export const requiredGET: requiredMETHOD = {
+  "/rooms": ["limit", "offset"],
+};
 
 export const requiredPATCH: requiredMETHOD = {
   "/rooms/:roomId/sessions": [

@@ -85,7 +85,7 @@ async function validateMethod(
     if (!target) return next(); // Return early if there are no targets
 
     // Get missing keys
-    const missing: string[] = getMissingKeys(target[1], req);
+    const missing: string[] = getMissingKeys(req.method, target[1], req);
 
     // Return 400 with dynamic error message if there are missing keys
     if (missing.length > 0) throwMissingKeysError(missing);
@@ -129,15 +129,7 @@ function getTargetKeys(requiredKeys: { [s: string]: string[] }, req: Request) {
   // Get required req.query keys
   const required = Object.entries(requiredKeys);
 
-  let endpoint: string;
-  switch (req.method) {
-    case "GET":
-      endpoint = req.baseUrl;
-      break;
-    default:
-      endpoint = req.path;
-      break;
-  }
+  const endpoint = req.path;
   return required.find((path) => path[0] === endpoint);
 }
 
@@ -150,8 +142,10 @@ function formatError(missing: string[]) {
   return missingKeys;
 }
 
-function getMissingKeys(target: string[], req: Request) {
-  const supplied = Object.keys(req.body);
+function getMissingKeys(method: string, target: string[], req: Request) {
+  let supplied: string[];
+  if (method === "GET") supplied = Object.keys(req.query);
+  else supplied = Object.keys(req.body);
   const missing: string[] = [];
   target.forEach((reqKey) => {
     if (!supplied.includes(reqKey)) missing.push(reqKey);
