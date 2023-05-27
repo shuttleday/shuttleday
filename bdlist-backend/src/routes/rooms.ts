@@ -108,7 +108,7 @@ router
         { returnDocument: "after" }
       );
       if (result.value === null)
-        throw new ApiError(404, "No room with that id");
+        throw new ApiError(404, "No room with that id or not an admin");
 
       res.status(200).json({ result: result.value });
     } catch (error) {
