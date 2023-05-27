@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import jwt_decode from 'jwt-decode';
 import { admin, SUCCESS } from '../constants';
 import Box from '@mui/material/Box';
@@ -10,10 +11,11 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 const Rooms = () => {
-  const color = grey[700];
+  const color = grey[900];
   const [isAdmin, setIsAdmin] = useState(false);
   const password = useRef();
   const name = useRef();
+  const description = useRef();
 
   const modalStyle = {
     position: 'absolute',
@@ -35,7 +37,14 @@ const Rooms = () => {
     }
   }, [isAdmin]);
 
+  const [isClicked, setIsClicked] = useState(false);
   const handleClick = () => {
+    setIsClicked(true);
+  };
+  const handleBack = () => {
+    setIsClicked(false);
+  };
+  const handleJoin = () => {
     handlePassOpenModal();
   };
 
@@ -97,10 +106,19 @@ const Rooms = () => {
         aria-describedby='modal-modal-description'
       >
         <Box sx={modalStyle}>
-          <Typography id='modal-modal-title' variant='h6' component='h2'>
+          <Typography
+            id='modal-modal-title'
+            variant='h4'
+            component='h2'
+            sx={{ mb: 2 }}
+          >
             Create room
           </Typography>
-          <Typography id='modal-modal-description' sx={{ mt: 2 }}>
+
+          <Typography id='modal-modal-title' variant='h6' component='h2'>
+            Name
+          </Typography>
+          <Typography id='modal-modal-description'>
             <TextField
               fullWidth
               label='Name'
@@ -110,6 +128,28 @@ const Rooms = () => {
               inputRef={name}
             />
           </Typography>
+
+          <Typography
+            id='modal-modal-title'
+            variant='h6'
+            component='h2'
+            sx={{ mt: 2 }}
+          >
+            Description
+          </Typography>
+          <Typography id='modal-modal-description'>
+            <TextField
+              fullWidth
+              label='55 word Limit'
+              id='fullWidth'
+              color='secondary'
+              className='mb-2'
+              multiline
+              rows={2}
+              inputRef={description}
+            />
+          </Typography>
+
           <Box textAlign='center' sx={{ mt: 2 }}>
             <Button
               variant='contained'
@@ -126,38 +166,74 @@ const Rooms = () => {
         <div className='underline underline-offset-8 rounded-md p-7'>
           <h1 className='text-4xl font-mono'>Rooms</h1>
         </div>
-        <div className='rounded-[20px] py-5 px-12 min-h-[480px] flex items-center flex-col border border-green-400 shadow-card w-[340px]  lg:h-[500px] gap-6'>
-          <Button
-            variant='contained'
-            className='w-full py-4 px-6 bg-green-400 text-lg rounded-2xl'
-            onClick={handleClick}
+        {}
+        <div className='perspective'>
+          <div
+            className={`min-h-[500px] w-[355px] lg:h-[520px] relative border border-green-400 rounded-[20px] shadow-card duration-1000 preserve-3d ${
+              isClicked ? 'my-rotate-y-180' : ''
+            }`}
           >
-            Room 1
-          </Button>
+            <div className='py-5 px-12 flex items-center flex-col gap-6 absolute w-full h-full backface-hidden'>
+              <Button
+                variant='contained'
+                className='w-full py-4 px-6 bg-green-400 text-lg rounded-2xl'
+                onClick={handleClick}
+              >
+                Room 1
+              </Button>
 
-          <Button
-            variant='contained'
-            className='w-full py-4 px-6 bg-green-400 text-lg rounded-2xl'
-            onClick={handleClick}
-          >
-            Room 2
-          </Button>
-          <Button
-            variant='contained'
-            className='w-full py-4 px-6 bg-green-400 text-lg rounded-2xl'
-          >
-            Confirm
-          </Button>
+              <Button
+                variant='contained'
+                className='w-full py-4 px-6 bg-green-400 text-lg rounded-2xl'
+                onClick={handleClick}
+              >
+                Room 2
+              </Button>
+              <Button
+                variant='contained'
+                className='w-full py-4 px-6 bg-green-400 text-lg rounded-2xl'
+              >
+                Confirm
+              </Button>
 
-          {isAdmin && (
-            <IconButton
-              variant='contained'
-              className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
-              onClick={handleOpenCreate}
-            >
-              <AddIcon />
-            </IconButton>
-          )}
+              {isAdmin && (
+                <IconButton
+                  variant='contained'
+                  className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
+                  onClick={handleOpenCreate}
+                >
+                  <AddIcon />
+                </IconButton>
+              )}
+            </div>
+
+            <div className='absolute w-full h-full rounded-[20px] backface-hidden my-rotate-y-180'>
+              <div className='p-6 flex items-left text-lg flex-col gap-6'>
+                <div className='font-bold text-[24px] mt-6'>TITLE</div>
+                <p>
+                  There are a number of reasons you may need a block of text and
+                  when you do, a random paragraph can be the perfect solution.
+                  If you happen to be a web designer and you need some random
+                  text to show in your layout, a random paragraph can be an
+                  excellent way
+                </p>
+                <Button
+                  variant='contained'
+                  className='w-full py-3 px-6 bg-green-400 text-lg rounded-2xl'
+                  onClick={handleJoin}
+                >
+                  Join
+                </Button>
+                <IconButton
+                  variant='contained'
+                  className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
+                  onClick={handleBack}
+                >
+                  <ArrowBackIcon />
+                </IconButton>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
