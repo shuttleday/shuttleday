@@ -63,13 +63,17 @@ export function validateDates(req: Request) {
 }
 
 export function validateLimitOffset(req: Request) {
-  const limitInput = req.query.limit;
-  const offsetInput = req.query.offset;
-  if (typeof limitInput !== "number")
-    throw new ApiError(400, "Limit must be of type integer");
-  if (typeof offsetInput !== "number")
-    throw new ApiError(400, "Offset must be of type integer");
+  const limitInput = parseInt(req.query.limit as string);
+  const offsetInput = parseInt(req.query.offset as string);
 
+  const inputs = [limitInput, offsetInput];
+  for (const input of inputs) {
+    if (input < 0)
+      throw new ApiError(
+        400,
+        "Limit and offset must be greater than or equal to 0"
+      );
+  }
   const limitValue: number = Math.min(limitInput, MAX_LIMIT);
   const offsetValue: number = offsetInput;
 

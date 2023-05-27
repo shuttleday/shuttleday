@@ -33,7 +33,9 @@ router
         };
       });
 
-      res.status(200).json({ rooms: modifiedRooms });
+      res
+        .status(200)
+        .json({ rooms: modifiedRooms, limit: limitValue, offset: offsetValue });
       next();
     } catch (error) {
       next(error);
