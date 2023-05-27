@@ -106,7 +106,10 @@ router
         throw new ApiError(400, "Not a valid room ID");
       // Update and return new document
       const result = await Rooms.findOneAndUpdate(
-        { _id: new ObjectId(roomId), adminList: { $in: [userEmail] } },
+        {
+          _id: new ObjectId(roomId),
+          playerList: { $elemMatch: { email: req.user.email, isAdmin: true } },
+        },
         {
           $set: {
             name: req.body.name,
@@ -137,12 +140,12 @@ router
       if (!isValidObjectId(roomId))
         throw new ApiError(400, "Not a valid room ID");
 
-      const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
-      if (!room) throw new ApiError(404, "No room with that ID");
-
-      const roomAdminList = room.adminList;
-      if (!roomAdminList.includes(userEmail))
-        throw new ApiError(403, "You are not an admin of this room");
+      const room = await Rooms.findOne({
+        _id: new ObjectId(roomId),
+        playerList: { $elemMatch: { email: req.user.email, isAdmin: true } },
+      });
+      if (!room)
+        throw new ApiError(404, "No room with that ID or not an admin");
 
       res.status(200).json(room);
       next();
