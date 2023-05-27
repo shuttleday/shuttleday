@@ -7,26 +7,25 @@ import { isValidObjectId } from "../utils/functions.js";
 const router = Router();
 
 router
-  .route("/rooms/:roomId/sessions/:sessionId")
+  .route("/sessions/:sessionId/players")
   // Add self to game session
   .post(async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const roomId = req.params.roomId;
       const sessionId = req.params.sessionId;
-      if (!isValidObjectId(roomId))
-        throw new ApiError(400, "Not a valid room ID");
       if (!isValidObjectId(sessionId))
         throw new ApiError(400, "Not a valid session ID");
 
-      const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
-      if (!room) throw new ApiError(404, "Room with that ID doesn't exist");
+      const gameSession = await GameSessions.findOne({
+        _id: new ObjectId(sessionId),
+      });
+      if (!gameSession) throw new ApiError(404, "No session with that ID");
 
-      const playerList = room.playerList;
-      const isRequesterInPlayerList = playerList.some((obj) =>
-        Object.values(obj).includes(req.user.email)
-      );
-      if (!isRequesterInPlayerList)
-        throw new ApiError(403, "You are not in this room");
+      const room = await Rooms.findOne({
+        _id: new ObjectId(gameSession.roomId),
+        "playerList.email": req.user.email,
+      });
+      if (!room)
+        throw new ApiError(404, "You are not in that room with that ID");
 
       const result = await GameSessions.findOneAndUpdate(
         {
@@ -58,22 +57,9 @@ router
   // Remove self from game session
   .delete(async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const roomId = req.params.roomId;
       const sessionId = req.params.sessionId;
-      if (!isValidObjectId(roomId))
-        throw new ApiError(400, "Not a valid room ID");
       if (!isValidObjectId(sessionId))
         throw new ApiError(400, "Not a valid session ID");
-
-      const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
-      if (!room) throw new ApiError(404, "Room with that ID doesn't exist");
-
-      const playerList = room.playerList;
-      const isRequesterInPlayerList = playerList.some((obj) =>
-        Object.values(obj).includes(req.user.email)
-      );
-      if (!isRequesterInPlayerList)
-        throw new ApiError(403, "You are not in this room");
 
       // Get target game session
       const gameSession = await GameSessions.findOne({
@@ -82,6 +68,13 @@ router
       });
 
       if (!gameSession) throw new ApiError(404, "User is not in this session");
+
+      const room = await Rooms.findOne({
+        _id: new ObjectId(gameSession.roomId),
+        "playerList.email": req.user.email,
+      });
+      if (!room)
+        throw new ApiError(404, "You are not in that room with that ID");
 
       // Deny removal if it's 48 hours before the start date
       const startDate = gameSession.start;
