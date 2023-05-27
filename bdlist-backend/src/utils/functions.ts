@@ -73,6 +73,8 @@ export function validateLimitOffset(req: Request) {
         400,
         "Limit and offset must be greater than or equal to 0"
       );
+    if (isNaN(input))
+      throw new ApiError(400, "Limit and offset must be integers");
   }
   const limitValue: number = Math.min(limitInput, MAX_LIMIT);
   const offsetValue: number = offsetInput;
