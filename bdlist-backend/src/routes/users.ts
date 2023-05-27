@@ -3,10 +3,12 @@ import { Rooms, Users } from "../db/collections.js";
 import { ApiError } from "../utils/error-util.js";
 import { ObjectId } from "mongodb";
 import { isValidObjectId } from "../utils/functions.js";
+import { RoomPlayer } from "../db/interfaces.js";
 
 const router = Router();
 
 // Get user in a room by email
+// Only those in the room can query
 router.get(
   "/rooms/:roomId/users/:email",
   async (req: Request, res: Response, next: NextFunction) => {
@@ -18,8 +20,19 @@ router.get(
       const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
       if (!room) throw new ApiError(404, "No room with that ID");
 
-      if (room.playerList.includes(email))
-        throw new ApiError(404, "Player is not in room");
+      // Check if requester is in room
+      const playerList = room.playerList;
+      const isRequesterInPlayerList = playerList.some((obj) =>
+        Object.values(obj).includes(req.user.email)
+      );
+      if (!isRequesterInPlayerList)
+        throw new ApiError(403, "You are not part of the room");
+
+      // Check if player email is in room
+      const isPlayerInList = playerList.some((obj) =>
+        Object.values(obj).includes(email)
+      );
+      if (!isPlayerInList) throw new ApiError(403, "Player is not in the room");
 
       const user = await Users.findOne({ email });
 
@@ -33,8 +46,9 @@ router.get(
   }
 );
 
-// Get all users in a room
 router
+  // Get all users in a room
+  // Only those in the room can query
   .route("/rooms/:roomId/users")
   .get(async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -43,9 +57,9 @@ router
         throw new ApiError(400, "Not a valid room ID");
       const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
       if (!room) throw new ApiError(404, "No room with that ID");
-      const roomPlayerList = room?.playerList;
+      const emailList = room.playerList.map((player) => player.email);
 
-      const query = { email: { $in: roomPlayerList } };
+      const query = { email: { $in: emailList } };
       const users = await Users.find(query).toArray();
 
       res.status(200).json({ users });
@@ -54,7 +68,7 @@ router
       next(error);
     }
   })
-  // Add user to a room
+  // Add self to a room
   .post(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const roomId = req.params.roomId;
@@ -66,13 +80,16 @@ router
       if (req.body.password !== room.password)
         throw new ApiError(401, "Incorrect password");
 
+      const player: RoomPlayer = {
+        username: req.user.username,
+        email: req.user.email,
+        isAdmin: false,
+      };
       const result = await Rooms.findOneAndUpdate(
         { _id: new ObjectId(roomId) },
         {
           $push: {
-            playerList: {
-              userEmail: req.user.email,
-            },
+            playerList: player,
           },
         }
       );
@@ -85,7 +102,8 @@ router
       next(error);
     }
   })
-  // Remove user from a room
+  // Remove self from a room
+  // Must be in the room
   .delete(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const roomId = req.params.roomId;
@@ -95,11 +113,11 @@ router
       if (!room) throw new ApiError(404, "No room with that ID");
 
       const result = await Rooms.findOneAndUpdate(
-        { _id: new ObjectId(roomId), playerList: { $in: [req.user.email] } },
+        { _id: new ObjectId(roomId), "playerList.email": req.user.email },
         {
           $pull: {
             playerList: {
-              userEmail: req.user.email,
+              email: req.user.email,
             },
           },
         },

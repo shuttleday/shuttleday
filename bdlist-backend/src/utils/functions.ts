@@ -12,6 +12,7 @@ import { ObjectId } from "mongodb";
 dotenv.config();
 
 const CLIENT_ID = process.env.G_AUTH_CLIENT_ID;
+const MAX_LIMIT = 10;
 
 const client = new OAuth2Client(CLIENT_ID);
 
@@ -59,6 +60,20 @@ export function validateDates(req: Request) {
   if (toDate < fromDate)
     throw new ApiError(400, "toDate cannot be before fromDate");
   return { fromDate, toDate };
+}
+
+export function validateLimitOffset(req: Request) {
+  const limitInput = req.query.limit;
+  const offsetInput = req.query.offset;
+  if (typeof limitInput !== "number")
+    throw new ApiError(400, "Limit must be of type integer");
+  if (typeof offsetInput !== "number")
+    throw new ApiError(400, "Offset must be of type integer");
+
+  const limitValue: number = Math.min(limitInput, MAX_LIMIT);
+  const offsetValue: number = offsetInput;
+
+  return { limitValue, offsetValue };
 }
 
 export function genAccessToken(userObj: User) {

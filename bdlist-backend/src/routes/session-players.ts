@@ -8,7 +8,7 @@ const router = Router();
 
 router
   .route("/rooms/:roomId/sessions/:sessionId")
-  // Add player to game session
+  // Add self to game session
   .post(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const roomId = req.params.roomId;
@@ -21,8 +21,12 @@ router
       const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
       if (!room) throw new ApiError(404, "Room with that ID doesn't exist");
 
-      if (!room.playerList.includes(req.user.email))
-        throw new ApiError(403, "You are not in this session's room");
+      const playerList = room.playerList;
+      const isRequesterInPlayerList = playerList.some((obj) =>
+        Object.values(obj).includes(req.user.email)
+      );
+      if (!isRequesterInPlayerList)
+        throw new ApiError(403, "You are not in this room");
 
       const result = await GameSessions.findOneAndUpdate(
         {
@@ -51,7 +55,7 @@ router
       next(error);
     }
   })
-  // Remove player from game session
+  // Remove self from game session
   .delete(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const roomId = req.params.roomId;
@@ -64,8 +68,12 @@ router
       const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
       if (!room) throw new ApiError(404, "Room with that ID doesn't exist");
 
-      if (!room.playerList.includes(req.user.email))
-        throw new ApiError(403, "You are not in this session's room");
+      const playerList = room.playerList;
+      const isRequesterInPlayerList = playerList.some((obj) =>
+        Object.values(obj).includes(req.user.email)
+      );
+      if (!isRequesterInPlayerList)
+        throw new ApiError(403, "You are not in this room");
 
       // Get target game session
       const gameSession = await GameSessions.findOne({

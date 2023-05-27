@@ -52,12 +52,11 @@ router
         if (!isValidObjectId(roomId))
           throw new ApiError(400, "Not a valid room ID");
 
-        const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
-        if (!room) throw new ApiError(404, "No room with that ID");
-
-        const roomAdminList = room.adminList;
-        if (!roomAdminList.includes(userEmail))
-          throw new ApiError(403, "You are not an admin of this room");
+        const room = await Rooms.findOne({
+          _id: new ObjectId(roomId),
+          playerList: { $elemMatch: { email: userEmail, isAdmin: true } },
+        });
+        if (!room) throw new ApiError(404, "You are not an admin of this room");
 
         // create new game session
         const document: GameSession = {
@@ -101,10 +100,11 @@ router
 
       const room = await Rooms.findOne({
         _id: new ObjectId(gameSession.roomId),
+        playerList: { $elemMatch: { email: req.user.email } },
       });
 
-      if (!room!.playerList.includes(req.user.email))
-        throw new ApiError(403, "You are not a part of this room");
+      if (!room)
+        throw new ApiError(403, "You are not part of this session's room");
 
       res.status(200).json(gameSession);
       next();
@@ -112,6 +112,8 @@ router
       next(error);
     }
   })
+  // Update session details
+  // Must be admin of the session's room
   .patch(async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Validate courts key
@@ -140,11 +142,13 @@ router
       // check if requester is an admin of the room by roomId
       const userEmail = req.user.email;
       const roomId = gameSession.roomId;
-      const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
+      const room = await Rooms.findOne({
+        _id: new ObjectId(roomId),
+        playerList: { $elemMatch: { email: userEmail, isAdmin: true } },
+      });
 
-      const roomAdminList = room!.adminList;
-      if (!roomAdminList.includes(userEmail))
-        throw new ApiError(403, "You are not an admin of this room");
+      if (!room)
+        throw new ApiError(403, "You are not an admin of this session's room");
 
       // Update and return new document
       const result = await GameSessions.findOneAndUpdate(

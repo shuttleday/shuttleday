@@ -11,6 +11,7 @@ import { ApiError } from "../utils/error-util.js";
 const router = Router();
 
 // Upload payment receipt and update payment status
+// Must be a part of the session's room
 router
   .route("/:sessionId/receipts")
   .post(
@@ -31,10 +32,10 @@ router
 
         const room = await Rooms.findOne({
           _id: new ObjectId(gameSession.roomId),
+          playerList: { $elemMatch: { email: req.user.email } },
         });
 
-        if (!room!.playerList.includes(req.user.email))
-          throw new ApiError(403, "You are not a part of this room");
+        if (!room) throw new ApiError(404, "You are not a part of this room");
 
         const gameSessionResult = await GameSessions.findOneAndUpdate(
           {
@@ -116,9 +117,9 @@ router
       // Check if requester is admin of the room
       const room = await Rooms.findOne({
         _id: new ObjectId(gameSession.roomId),
+        playerList: { $elemMatch: { email: req.user.email, isAdmin: true } },
       });
-      if (!room!.playerList.includes(req.user.email))
-        throw new ApiError(403, "You are not a part of this room");
+      if (!room) throw new ApiError(403, "You are not an admin of this room");
 
       // Get only players that paid for that session
       const players = gameSession.players.filter((player) => {

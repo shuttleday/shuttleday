@@ -6,6 +6,12 @@ interface QR {
   fileExt: FileExtension | null;
 }
 
+export interface RoomPlayer {
+  username: string;
+  email: string;
+  isAdmin: boolean;
+}
+
 export interface User extends WithId<Document> {
   email: string;
   firstName: string;
@@ -42,7 +48,6 @@ export interface Room extends WithId<Document> {
   creatorUsername: string;
   createdAt: Date;
   updatedAt: Date;
-  adminList: string[]; // list of emails
-  playerList: string[];
+  playerList: RoomPlayer[];
   password: string;
 }
