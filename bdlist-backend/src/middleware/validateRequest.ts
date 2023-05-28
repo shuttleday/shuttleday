@@ -122,7 +122,7 @@ export async function validatePATCH(
 
 function throwMissingKeysError(missing: string[]) {
   const missingKeys = formatError(missing);
-  throw new ApiError(400, `Missing keys:${missingKeys}`);
+  throw new ApiError(400, `Missing key values:${missingKeys}`);
 }
 
 function getTargetKeys(requiredKeys: { [s: string]: string[] }, req: Request) {
