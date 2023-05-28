@@ -207,6 +207,23 @@ async function getQR(email) {
   }
 }
 
+async function getRooms() {
+  try {
+    const response = await axios.get(serverAdd + '/rooms?limit=10&offset=0');
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function createRoom(data) {
+  try {
+    const response = await axios.post(serverAdd + '/rooms', data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
 //Intercepts all request to the server and attaches the token to the header
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem('jwtToken_Login');
@@ -261,4 +278,6 @@ export {
   uploadQR,
   editQR,
   getQR,
+  getRooms,
+  createRoom,
 };

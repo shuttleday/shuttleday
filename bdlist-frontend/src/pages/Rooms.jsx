@@ -2,20 +2,21 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Button, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import jwt_decode from 'jwt-decode';
-import { admin, SUCCESS } from '../constants';
+import { SUCCESS, Alert, WARNING, ERROR } from '../constants';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { grey } from '@mui/material/colors';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { createRoom, getRooms } from '../data/repository';
+import Snackbar from '@mui/material/Snackbar';
+import Loading from '../components/Loading';
 
 const Rooms = () => {
   const color = grey[900];
-  const [isAdmin, setIsAdmin] = useState(false);
   const password = useRef();
-  const name = useRef();
-  const description = useRef();
+  const nameRef = useRef();
+  const descriptionRef = useRef();
 
   const modalStyle = {
     position: 'absolute',
@@ -30,15 +31,29 @@ const Rooms = () => {
     p: 4,
   };
 
+  const [alert, setAlert] = useState(false);
+  const [alertMsg, setAlertMsg] = useState('');
+  const [condition, setCondition] = useState(SUCCESS);
+  const [roomsData, setRoomsData] = useState(null);
+  const [selected, setSelected] = useState(0);
+
   useEffect(() => {
-    const user = jwt_decode(localStorage.getItem('jwtToken_Login'));
-    if (user.userType === admin) {
-      setIsAdmin(true);
+    async function getRoomsData() {
+      getRooms()
+        .then((res) => {
+          setRoomsData(res.rooms);
+        })
+        .catch((error) => {
+          setRoomsData(undefined);
+        });
     }
-  }, [isAdmin]);
+
+    getRoomsData();
+  }, []);
 
   const [isClicked, setIsClicked] = useState(false);
-  const handleClick = () => {
+  const handleClick = (index) => {
+    setSelected(index);
     setIsClicked(true);
   };
   const handleBack = () => {
@@ -48,8 +63,50 @@ const Rooms = () => {
     handlePassOpenModal();
   };
 
+  const handleCloseAlert = () => {
+    setAlert(false);
+  };
   const handleOpenCreate = () => {
     handleOpenCreateModal();
+  };
+
+  const handleCreate = () => {
+    if (!nameRef.current.value) {
+      setCondition(WARNING);
+      setAlertMsg('Room must have a name.');
+      setAlert(true);
+      return;
+    }
+    if (descriptionRef.current.value.split(' ').length > 65) {
+      setCondition(WARNING);
+      setAlertMsg('Description must be less than 55 words.');
+      setAlert(true);
+      return;
+    }
+    const newRoom = {
+      name: nameRef.current.value,
+      description: descriptionRef.current.value,
+    };
+
+    createRoom(newRoom)
+      .then((res) => {
+        setCondition(SUCCESS);
+        setAlertMsg('Room created!');
+        setAlert(true);
+        getRooms()
+          .then((res) => {
+            setRoomsData(res.rooms);
+          })
+          .catch((error) => {
+            setRoomsData(undefined);
+          });
+        setOpenCreateModal(false);
+      })
+      .catch((error) => {
+        setCondition(ERROR);
+        setAlertMsg(error.response.data.error);
+        setAlert(true);
+      });
   };
   const handlePassword = () => {
     console.log(password);
@@ -125,7 +182,7 @@ const Rooms = () => {
               id='fullWidth'
               color='secondary'
               className='mb-2'
-              inputRef={name}
+              inputRef={nameRef}
             />
           </Typography>
 
@@ -135,18 +192,18 @@ const Rooms = () => {
             component='h2'
             sx={{ mt: 2 }}
           >
-            Description
+            Description (optional)
           </Typography>
           <Typography id='modal-modal-description'>
             <TextField
               fullWidth
-              label='55 word Limit'
+              label='65 word Limit'
               id='fullWidth'
               color='secondary'
               className='mb-2'
               multiline
-              rows={2}
-              inputRef={description}
+              rows={3}
+              inputRef={descriptionRef}
             />
           </Typography>
 
@@ -155,7 +212,7 @@ const Rooms = () => {
               variant='contained'
               color={SUCCESS}
               maxwidth='100%'
-              onClick={handlePassword}
+              onClick={handleCreate}
             >
               Create
             </Button>
@@ -166,76 +223,89 @@ const Rooms = () => {
         <div className='underline underline-offset-8 rounded-md p-7'>
           <h1 className='text-4xl font-mono'>Rooms</h1>
         </div>
-        {}
+
         <div className='perspective'>
           <div
-            className={`min-h-[500px] w-[355px] lg:h-[520px] relative border border-green-400 rounded-[20px] shadow-card duration-1000 preserve-3d ${
+            className={`min-h-[600px] w-[355px] mb-6 relative border border-green-400 rounded-[20px] shadow-card duration-1000 preserve-3d ${
               isClicked ? 'my-rotate-y-180' : ''
             }`}
           >
             <div className='py-5 px-12 flex items-center flex-col gap-6 absolute w-full h-full backface-hidden'>
-              <Button
-                variant='contained'
-                className='w-full py-4 px-6 bg-green-400 text-lg rounded-2xl'
-                onClick={handleClick}
-              >
-                Room 1
-              </Button>
-
-              <Button
-                variant='contained'
-                className='w-full py-4 px-6 bg-green-400 text-lg rounded-2xl'
-                onClick={handleClick}
-              >
-                Room 2
-              </Button>
-              <Button
-                variant='contained'
-                className='w-full py-4 px-6 bg-green-400 text-lg rounded-2xl'
-              >
-                Confirm
-              </Button>
-
-              {isAdmin && (
-                <IconButton
-                  variant='contained'
-                  className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
-                  onClick={handleOpenCreate}
-                >
-                  <AddIcon />
-                </IconButton>
+              {roomsData === null ? (
+                <Loading />
+              ) : (
+                roomsData &&
+                roomsData.map((room, index) => (
+                  <Button
+                    variant='contained'
+                    className='w-full py-4 px-6 bg-green-400 text-lg rounded-2xl'
+                    onClick={() => {
+                      handleClick(index);
+                    }}
+                    key={room.name}
+                  >
+                    {room.name}
+                  </Button>
+                ))
               )}
+
+              <IconButton
+                variant='contained'
+                className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
+                onClick={handleOpenCreate}
+              >
+                <AddIcon />
+              </IconButton>
             </div>
 
             <div className='absolute w-full h-full rounded-[20px] backface-hidden my-rotate-y-180'>
-              <div className='p-6 flex items-left text-lg flex-col gap-6'>
-                <div className='font-bold text-[24px] mt-6'>TITLE</div>
-                <p>
-                  There are a number of reasons you may need a block of text and
-                  when you do, a random paragraph can be the perfect solution.
-                  If you happen to be a web designer and you need some random
-                  text to show in your layout, a random paragraph can be an
-                  excellent way
-                </p>
-                <Button
-                  variant='contained'
-                  className='w-full py-3 px-6 bg-green-400 text-lg rounded-2xl'
-                  onClick={handleJoin}
-                >
-                  Join
-                </Button>
-                <IconButton
-                  variant='contained'
-                  className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
-                  onClick={handleBack}
-                >
-                  <ArrowBackIcon />
-                </IconButton>
-              </div>
+              {roomsData && (
+                <div className='p-6 flex items-left text-lg flex-col gap-6'>
+                  <div className='font-bold text-[24px] mt-6'>
+                    {roomsData[selected].name}
+                  </div>
+                  <div className='h-[310px]'>
+                    {roomsData[selected].description ? (
+                      <p>{roomsData[selected].description}</p>
+                    ) : (
+                      <p>No Description</p>
+                    )}
+                  </div>
+
+                  <Button
+                    variant='contained'
+                    className='w-full py-3 px-6 bg-green-400 text-lg rounded-2xl'
+                    onClick={handleJoin}
+                  >
+                    Join
+                  </Button>
+                  <IconButton
+                    variant='contained'
+                    className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
+                    onClick={handleBack}
+                  >
+                    <ArrowBackIcon />
+                  </IconButton>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
+      <Snackbar
+        open={alert}
+        autoHideDuration={2000}
+        onClose={handleCloseAlert}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={handleCloseAlert}
+          severity={condition}
+          sx={{ width: '100%' }}
+        >
+          {alertMsg}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
