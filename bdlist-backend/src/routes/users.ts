@@ -76,6 +76,13 @@ router
         throw new ApiError(400, "Not a valid room ID");
       const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
       if (!room) throw new ApiError(404, "No room with that ID");
+      // Check if requester is in room
+      const playerList = room.playerList;
+      const isRequesterInPlayerList = playerList.some((obj) =>
+        Object.values(obj).includes(req.user.email)
+      );
+      if (isRequesterInPlayerList)
+        throw new ApiError(403, "You are already in the room");
 
       if (req.body.password !== room.password)
         throw new ApiError(401, "Incorrect password");
@@ -91,7 +98,8 @@ router
           $push: {
             playerList: player,
           },
-        }
+        },
+        { returnDocument: "after" }
       );
 
       if (result.value === null)
@@ -111,6 +119,13 @@ router
         throw new ApiError(400, "Not a valid room ID");
       const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
       if (!room) throw new ApiError(404, "No room with that ID");
+      // Check if the requester is an admin
+      const isAdminRequester = await Rooms.findOne({
+        _id: new ObjectId(roomId),
+        playerList: { $elemMatch: { email: req.user.email, isAdmin: true } },
+      });
+      if (isAdminRequester)
+        throw new ApiError(403, "Admins cannot remove themselves from rooms");
 
       const result = await Rooms.findOneAndUpdate(
         { _id: new ObjectId(roomId), "playerList.email": req.user.email },
