@@ -142,10 +142,20 @@ function formatError(missing: string[]) {
   return missingKeys;
 }
 
+// Gets the missing keys from the request
+// Also includes key values that are empty strings
 function getMissingKeys(method: string, target: string[], req: Request) {
-  let supplied: string[];
+  let supplied: string[] = [];
   if (method === "GET") supplied = Object.keys(req.query);
-  else supplied = Object.keys(req.body);
+  // Get keys that were passed to the server which aren't empty strings
+  else {
+    const rawSupplied = Object.entries(req.body);
+    for (const kv of rawSupplied) {
+      if (kv[1] !== "") supplied.push(kv[0]);
+    }
+  }
+
+  // Determine which keys are missing
   const missing: string[] = [];
   target.forEach((reqKey) => {
     if (!supplied.includes(reqKey)) missing.push(reqKey);
