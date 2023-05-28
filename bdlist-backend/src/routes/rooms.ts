@@ -101,7 +101,6 @@ router
   .patch(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const roomId = req.params.roomId;
-      const userEmail = req.user.email;
       if (!isValidObjectId(roomId))
         throw new ApiError(400, "Not a valid room ID");
       // Update and return new document
@@ -123,6 +122,27 @@ router
         throw new ApiError(404, "No room with that id or not an admin");
 
       res.status(200).json({ result: result.value });
+    } catch (error) {
+      next(error);
+    }
+  })
+  // Delete room by ID
+  // Only creator of the room may do this
+  .delete(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const roomId = req.params.roomId;
+      const userEmail = req.user.email;
+      if (!isValidObjectId(roomId))
+        throw new ApiError(400, "Not a valid room ID");
+      // Update and return new document
+      const result = await Rooms.findOneAndDelete({
+        _id: new ObjectId(roomId),
+        creatorEmail: userEmail,
+      });
+      if (result.value === null)
+        throw new ApiError(404, "No room with that id or not the creator");
+
+      res.status(200).json({ ok: true });
     } catch (error) {
       next(error);
     }
