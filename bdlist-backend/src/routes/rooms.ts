@@ -157,22 +157,20 @@ router
 router
   // Promote an existing member in the room to an admin
   // Only admins may promote members
-  .route("/:roomId/players/:playerId/promote")
+  .route("/:roomId/users/:userEmail/promote")
   .patch(async (req: Request, res: Response, next: NextFunction) => {
     try {
       // validation
       const userEmail = req.user.email;
       const roomId = req.params.roomId;
-      const playerId = req.params.playerId;
+      const emailToPromote = req.params.userEmail;
       if (!isValidObjectId(roomId))
         throw new ApiError(400, "Not a valid room ID");
-      if (!isValidObjectId(playerId))
-        throw new ApiError(400, "Not a valid player ID");
 
-      const player = await Users.findOne({ _id: new ObjectId(playerId) });
-      if (!player) throw new ApiError(404, "No user with that ID");
+      const user = await Users.findOne({ email: emailToPromote });
+      if (!user) throw new ApiError(404, "No user with that email");
 
-      if (player.email === userEmail)
+      if (user.email === userEmail)
         throw new ApiError(400, "Cannot promote yourself");
 
       // Check if the requester is an admin
@@ -190,7 +188,7 @@ router
       const updatedRoom = await Rooms.findOneAndUpdate(
         {
           _id: new ObjectId(roomId),
-          playerList: { $elemMatch: { email: player.email } },
+          playerList: { $elemMatch: { email: user.email } },
         },
         {
           $set: {
@@ -202,10 +200,11 @@ router
       if (updatedRoom.value === null)
         throw new ApiError(
           404,
-          "No room with that ID, not an admin or player is not in room"
+          "No room with that ID, not an admin or user is not in room"
         );
 
-      res.status(200).json(updatedRoom);
+      const updatedPlayerList = updatedRoom.value.playerList;
+      res.status(200).json(updatedPlayerList);
       next();
     } catch (error) {
       next(error);
