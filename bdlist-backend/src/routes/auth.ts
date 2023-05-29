@@ -8,7 +8,6 @@ import {
   userExists,
 } from "../utils/functions.js";
 import { ApiError } from "../utils/error-util.js";
-import { validatePOST } from "../middleware/validateRequest.js";
 import { ObjectId } from "mongodb";
 import { User } from "../db/interfaces.js";
 
@@ -16,7 +15,6 @@ const router = Router();
 
 router.post(
   "/register",
-  validatePOST,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Get details of user trying to sign up
@@ -56,7 +54,6 @@ router.post(
 // Get Shuttleday JWT
 router.post(
   "/signin",
-  validatePOST,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Validate and get email from G JWT
