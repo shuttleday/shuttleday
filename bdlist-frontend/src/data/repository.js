@@ -216,6 +216,15 @@ async function getRooms() {
   }
 }
 
+async function getRoomByID(id) {
+  try {
+    const response = await axios.get(serverAdd + `/rooms/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function createRoom(data) {
   try {
     const response = await axios.post(serverAdd + '/rooms', data);
@@ -227,7 +236,10 @@ async function createRoom(data) {
 
 async function joinRoom(password, roomId) {
   try {
-    const response = await axios.post(serverAdd + `/rooms/${roomId}/users`);
+    const response = await axios.post(
+      serverAdd + `/rooms/${roomId}/users`,
+      password
+    );
     return response.data;
   } catch (error) {
     throw error;
@@ -290,4 +302,5 @@ export {
   getRooms,
   createRoom,
   joinRoom,
+  getRoomByID,
 };

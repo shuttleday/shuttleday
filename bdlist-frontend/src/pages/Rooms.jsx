@@ -3,12 +3,18 @@ import { Button, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { SUCCESS, Alert, WARNING, ERROR } from '../constants';
+import jwtDecode from 'jwt-decode';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { grey } from '@mui/material/colors';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { createRoom, getRooms, joinRoom } from '../data/repository';
+import {
+  createRoom,
+  getRooms,
+  joinRoom,
+  getRoomByID,
+} from '../data/repository';
 import Snackbar from '@mui/material/Snackbar';
 import Loading from '../components/Loading';
 
@@ -31,6 +37,11 @@ const Rooms = () => {
     p: 4,
   };
 
+  const [user, setUser] = useState(
+    localStorage.getItem('jwtToken_Login')
+      ? jwtDecode(localStorage.getItem('jwtToken_Login'))
+      : null
+  );
   //Alert logic for page information
   const [alert, setAlert] = useState(false);
   const [alertMsg, setAlertMsg] = useState('');
@@ -39,6 +50,8 @@ const Rooms = () => {
 
   //A list of rooms data
   const [roomsData, setRoomsData] = useState(null);
+
+  const [joined, setJoined] = useState(null);
 
   //Used as an index to identify which room is currently selected
   const [selected, setSelected] = useState(0);
@@ -60,6 +73,15 @@ const Rooms = () => {
 
   const [isClicked, setIsClicked] = useState(false);
   const handleClick = (index) => {
+    getRoomByID(roomsData[index].id)
+      .then((res) => {
+        setJoined(
+          res.playerList.find((currentUser) => currentUser.email === user.email)
+        );
+      })
+      .catch((error) => {
+        // activateAlert(ERROR, error.response.data.error);
+      });
     setSelected(index);
     setIsClicked(true);
   };
@@ -98,6 +120,7 @@ const Rooms = () => {
       .then((res) => {
         console.log(res);
         activateAlert(SUCCESS, 'Joined!');
+        handleClosePassModal();
       })
       .catch((error) => {
         activateAlert(ERROR, error.response.data.error);
@@ -135,6 +158,10 @@ const Rooms = () => {
         activateAlert(ERROR, error.response.data.error);
       });
   };
+
+  const [showPass, setShowPass] = useState(false);
+  const handleShowPassOpenModal = () => setShowPass(true);
+  const handleShowPassCloseModal = () => setShowPass(false);
 
   const [openPassModal, setOpenPassModal] = useState(false);
   const handlePassOpenModal = () => setOpenPassModal(true);
@@ -180,12 +207,7 @@ const Rooms = () => {
         </Box>
       </Modal>
 
-      <Modal
-        open={openCreateModal}
-        onClose={handleClosePassModal}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'
-      >
+      <Modal open={openCreateModal} onClose={handleClosePassModal}>
         <Box sx={modalStyle}>
           <Typography
             id='modal-modal-title'
@@ -243,6 +265,21 @@ const Rooms = () => {
           </Box>
         </Box>
       </Modal>
+      <Modal
+        open={showPass}
+        onClose={handleClosePassModal}
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'
+      >
+        <Box sx={modalStyle}>
+          <Typography id='modal-modal-title' variant='h6' component='h2'>
+            Text in a modal
+          </Typography>
+          <Typography id='modal-modal-description' sx={{ mt: 2 }}>
+            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+          </Typography>
+        </Box>
+      </Modal>
       <div className='flex justify-center items-center flex-col'>
         <div className='underline underline-offset-8 rounded-md p-7'>
           <h1 className='text-4xl font-mono'>Rooms</h1>
@@ -250,7 +287,7 @@ const Rooms = () => {
 
         <div className='perspective'>
           <div
-            className={`min-h-[600px] w-[355px] mb-6 relative border border-green-400 rounded-[20px] shadow-card duration-1000 preserve-3d ${
+            className={`min-h-[650px] w-[355px] mb-6 relative border border-green-400 rounded-[20px] shadow-card duration-1000 preserve-3d ${
               isClicked ? 'my-rotate-y-180' : ''
             }`}
           >
@@ -260,16 +297,18 @@ const Rooms = () => {
               ) : (
                 roomsData &&
                 roomsData.map((room, index) => (
-                  <Button
-                    variant='contained'
-                    className='w-full py-4 px-6 bg-green-400 text-lg rounded-2xl'
-                    onClick={() => {
-                      handleClick(index, room.id);
-                    }}
-                    key={room.name}
-                  >
-                    {room.name}
-                  </Button>
+                  <>
+                    <Button
+                      variant='contained'
+                      className='w-full py-4 px-6 bg-green-400 text-lg rounded-2xl'
+                      onClick={() => {
+                        handleClick(index, room.id);
+                      }}
+                      key={room.name}
+                    >
+                      {room.name}
+                    </Button>
+                  </>
                 ))
               )}
 
@@ -283,8 +322,8 @@ const Rooms = () => {
             </div>
             <div className='absolute w-full h-full rounded-[20px] backface-hidden my-rotate-y-180'>
               {roomsData && (
-                <div className='p-6 flex items-left text-lg flex-col gap-6'>
-                  <div className='font-bold text-[24px] mt-6'>
+                <div className='p-6 flex items-left text-lg flex-col gap-4'>
+                  <div className='font-bold text-[30px] mt-6'>
                     {roomsData[selected].name}
                   </div>
                   <div className='h-[310px]'>
@@ -295,20 +334,84 @@ const Rooms = () => {
                     )}
                   </div>
 
-                  <Button
-                    variant='contained'
-                    className='w-full py-3 px-6 bg-green-400 text-lg rounded-2xl'
-                    onClick={handleJoin}
-                  >
-                    Join
-                  </Button>
-                  <IconButton
-                    variant='contained'
-                    className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
-                    onClick={handleBack}
-                  >
-                    <ArrowBackIcon />
-                  </IconButton>
+                  {roomsData[selected].creatorUsername === user.username ? (
+                    <div className='flex flex-col gap-2'>
+                      <div className='grid grid-cols-2 gap-2'>
+                        <Button
+                          variant='contained'
+                          className='w-full py-3 px-6 bg-purple-500 text-lg rounded-2xl'
+                          // onClick={handleEdit}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant='contained'
+                          className='w-full py-3 px-6 bg-red-500 text-lg rounded-2xl'
+                          // onClick={handleDelete}
+                        >
+                          Delete
+                        </Button>
+                        <Button
+                          variant='contained'
+                          className='w-full py-3 px-6 bg-blue-600 text-lg rounded-2xl'
+                          // onClick={handleShow}
+                        >
+                          Password
+                        </Button>
+                        <IconButton
+                          variant='contained'
+                          className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
+                          onClick={handleBack}
+                        >
+                          <ArrowBackIcon />
+                        </IconButton>
+                      </div>
+                      <Button
+                        variant='contained'
+                        className='w-full py-3 px-6 bg-green-400 text-lg rounded-2xl'
+                        // onClick={handleEnter}
+                      >
+                        Enter
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      {joined ? (
+                        <>
+                          <Button
+                            variant='contained'
+                            className='w-full py-3 px-6 bg-green-400 text-lg rounded-2xl'
+                            // onClick={handleEnter}
+                          >
+                            Enter
+                          </Button>
+                          <Button
+                            variant='contained'
+                            className='w-full py-3 px-6 bg-red-500 text-lg rounded-2xl'
+                            // onClick={handleEnter}
+                          >
+                            Leave
+                          </Button>
+                        </>
+                      ) : (
+                        <Button
+                          variant='contained'
+                          className='w-full py-3 px-6 bg-green-400 text-lg rounded-2xl'
+                          onClick={handleJoin}
+                        >
+                          Join
+                        </Button>
+                      )}
+
+                      <IconButton
+                        variant='contained'
+                        className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
+                        onClick={handleBack}
+                      >
+                        <ArrowBackIcon />
+                      </IconButton>
+                    </>
+                  )}
                 </div>
               )}
             </div>
