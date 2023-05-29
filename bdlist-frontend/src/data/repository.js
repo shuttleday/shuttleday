@@ -224,6 +224,15 @@ async function createRoom(data) {
     throw error;
   }
 }
+
+async function joinRoom(password, roomId) {
+  try {
+    const response = await axios.post(serverAdd + `/rooms/${roomId}/users`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
 //Intercepts all request to the server and attaches the token to the header
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem('jwtToken_Login');
@@ -280,4 +289,5 @@ export {
   getQR,
   getRooms,
   createRoom,
+  joinRoom,
 };
