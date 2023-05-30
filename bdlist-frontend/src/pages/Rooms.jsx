@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useReducer } from 'react';
 import { Button, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { SUCCESS, Alert, WARNING, ERROR } from '../constants';
+import { SUCCESS, Alert, WARNING, ERROR, ACTIONS } from '../constants';
 import jwtDecode from 'jwt-decode';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -18,11 +18,34 @@ import {
 import Snackbar from '@mui/material/Snackbar';
 import Loading from '../components/Loading';
 
+const roomReducer = (state, action) => {
+  switch (action.type) {
+    case ACTIONS.SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        data: action.payload,
+      };
+    case ACTIONS.FAILURE:
+      return {
+        ...state,
+        loading: false,
+        data: null,
+      };
+    default:
+      return state;
+  }
+};
+
 const Rooms = () => {
   const color = grey[900];
   const passwordRef = useRef();
   const nameRef = useRef();
   const descriptionRef = useRef();
+  const initialRoomState = {
+    loading: true,
+    data: null,
+  };
 
   const modalStyle = {
     position: 'absolute',
@@ -37,6 +60,25 @@ const Rooms = () => {
     p: 4,
   };
 
+  const [roomState, roomDispatch] = useReducer(roomReducer, initialRoomState);
+
+  const getAllRooms = async () => {
+    getRooms()
+      .then((res) => {
+        roomDispatch({ type: ACTIONS.SUCCESS, payload: res.rooms });
+      })
+      .catch((error) => {
+        roomDispatch({ type: ACTIONS.FAILURE, payload: null });
+      });
+  };
+  useEffect(() => {
+    async function getData() {
+      getAllRooms();
+    }
+
+    getData();
+  }, []);
+
   const [user, setUser] = useState(
     localStorage.getItem('jwtToken_Login')
       ? jwtDecode(localStorage.getItem('jwtToken_Login'))
@@ -48,39 +90,22 @@ const Rooms = () => {
   const [condition, setCondition] = useState(SUCCESS);
   //----------------------------------------------------------
 
-  //A list of rooms data
-  const [roomsData, setRoomsData] = useState(null);
-
   const [joined, setJoined] = useState(null);
 
   //Used as an index to identify which room is currently selected
   const [selected, setSelected] = useState(0);
 
-  useEffect(() => {
-    async function getRoomsData() {
-      getRooms()
-        .then((res) => {
-          console.log(res.rooms);
-          setRoomsData(res.rooms);
-        })
-        .catch((error) => {
-          setRoomsData(undefined);
-        });
-    }
-
-    getRoomsData();
-  }, []);
-
   const [isClicked, setIsClicked] = useState(false);
+
   const handleClick = (index) => {
-    getRoomByID(roomsData[index].id)
+    getRoomByID(roomState.data[index].id)
       .then((res) => {
         setJoined(
           res.playerList.find((currentUser) => currentUser.email === user.email)
         );
       })
       .catch((error) => {
-        // activateAlert(ERROR, error.response.data.error);
+        setJoined(null);
       });
     setSelected(index);
     setIsClicked(true);
@@ -116,11 +141,11 @@ const Rooms = () => {
       password: passwordRef.current.value,
     };
 
-    joinRoom(password, roomsData[selected].id)
+    joinRoom(password, roomState.data[selected].id)
       .then((res) => {
         console.log(res);
         activateAlert(SUCCESS, 'Joined!');
-        handleClosePassModal();
+        handlePassCloseModal();
       })
       .catch((error) => {
         activateAlert(ERROR, error.response.data.error);
@@ -145,13 +170,7 @@ const Rooms = () => {
     createRoom(newRoom)
       .then((res) => {
         activateAlert(SUCCESS, 'Room created!');
-        getRooms()
-          .then((res) => {
-            setRoomsData(res.rooms);
-          })
-          .catch((error) => {
-            setRoomsData(undefined);
-          });
+        getAllRooms();
         setOpenCreateModal(false);
       })
       .catch((error) => {
@@ -169,7 +188,7 @@ const Rooms = () => {
 
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const handleOpenCreateModal = () => setOpenCreateModal(true);
-  const handleClosePassModal = () => setOpenCreateModal(false);
+  const handleCloseCreateModal = () => setOpenCreateModal(false);
 
   return (
     <div>
@@ -207,7 +226,7 @@ const Rooms = () => {
         </Box>
       </Modal>
 
-      <Modal open={openCreateModal} onClose={handleClosePassModal}>
+      <Modal open={openCreateModal} onClose={handleCloseCreateModal}>
         <Box sx={modalStyle}>
           <Typography
             id='modal-modal-title'
@@ -267,7 +286,7 @@ const Rooms = () => {
       </Modal>
       <Modal
         open={showPass}
-        onClose={handleClosePassModal}
+        onClose={handleShowPassCloseModal}
         aria-labelledby='modal-modal-title'
         aria-describedby='modal-modal-description'
       >
@@ -292,11 +311,11 @@ const Rooms = () => {
             }`}
           >
             <div className='py-5 px-12 flex items-center flex-col gap-6 absolute w-full h-full backface-hidden'>
-              {roomsData === null ? (
+              {roomState.loading ? (
                 <Loading />
               ) : (
-                roomsData &&
-                roomsData.map((room, index) => (
+                roomState.data &&
+                roomState.data.map((room, index) => (
                   <>
                     <Button
                       variant='contained'
@@ -321,20 +340,21 @@ const Rooms = () => {
               </IconButton>
             </div>
             <div className='absolute w-full h-full rounded-[20px] backface-hidden my-rotate-y-180'>
-              {roomsData && (
+              {roomState.data && (
                 <div className='p-6 flex items-left text-lg flex-col gap-4'>
                   <div className='font-bold text-[30px] mt-6'>
-                    {roomsData[selected].name}
+                    {roomState.data[selected].name}
                   </div>
-                  <div className='h-[310px]'>
-                    {roomsData[selected].description ? (
-                      <p>{roomsData[selected].description}</p>
+                  <div className='min-h-[310px]'>
+                    {roomState.data[selected].description ? (
+                      <p>{roomState.data[selected].description}</p>
                     ) : (
                       <p>No Description</p>
                     )}
                   </div>
 
-                  {roomsData[selected].creatorUsername === user.username ? (
+                  {roomState.data[selected].creatorUsername ===
+                  user.username ? (
                     <div className='flex flex-col gap-2'>
                       <div className='grid grid-cols-2 gap-2'>
                         <Button
