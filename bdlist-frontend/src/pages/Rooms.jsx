@@ -2,18 +2,28 @@ import React, { useEffect, useRef, useState, useReducer } from 'react';
 import { Button, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { SUCCESS, Alert, WARNING, ERROR, ACTIONS } from '../constants';
+import {
+  SUCCESS,
+  Alert,
+  WARNING,
+  ERROR,
+  ACTIONS,
+  operations,
+} from '../constants';
 import jwtDecode from 'jwt-decode';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { grey } from '@mui/material/colors';
 import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import {
   createRoom,
   getRooms,
   joinRoom,
   getRoomByID,
+  leaveRoom,
+  deleteRoom,
 } from '../data/repository';
 import Snackbar from '@mui/material/Snackbar';
 import Loading from '../components/Loading';
@@ -69,6 +79,18 @@ const Rooms = () => {
       })
       .catch((error) => {
         roomDispatch({ type: ACTIONS.FAILURE, payload: null });
+      });
+  };
+
+  const checkJoined = () => {
+    getRoomByID(roomState.data[selected].id)
+      .then((res) => {
+        setJoined(
+          res.playerList.find((currentUser) => currentUser.email === user.email)
+        );
+      })
+      .catch((error) => {
+        setJoined(null);
       });
   };
   useEffect(() => {
@@ -143,13 +165,45 @@ const Rooms = () => {
 
     joinRoom(password, roomState.data[selected].id)
       .then((res) => {
-        console.log(res);
         activateAlert(SUCCESS, 'Joined!');
+        checkJoined();
         handlePassCloseModal();
       })
       .catch((error) => {
         activateAlert(ERROR, error.response.data.error);
       });
+  };
+
+  //Leave selected room
+  const handleLeave = () => {
+    handleShowWarningClose();
+    leaveRoom(roomState.data[selected].id)
+      .then((res) => {
+        checkJoined();
+        activateAlert(SUCCESS, 'You have left this room.');
+      })
+      .catch((error) => {
+        activateAlert(ERROR, error.response.data.error);
+      });
+  };
+
+  const handleDelete = () => {
+    deleteRoom(roomState.data[selected].id)
+      .then((res) => {
+        handleShowWarningClose();
+        getAllRooms();
+        handleBack();
+        setSelected(0);
+        activateAlert(SUCCESS, 'Room has been deleted');
+      })
+      .catch((error) => {
+        activateAlert(ERROR, error.response.data.error);
+      });
+  };
+
+  const handleWarning = (operation) => {
+    setWarningMsg(operation);
+    handleShowWarningOpen();
   };
 
   //Creates a new room
@@ -181,6 +235,11 @@ const Rooms = () => {
   const [showPass, setShowPass] = useState(false);
   const handleShowPassOpenModal = () => setShowPass(true);
   const handleShowPassCloseModal = () => setShowPass(false);
+
+  const [warningMsg, setWarningMsg] = useState('');
+  const [showWarning, setShowWarning] = useState(false);
+  const handleShowWarningOpen = () => setShowWarning(true);
+  const handleShowWarningClose = () => setShowWarning(false);
 
   const [openPassModal, setOpenPassModal] = useState(false);
   const handlePassOpenModal = () => setOpenPassModal(true);
@@ -285,6 +344,63 @@ const Rooms = () => {
         </Box>
       </Modal>
       <Modal
+        open={showWarning}
+        onClose={handleShowWarningClose}
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'
+      >
+        <Box sx={modalStyle}>
+          <Typography align='center'>
+            <Typography
+              id='modal-modal-title'
+              variant='h5'
+              component='h2'
+              color={ERROR}
+            >
+              WARNING
+            </Typography>
+            <Typography id='modal-modal-description' sx={{ mt: 2 }}>
+              {`Are you sure about ${warningMsg} this room?`}
+            </Typography>
+          </Typography>
+
+          <Stack
+            spacing={2}
+            display='flex'
+            direction='row'
+            sx={{ justifyContent: 'center', mt: 2 }}
+          >
+            {warningMsg === operations.delete ? (
+              <Button
+                variant='contained'
+                color={ERROR}
+                maxwidth='100%'
+                onClick={handleDelete}
+              >
+                Delete
+              </Button>
+            ) : (
+              <Button
+                variant='contained'
+                maxwidth='100%'
+                onClick={handleLeave}
+                color={ERROR}
+              >
+                Leave
+              </Button>
+            )}
+            <Button
+              variant='contained'
+              maxwidth='100%'
+              onClick={handleShowWarningClose}
+              color='info'
+            >
+              Cancel
+            </Button>
+          </Stack>
+        </Box>
+      </Modal>
+      <Modal
         open={showPass}
         onClose={handleShowPassCloseModal}
         aria-labelledby='modal-modal-title'
@@ -314,21 +430,22 @@ const Rooms = () => {
               {roomState.loading ? (
                 <Loading />
               ) : (
-                roomState.data &&
-                roomState.data.map((room, index) => (
+                roomState.data && (
                   <>
-                    <Button
-                      variant='contained'
-                      className='w-full py-4 px-6 bg-green-400 text-lg rounded-2xl'
-                      onClick={() => {
-                        handleClick(index, room.id);
-                      }}
-                      key={room.name}
-                    >
-                      {room.name}
-                    </Button>
+                    {roomState.data.map((room, index) => (
+                      <Button
+                        variant='contained'
+                        className='w-full py-4 px-6 bg-green-400 text-lg rounded-2xl'
+                        onClick={() => {
+                          handleClick(index, room.id);
+                        }}
+                        key={`${room.name}-room`}
+                      >
+                        {room.name}
+                      </Button>
+                    ))}
                   </>
-                ))
+                )
               )}
 
               <IconButton
@@ -367,7 +484,7 @@ const Rooms = () => {
                         <Button
                           variant='contained'
                           className='w-full py-3 px-6 bg-red-500 text-lg rounded-2xl'
-                          // onClick={handleDelete}
+                          onClick={() => handleWarning(operations.delete)}
                         >
                           Delete
                         </Button>
@@ -408,7 +525,7 @@ const Rooms = () => {
                           <Button
                             variant='contained'
                             className='w-full py-3 px-6 bg-red-500 text-lg rounded-2xl'
-                            // onClick={handleEnter}
+                            onClick={() => handleWarning(operations.leave)}
                           >
                             Leave
                           </Button>

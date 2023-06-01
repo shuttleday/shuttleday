@@ -245,6 +245,24 @@ async function joinRoom(password, roomId) {
     throw error;
   }
 }
+
+async function leaveRoom(roomId) {
+  try {
+    const response = await axios.delete(serverAdd + `/rooms/${roomId}/users`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function deleteRoom(roomId) {
+  try {
+    const response = await axios.delete(serverAdd + `/rooms/${roomId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
 //Intercepts all request to the server and attaches the token to the header
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem('jwtToken_Login');
@@ -303,4 +321,6 @@ export {
   createRoom,
   joinRoom,
   getRoomByID,
+  leaveRoom,
+  deleteRoom,
 };

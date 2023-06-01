@@ -70,6 +70,10 @@ const styleImage = {
   p: 4,
 };
 
+const operations = {
+  leave: 'LEAVING',
+  delete: 'DELETING',
+};
 export {
   adminActions,
   userActions,
@@ -82,4 +86,5 @@ export {
   info,
   styleImage,
   ACTIONS,
+  operations,
 };
