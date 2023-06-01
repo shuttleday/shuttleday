@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useReducer } from 'react';
 import { Button, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {
   SUCCESS,
   Alert,
@@ -114,11 +115,13 @@ const Rooms = () => {
 
   const [joined, setJoined] = useState(null);
 
+  const [password, setPassword] = useState('');
+  const [showPass, setShowPass] = useState(false);
+
   //Used as an index to identify which room is currently selected
   const [selected, setSelected] = useState(0);
 
   const [isClicked, setIsClicked] = useState(false);
-
   const handleClick = (index) => {
     getRoomByID(roomState.data[index].id)
       .then((res) => {
@@ -194,13 +197,29 @@ const Rooms = () => {
         getAllRooms();
         handleBack();
         setSelected(0);
-        activateAlert(SUCCESS, 'Room has been deleted');
+        activateAlert(SUCCESS, 'Room has been deleted.');
       })
       .catch((error) => {
         activateAlert(ERROR, error.response.data.error);
       });
   };
 
+  const handleShow = () => {
+    getRoomByID(roomState.data[selected].id)
+      .then((res) => {
+        setPassword(res.password);
+        setShowPass(true);
+      })
+      .catch((error) => {
+        setPassword('N/A');
+        setShowPass(true);
+      });
+  };
+
+  const handleHide = () => {
+    setShowPass(false);
+    setPassword('');
+  };
   const handleWarning = (operation) => {
     setWarningMsg(operation);
     handleShowWarningOpen();
@@ -231,10 +250,6 @@ const Rooms = () => {
         activateAlert(ERROR, error.response.data.error);
       });
   };
-
-  const [showPass, setShowPass] = useState(false);
-  const handleShowPassOpenModal = () => setShowPass(true);
-  const handleShowPassCloseModal = () => setShowPass(false);
 
   const [warningMsg, setWarningMsg] = useState('');
   const [showWarning, setShowWarning] = useState(false);
@@ -400,21 +415,6 @@ const Rooms = () => {
           </Stack>
         </Box>
       </Modal>
-      <Modal
-        open={showPass}
-        onClose={handleShowPassCloseModal}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'
-      >
-        <Box sx={modalStyle}>
-          <Typography id='modal-modal-title' variant='h6' component='h2'>
-            Text in a modal
-          </Typography>
-          <Typography id='modal-modal-description' sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
-        </Box>
-      </Modal>
       <div className='flex justify-center items-center flex-col'>
         <div className='underline underline-offset-8 rounded-md p-7'>
           <h1 className='text-4xl font-mono'>Rooms</h1>
@@ -422,7 +422,9 @@ const Rooms = () => {
 
         <div className='perspective'>
           <div
-            className={`min-h-[650px] w-[355px] mb-6 relative border border-green-400 rounded-[20px] shadow-card duration-1000 preserve-3d ${
+            className={` min-h-[650px] ${
+              showPass && 'h-[670px]'
+            } w-[355px] mb-6 relative border border-green-400 rounded-[20px] shadow-card duration-1000 preserve-3d ${
               isClicked ? 'my-rotate-y-180' : ''
             }`}
           >
@@ -488,13 +490,23 @@ const Rooms = () => {
                         >
                           Delete
                         </Button>
-                        <Button
-                          variant='contained'
-                          className='w-full py-3 px-6 bg-blue-600 text-lg rounded-2xl'
-                          // onClick={handleShow}
-                        >
-                          Password
-                        </Button>
+                        {showPass ? (
+                          <Button
+                            variant='contained'
+                            className='w-full py-3 px-6 bg-cyan-700 text-lg rounded-2xl'
+                            onClick={handleHide}
+                          >
+                            Hide
+                          </Button>
+                        ) : (
+                          <Button
+                            variant='contained'
+                            className='w-full py-3 px-6 bg-blue-600 text-lg rounded-2xl'
+                            onClick={handleShow}
+                          >
+                            Password
+                          </Button>
+                        )}
                         <IconButton
                           variant='contained'
                           className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
@@ -510,6 +522,16 @@ const Rooms = () => {
                       >
                         Enter
                       </Button>
+                      <div
+                        className={`border border-gray-400 w-full rounded-xl flex justify-between transition-opacity duration-700 ease-in ${
+                          showPass ? 'opacity-100' : 'opacity-0'
+                        } `}
+                      >
+                        <p className='p-2 text-center'>{password}</p>
+                        <IconButton className=''>
+                          <ContentCopyIcon />
+                        </IconButton>
+                      </div>
                     </div>
                   ) : (
                     <>
