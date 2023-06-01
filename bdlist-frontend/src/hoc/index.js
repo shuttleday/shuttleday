@@ -1,2 +1,3 @@
 import AdminWrapper from './AdminWrapper';
-export { AdminWrapper };
+import LoginWrapper from './LoginWrapper';
+export { AdminWrapper, LoginWrapper };

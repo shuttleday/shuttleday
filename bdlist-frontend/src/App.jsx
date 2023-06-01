@@ -56,8 +56,8 @@ function App() {
             <Header />
             <>
               <Routes>
-                <Route path='/' element={<HomePage />} />
-                <Route path='/rooms' element={<Rooms />} />
+                <Route path='/Home' element={<HomePage />} />
+                <Route path='/' element={<Rooms />} />
                 <Route path='/Glogin' element={<GLogin />} />
                 <Route path='*' element={<NotFound />} />
                 <Route path='/details' element={<Details />} />

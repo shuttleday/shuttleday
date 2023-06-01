@@ -14,6 +14,8 @@ const WARNING = 'warning';
 
 const admin = 'ADMIN';
 
+const ID = 'ID';
+
 const info = [
   {
     name: 'Pie',
@@ -89,4 +91,5 @@ export {
   styleImage,
   ACTIONS,
   operations,
+  ID,
 };

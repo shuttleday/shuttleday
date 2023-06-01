@@ -10,6 +10,7 @@ import {
   ERROR,
   ACTIONS,
   operations,
+  ID,
 } from '../constants';
 import jwtDecode from 'jwt-decode';
 import Box from '@mui/material/Box';
@@ -29,6 +30,8 @@ import {
 } from '../data/repository';
 import Snackbar from '@mui/material/Snackbar';
 import Loading from '../components/Loading';
+import { useNavigate } from 'react-router-dom';
+import { LoginWrapper } from '../hoc';
 
 const roomReducer = (state, action) => {
   switch (action.type) {
@@ -50,6 +53,7 @@ const roomReducer = (state, action) => {
 };
 
 const Rooms = () => {
+  let navigate = useNavigate();
   const color = grey[900];
   const passwordRef = useRef();
   const [roomName, setRoomName] = useState(null);
@@ -294,6 +298,16 @@ const Rooms = () => {
       .catch((error) => {
         activateAlert(ERROR, error.response.data.error);
       });
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(password);
+    activateAlert(SUCCESS, 'Copied!');
+  };
+
+  const handleEnter = () => {
+    sessionStorage.setItem(ID, roomState.data[selected].id);
+    navigate('/Home');
   };
 
   const [warningMsg, setWarningMsg] = useState('');
@@ -576,7 +590,7 @@ const Rooms = () => {
                       <Button
                         variant='contained'
                         className='w-full py-3 px-6 bg-green-400 text-lg rounded-2xl'
-                        // onClick={handleEnter}
+                        onClick={handleEnter}
                       >
                         Enter
                       </Button>
@@ -586,7 +600,7 @@ const Rooms = () => {
                         } `}
                       >
                         <p className='p-2 text-center'>{password}</p>
-                        <IconButton className=''>
+                        <IconButton onClick={handleCopy}>
                           <ContentCopyIcon />
                         </IconButton>
                       </div>
@@ -598,7 +612,7 @@ const Rooms = () => {
                           <Button
                             variant='contained'
                             className='w-full py-3 px-6 bg-green-400 text-lg rounded-2xl'
-                            // onClick={handleEnter}
+                            onClick={handleEnter}
                           >
                             Enter
                           </Button>
@@ -653,4 +667,4 @@ const Rooms = () => {
   );
 };
 
-export default Rooms;
+export default LoginWrapper(Rooms);
