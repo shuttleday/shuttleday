@@ -73,6 +73,8 @@ const styleImage = {
 const operations = {
   leave: 'LEAVING',
   delete: 'DELETING',
+  create: 'CREATE',
+  edit: 'EDIT',
 };
 export {
   adminActions,

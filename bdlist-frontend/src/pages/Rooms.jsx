@@ -25,6 +25,7 @@ import {
   getRoomByID,
   leaveRoom,
   deleteRoom,
+  editRoom,
 } from '../data/repository';
 import Snackbar from '@mui/material/Snackbar';
 import Loading from '../components/Loading';
@@ -51,8 +52,8 @@ const roomReducer = (state, action) => {
 const Rooms = () => {
   const color = grey[900];
   const passwordRef = useRef();
-  const nameRef = useRef();
-  const descriptionRef = useRef();
+  const [roomName, setRoomName] = useState(null);
+  const [roomDescription, setRoomDescription] = useState('');
   const initialRoomState = {
     loading: true,
     data: null,
@@ -107,6 +108,7 @@ const Rooms = () => {
       ? jwtDecode(localStorage.getItem('jwtToken_Login'))
       : null
   );
+
   //Alert logic for page information
   const [alert, setAlert] = useState(false);
   const [alertMsg, setAlertMsg] = useState('');
@@ -121,6 +123,7 @@ const Rooms = () => {
   //Used as an index to identify which room is currently selected
   const [selected, setSelected] = useState(0);
 
+  const [buttonOp, setButtonOp] = useState(operations.create);
   const [isClicked, setIsClicked] = useState(false);
   const handleClick = (index) => {
     getRoomByID(roomState.data[index].id)
@@ -145,7 +148,14 @@ const Rooms = () => {
   const handleCloseAlert = () => {
     setAlert(false);
   };
-  const handleOpenCreate = () => {
+  const handleOpenCreate = (operation) => {
+    if (operation === operations.edit) {
+      setButtonOp(operation);
+      setRoomName(roomState.data[selected].name);
+      setRoomDescription(roomState.data[selected].description);
+    } else {
+      setButtonOp(operations.create);
+    }
     handleOpenCreateModal();
   };
 
@@ -153,6 +163,28 @@ const Rooms = () => {
     setCondition(severity);
     setAlertMsg(msg);
     setAlert(true);
+  };
+
+  const handleShow = () => {
+    getRoomByID(roomState.data[selected].id)
+      .then((res) => {
+        setPassword(res.password);
+        setShowPass(true);
+      })
+      .catch((error) => {
+        setPassword('N/A');
+        setShowPass(true);
+      });
+  };
+
+  const handleHide = () => {
+    setShowPass(false);
+    setPassword('');
+  };
+
+  const handleWarning = (operation) => {
+    setWarningMsg(operation);
+    handleShowWarningOpen();
   };
 
   //Handle the password for verification in the backend
@@ -190,6 +222,7 @@ const Rooms = () => {
       });
   };
 
+  //Delete seleted room
   const handleDelete = () => {
     deleteRoom(roomState.data[selected].id)
       .then((res) => {
@@ -204,40 +237,52 @@ const Rooms = () => {
       });
   };
 
-  const handleShow = () => {
-    getRoomByID(roomState.data[selected].id)
+  const onChangeName = (e) => {
+    setRoomName(e.target.value);
+  };
+  const onChangeDes = (e) => {
+    setRoomDescription(e.target.value);
+  };
+  //Edit seleted room
+  const handleEdit = () => {
+    if (!roomName) {
+      activateAlert(WARNING, 'Room must have a name.');
+      return;
+    }
+    if (roomDescription.split(' ').length > 55) {
+      activateAlert(WARNING, 'Description must be less than 55 words.');
+      return;
+    }
+
+    const newInfo = {
+      name: roomName,
+      description: roomDescription,
+    };
+
+    editRoom(roomState.data[selected].id, newInfo)
       .then((res) => {
-        setPassword(res.password);
-        setShowPass(true);
+        activateAlert(SUCCESS, 'Room info updated!');
+        getAllRooms();
+        setOpenCreateModal(false);
       })
       .catch((error) => {
-        setPassword('N/A');
-        setShowPass(true);
+        activateAlert(ERROR, error.response.data.error);
       });
-  };
-
-  const handleHide = () => {
-    setShowPass(false);
-    setPassword('');
-  };
-  const handleWarning = (operation) => {
-    setWarningMsg(operation);
-    handleShowWarningOpen();
   };
 
   //Creates a new room
   const handleCreate = () => {
-    if (!nameRef.current.value) {
+    if (!roomName) {
       activateAlert(WARNING, 'Room must have a name.');
       return;
     }
-    if (descriptionRef.current.value.split(' ').length > 65) {
+    if (roomDescription.split(' ').length > 55) {
       activateAlert(WARNING, 'Description must be less than 55 words.');
       return;
     }
     const newRoom = {
-      name: nameRef.current.value,
-      description: descriptionRef.current.value,
+      name: roomName,
+      description: roomDescription,
     };
 
     createRoom(newRoom)
@@ -308,7 +353,7 @@ const Rooms = () => {
             component='h2'
             sx={{ mb: 2 }}
           >
-            Create room
+            Room info
           </Typography>
 
           <Typography id='modal-modal-title' variant='h6' component='h2'>
@@ -321,7 +366,8 @@ const Rooms = () => {
               id='fullWidth'
               color='secondary'
               className='mb-2'
-              inputRef={nameRef}
+              value={roomName}
+              onChange={onChangeName}
             />
           </Typography>
 
@@ -342,19 +388,31 @@ const Rooms = () => {
               className='mb-2'
               multiline
               rows={3}
-              inputRef={descriptionRef}
+              value={roomDescription}
+              onChange={onChangeDes}
             />
           </Typography>
 
           <Box textAlign='center' sx={{ mt: 2 }}>
-            <Button
-              variant='contained'
-              color={SUCCESS}
-              maxwidth='100%'
-              onClick={handleCreate}
-            >
-              Create
-            </Button>
+            {buttonOp === operations.create ? (
+              <Button
+                variant='contained'
+                color={SUCCESS}
+                maxwidth='100%'
+                onClick={handleCreate}
+              >
+                Create
+              </Button>
+            ) : (
+              <Button
+                variant='contained'
+                color={SUCCESS}
+                maxwidth='100%'
+                onClick={handleEdit}
+              >
+                Confirm
+              </Button>
+            )}
           </Box>
         </Box>
       </Modal>
@@ -453,7 +511,7 @@ const Rooms = () => {
               <IconButton
                 variant='contained'
                 className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
-                onClick={handleOpenCreate}
+                onClick={() => handleOpenCreate(operations.create)}
               >
                 <AddIcon />
               </IconButton>
@@ -479,7 +537,7 @@ const Rooms = () => {
                         <Button
                           variant='contained'
                           className='w-full py-3 px-6 bg-purple-500 text-lg rounded-2xl'
-                          // onClick={handleEdit}
+                          onClick={() => handleOpenCreate(operations.edit)}
                         >
                           Edit
                         </Button>

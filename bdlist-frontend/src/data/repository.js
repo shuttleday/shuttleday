@@ -263,6 +263,16 @@ async function deleteRoom(roomId) {
     throw error;
   }
 }
+
+async function editRoom(roomId, data) {
+  try {
+    const response = await axios.patch(serverAdd + `/rooms/${roomId}`, data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
 //Intercepts all request to the server and attaches the token to the header
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem('jwtToken_Login');
@@ -323,4 +333,5 @@ export {
   getRoomByID,
   leaveRoom,
   deleteRoom,
+  editRoom,
 };
