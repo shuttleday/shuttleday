@@ -2,43 +2,98 @@ import React, { useState } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
-import { googleSignIn } from '../data/repository';
+import { googleSignIn, createAccount } from '../data/repository';
 import Tilt from 'react-parallax-tilt';
 import GoogleIcon from '../img/google_icon-icons.com_62736.ico';
 import InfoIcon from '@mui/icons-material/Info';
 import IconButton from '@mui/material/IconButton';
+import { Button } from '@mui/material';
 import { amber } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { styleImage } from '../constants';
+import { styleImage, SUCCESS, ERROR, Alert, tokens } from '../constants';
 import { Typography } from '@mui/material';
 import Link from '@mui/material/Link';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Snackbar from '@mui/material/Snackbar';
+import TextField from '@mui/material/TextField';
 
 const GLogin = () => {
+  const [openModal, setOpenModal] = useState(false);
+  const handleOpen = () => setOpenModal(true);
+  const handleClose = () => setOpenModal(false);
+
   const [modal, setModal] = useState(false);
   const handleOpenModal = () => setModal(true);
   const handleCloseModal = () => setModal(false);
+
+  const [checked, setChecked] = useState(false);
+  const [username, setUsername] = useState('');
   const color = amber[700];
   let navigate = useNavigate();
 
-  async function onResponse(response) {
-    localStorage.setItem('jwtToken_Login', response.credential);
-    const res = await googleSignIn();
+  const [alert, setAlert] = useState(false);
+  const [alertMsg, setAlertMsg] = useState('');
+  const [condition, setCondition] = useState(SUCCESS);
 
-    //If the user has registered, googleSignIn() will return access and refresh tokens.
-    if (res === null) {
-      localStorage.setItem('jwtToken_Login', 'USER NOT FOUND');
-    } else {
-      localStorage.setItem('jwtToken_Login', res.accessToken);
-      localStorage.setItem('refreshToken', res.refreshToken);
+  function onResponse(response) {
+    localStorage.setItem(tokens.google, response.credential);
+
+    googleSignIn()
+      .then((res) => {
+        localStorage.setItem(tokens.jwt, res.accessToken);
+        localStorage.setItem(tokens.refresh, res.refreshToken);
+        localStorage.removeItem(tokens.google);
+        navigate('/');
+      })
+      .catch((error) => {
+        activateAlert('info', error.response.data.error);
+        handleOpen();
+      });
+  }
+
+  const activateAlert = (severity, msg) => {
+    setCondition(severity);
+    setAlertMsg(msg);
+    setAlert(true);
+  };
+  const handleCloseAlert = () => {
+    setAlert(false);
+  };
+
+  const handleSubmit = () => {
+    if (!checked) {
+      activateAlert(ERROR, 'Please tick the checkbox.');
+      return;
     }
 
-    navigate('/', {
-      state: {
-        googleToken: response.credential,
-      },
-    });
-  }
+    createAccount(username)
+      .then((res) => {
+        activateAlert(SUCCESS, 'Your account has been created.');
+        handleClose();
+        googleSignIn()
+          .then((res) => {
+            localStorage.setItem(tokens.jwt, res.accessToken);
+            localStorage.setItem(tokens.refresh, res.refreshToken);
+            navigate('/');
+          })
+          .then((error) => {
+            activateAlert(ERROR, error.response.data.error);
+          });
+      })
+      .catch((error) => {
+        activateAlert(ERROR, error.response.data.error);
+        return;
+      });
+  };
+  const handleCheck = () => {
+    setChecked((prev) => (prev === true ? false : true));
+  };
+
+  const onChange = (e) => {
+    setUsername(e.target.value);
+  };
 
   return (
     <Stack
@@ -53,27 +108,60 @@ const GLogin = () => {
         aria-labelledby='modal-modal-title'
         aria-describedby='modal-modal-description'
       >
-        <Box sx={{ ...styleImage }}>
-          <div>
-            <Typography align='center'>
-              <Typography variant='h4' color={color}>
-                Disclaimer
-              </Typography>
-              <br />
-              <p>
-                Shuttleday has no access to your private data, Google only
-                provides user emails for login.
-              </p>
-              <br />
-              <p className=' text-center'>
-                Source code can be found{' '}
-                <Link href='https://github.com/shuttleday/shuttleday'>
-                  here
-                </Link>{' '}
-                for vetting.
-              </p>
+        <Box sx={styleImage}>
+          <Typography align='center' component='a'>
+            <Typography variant='h4' color={color}>
+              Disclaimer
             </Typography>
-          </div>
+            <br />
+            <Typography>
+              Shuttleday has no access to your private data, Google only
+              provides user emails for login.
+            </Typography>
+            <br />
+            <Typography>
+              Source code can be found{' '}
+              <Link href='https://github.com/shuttleday/shuttleday'>here</Link>{' '}
+              for vetting.
+            </Typography>
+          </Typography>
+        </Box>
+      </Modal>
+      <Modal
+        open={openModal}
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'
+      >
+        <Box sx={styleImage}>
+          <Typography id='modal-modal-title' variant='h6' component='a'>
+            Enter your preferred name
+          </Typography>
+          <Typography id='modal-modal-description' sx={{ mt: 2 }}>
+            <TextField
+              fullWidth
+              label='Name'
+              id='fullWidth'
+              color='secondary'
+              value={username}
+              onChange={onChange}
+            />
+          </Typography>
+          <FormControlLabel
+            className=' shadow-neutral-400 mb-2'
+            label='This is the name I prefer.'
+            control={<Checkbox onChange={handleCheck} />}
+          ></FormControlLabel>
+
+          <Box textAlign='center'>
+            <Button
+              variant='contained'
+              color={SUCCESS}
+              maxwidth='100%'
+              onClick={handleSubmit}
+            >
+              Enter
+            </Button>
+          </Box>
         </Box>
       </Modal>
       <h3 className='text-[30px] shadow-sm py-3 underline decoration-green-400 animate-bounce underline-offset-8'>
@@ -123,6 +211,20 @@ const GLogin = () => {
           </a>
         </p>
       </div>
+      <Snackbar
+        open={alert}
+        autoHideDuration={2000}
+        onClose={handleCloseAlert}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={handleCloseAlert}
+          severity={condition}
+          sx={{ width: '100%' }}
+        >
+          {alertMsg}
+        </Alert>
+      </Snackbar>
     </Stack>
   );
 };

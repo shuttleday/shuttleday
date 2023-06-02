@@ -1,12 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
   userCheck,
-  createAccount,
   getSession,
   joinSession,
   removeFromSession,
   uploadReceipt,
-  googleSignIn,
   getReceipts,
   getQR,
 } from '../data/repository';
@@ -32,7 +30,6 @@ import Modal from '@mui/material/Modal';
 import Chip from '@mui/material/Chip';
 import ImageIcon from '@mui/icons-material/Image';
 import { useNavigate } from 'react-router-dom';
-import TextField from '@mui/material/TextField';
 import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
@@ -49,8 +46,6 @@ import {
   Alert,
   styleImage,
 } from '../constants';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import { useLocation } from 'react-router-dom';
 import InfoHeader from '../components/InfoHeader';
 import ImageList from '@mui/material/ImageList';
@@ -112,10 +107,6 @@ const HomePage = () => {
   const [bail, setBail] = useState(false);
 
   //Checkbox logic for usernames----------------------------------------------------
-  const [checked, setChecked] = React.useState(false);
-  const handleCheck = () => {
-    setChecked((prev) => (prev === true ? false : true));
-  };
 
   const handleOnChange = (e) => {
     setButtonON(false);
@@ -291,35 +282,6 @@ const HomePage = () => {
     setUsername(event.target.value);
   };
 
-  const handleSubmit = async () => {
-    if (!checked) {
-      setCondition(ERROR);
-      setAlertMsg('Please tick the checkbox.');
-      setOpen(true);
-      return;
-    }
-    localStorage.setItem('jwtToken_Login', location.state.googleToken);
-    const res = await createAccount(username);
-    if (res === ERROR) {
-      setCondition(ERROR);
-      setAlertMsg('Username has been taken!');
-      setOpen(true);
-      return;
-    } else {
-      setCondition(SUCCESS);
-      setAlertMsg('Your account has been created.');
-      handleCloseModal();
-    }
-
-    const tokens = await googleSignIn();
-    if (tokens !== null) {
-      localStorage.setItem('jwtToken_Login', tokens.accessToken);
-      localStorage.setItem('refreshToken', tokens.refreshToken);
-      window.location.reload();
-    }
-  };
-  // -----------------------------------------------------------------------------------------
-
   // For rendering buttons only admins can access --------------------------------------------
   const [render, setRender] = useState(false);
 
@@ -447,44 +409,6 @@ const HomePage = () => {
                   Upload
                 </Button>
               </Stack>
-            </Box>
-          </Modal>
-          <Modal
-            open={openModal}
-            aria-labelledby='modal-modal-title'
-            aria-describedby='modal-modal-description'
-          >
-            <Box sx={style}>
-              <Typography id='modal-modal-title' variant='h6' component='h2'>
-                Enter your preferred name
-              </Typography>
-              <Typography id='modal-modal-description' sx={{ mt: 2 }}>
-                <TextField
-                  fullWidth
-                  label='Name'
-                  id='fullWidth'
-                  color='secondary'
-                  defaultValue={username}
-                  onChange={onChange}
-                  className='mb-2'
-                />
-              </Typography>
-              <FormControlLabel
-                className=' shadow-neutral-400 mb-2'
-                label='This is the name I prefer.'
-                control={<Checkbox onChange={handleCheck} />}
-              ></FormControlLabel>
-
-              <Box textAlign='center'>
-                <Button
-                  variant='contained'
-                  color={SUCCESS}
-                  maxwidth='100%'
-                  onClick={handleSubmit}
-                >
-                  Enter
-                </Button>
-              </Box>
             </Box>
           </Modal>
         </div>

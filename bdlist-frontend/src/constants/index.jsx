@@ -16,6 +16,12 @@ const admin = 'ADMIN';
 
 const ID = 'ID';
 
+const tokens = {
+  google: 'gtoken',
+  refresh: 'refreshToken',
+  jwt: 'jwtToken_Login',
+};
+
 const info = [
   {
     name: 'Pie',
@@ -92,4 +98,5 @@ export {
   ACTIONS,
   operations,
   ID,
+  tokens,
 };

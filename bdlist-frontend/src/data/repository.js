@@ -1,5 +1,6 @@
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { tokens } from '../constants';
 
 const serverAdd = import.meta.env.VITE_API_LINK;
 
@@ -20,14 +21,10 @@ async function createAccount(username) {
   };
 
   try {
-    const response = await axios.post(
-      import.meta.env.VITE_API_LINK + '/auth/register',
-      data
-    );
-    const user = response.data;
-    return user;
+    const response = await axios.post(serverAdd + '/auth/register', data);
+    return response.data;
   } catch (error) {
-    return 'error';
+    throw error;
   }
 }
 
@@ -35,11 +32,9 @@ async function createAccount(username) {
 async function googleSignIn() {
   try {
     const response = await axios.post(serverAdd + '/auth/signin');
-    const user = response.data;
-    return user;
+    return response.data;
   } catch (error) {
-    console.log(error);
-    return null;
+    throw error;
   }
 }
 
@@ -275,9 +270,18 @@ async function editRoom(roomId, data) {
 
 //Intercepts all request to the server and attaches the token to the header
 axios.interceptors.request.use(function (config) {
-  const token = localStorage.getItem('jwtToken_Login');
-  config.headers.Authorization = `Bearer ${token}`;
-  return config;
+  if (
+    config.url === serverAdd + '/auth/signin' ||
+    config.url === serverAdd + '/auth/register'
+  ) {
+    const Gtoken = localStorage.getItem(tokens.google);
+    config.headers.Authorization = `Bearer ${Gtoken}`;
+    return config;
+  } else {
+    const token = localStorage.getItem(tokens.jwt);
+    config.headers.Authorization = `Bearer ${token}`;
+    return config;
+  }
 });
 
 axios.interceptors.response.use(
@@ -287,7 +291,7 @@ axios.interceptors.response.use(
   async function (error) {
     if (error.response.status === 401) {
       const refreshToken = {
-        refreshToken: localStorage.getItem('refreshToken'),
+        refreshToken: localStorage.getItem(tokens.refresh),
       };
 
       try {
@@ -295,7 +299,7 @@ axios.interceptors.response.use(
           serverAdd + '/auth/refreshToken',
           refreshToken
         );
-        localStorage.setItem('jwtToken_Login', newToken.data.accessToken);
+        localStorage.setItem(tokens.jwt, newToken.data.accessToken);
 
         const response = {
           data: 'Refresh',
