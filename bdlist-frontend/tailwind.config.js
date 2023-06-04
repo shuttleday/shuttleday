@@ -14,7 +14,9 @@ const MyClass = plugin(function ({ addUtilities }) {
       perspective: '1000px',
     },
     '.backface-hidden': {
+      // perspective must be 0 to be supported in mac
       backfaceVisibility: 'hidden',
+      perspective: 0,
     },
   });
 });
