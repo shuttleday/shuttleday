@@ -2,7 +2,11 @@ import { NextFunction, Request, Response, Router } from "express";
 import { Rooms, Users } from "../db/collections.js";
 import { ApiError } from "../utils/error-util.js";
 import { ObjectId } from "mongodb";
-import { isValidObjectId } from "../utils/functions.js";
+import {
+  isAdminByEmail,
+  isEmailInPlayerList,
+  isValidObjectId,
+} from "../utils/functions.js";
 import { RoomPlayer } from "../db/interfaces.js";
 
 const router = Router();
@@ -22,17 +26,12 @@ router.get(
 
       // Check if requester is in room
       const playerList = room.playerList;
-      const isRequesterInPlayerList = playerList.some((obj) =>
-        Object.values(obj).includes(req.user.email)
-      );
-      if (!isRequesterInPlayerList)
+      if (!isEmailInPlayerList(playerList, req.user.email))
         throw new ApiError(403, "You are not part of the room");
 
       // Check if player email is in room
-      const isPlayerInList = playerList.some((obj) =>
-        Object.values(obj).includes(email)
-      );
-      if (!isPlayerInList) throw new ApiError(403, "Player is not in the room");
+      if (!isEmailInPlayerList(playerList, email))
+        throw new ApiError(403, "Player is not in the room");
 
       const user = await Users.findOne({ email });
 
@@ -83,10 +82,7 @@ router
       if (!room) throw new ApiError(404, "No room with that ID");
       // Check if requester is in room
       const playerList = room.playerList;
-      const isRequesterInPlayerList = playerList.some((obj) =>
-        Object.values(obj).includes(req.user.email)
-      );
-      if (isRequesterInPlayerList)
+      if (isEmailInPlayerList(playerList, req.user.email))
         throw new ApiError(403, "You are already in the room");
 
       if (req.body.password !== room.password)
@@ -125,11 +121,7 @@ router
       const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
       if (!room) throw new ApiError(404, "No room with that ID");
       // Check if the requester is an admin
-      const isAdminRequester = await Rooms.findOne({
-        _id: new ObjectId(roomId),
-        playerList: { $elemMatch: { email: req.user.email, isAdmin: true } },
-      });
-      if (isAdminRequester)
+      if (await isAdminByEmail(roomId, req.user.email))
         throw new ApiError(403, "Admins cannot remove themselves from rooms");
 
       const result = await Rooms.findOneAndUpdate(

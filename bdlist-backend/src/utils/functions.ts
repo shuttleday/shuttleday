@@ -5,8 +5,8 @@ import fileUpload, { UploadedFile } from "express-fileupload";
 import jwt from "jsonwebtoken";
 
 import * as dotenv from "dotenv";
-import { Users } from "../db/collections.js";
-import { User } from "../db/interfaces.js";
+import { Rooms, Users } from "../db/collections.js";
+import { RoomPlayer, User } from "../db/interfaces.js";
 import { ApiError } from "./error-util.js";
 import { ObjectId } from "mongodb";
 dotenv.config();
@@ -124,4 +124,27 @@ export async function userExists(email: string) {
 
 export function isValidObjectId(str: string) {
   return ObjectId.isValid(str);
+}
+
+// Checks if an email is in a list of RoomPlayers
+export function isEmailInPlayerList(
+  playerList: RoomPlayer[],
+  email: string
+): Boolean {
+  const isRequesterInPlayerList = playerList.some((obj) =>
+    Object.values(obj).includes(email)
+  );
+  return isRequesterInPlayerList;
+}
+
+// Checks if an email is the admin of a room
+export async function isAdminByEmail(
+  roomId: string,
+  email: string
+): Promise<Boolean> {
+  const isAdminRequester = await Rooms.findOne({
+    _id: new ObjectId(roomId),
+    playerList: { $elemMatch: { email: email, isAdmin: true } },
+  });
+  return isAdminRequester !== null;
 }

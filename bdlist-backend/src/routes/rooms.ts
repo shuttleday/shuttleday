@@ -4,7 +4,11 @@ import { Rooms, Users } from "../db/collections.js";
 import { Room, RoomPlayer } from "../db/interfaces.js";
 import { ApiError } from "../utils/error-util.js";
 import crypto from "crypto";
-import { isValidObjectId, validateLimitOffset } from "../utils/functions.js";
+import {
+  isAdminByEmail,
+  isValidObjectId,
+  validateLimitOffset,
+} from "../utils/functions.js";
 
 const router = Router();
 
@@ -194,12 +198,7 @@ router
         throw new ApiError(400, "Cannot promote yourself");
 
       // Check if the requester is an admin
-      const isAdminRequester = await Rooms.findOne({
-        _id: new ObjectId(roomId),
-        "playerList.email": userEmail,
-        "playerList.isAdmin": true,
-      });
-      if (!isAdminRequester)
+      if (!(await isAdminByEmail(roomId, userEmail)))
         throw new ApiError(403, "Only admins can perform this action");
 
       // Update and return new document
