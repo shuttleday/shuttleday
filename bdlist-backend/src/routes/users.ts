@@ -38,7 +38,12 @@ router.get(
 
       if (!user) throw new ApiError(404, "User with that email does not exist");
 
-      res.status(200).json(user);
+      // Get isAdmin status for requested player
+      const requestedPlayer = playerList.find(
+        (player) => player.email === email
+      );
+
+      res.status(200).json(Object.assign(user, requestedPlayer));
       next();
     } catch (error) {
       next(error);
