@@ -169,12 +169,10 @@ const HomePage = () => {
       //Checks if user is admin
       userCheck(user.email, roomID).then((user) => {
         if (user.data === 'Refresh') {
-          setCondition(WARNING);
-          setAlertMsg('Refresh your page plz');
-          setOpen(true);
+          window.location.reload();
         }
 
-        if (user.data.userType === admin) {
+        if (user.isAdmin) {
           setRender(true);
         }
       });
@@ -233,37 +231,39 @@ const HomePage = () => {
     }
   };
 
-  const onJoin = async () => {
-    const newPlayerList = await joinSession(sessionInfo[selected]._id);
-    if (newPlayerList) {
-      let oldData = sessionInfo;
-      oldData[selected].players = newPlayerList;
-      setSessionInfo(oldData);
-      setCondition(SUCCESS);
-      setAlertMsg('Joined successfully!');
-      setOpen(true);
-      setPlayerStat(false);
-    } else {
-      setCondition(ERROR);
-      setAlertMsg('Something went wrong..');
-      setOpen(true);
-    }
+  const onJoin = () => {
+    joinSession(sessionInfo[selected]._id)
+      .then((res) => {
+        let oldData = sessionInfo;
+        oldData[selected].players = res;
+        setSessionInfo(oldData);
+        setCondition(SUCCESS);
+        setAlertMsg('Joined successfully!');
+        setOpen(true);
+        setPlayerStat(false);
+      })
+      .catch((error) => {
+        setCondition(ERROR);
+        setAlertMsg(error.response.data.error);
+        setOpen(true);
+      });
   };
-  const onRemove = async () => {
-    const newPlayerList = await removeFromSession(sessionInfo[selected]._id);
-    if (newPlayerList) {
-      let oldData = sessionInfo;
-      oldData[selected].players = newPlayerList;
-      setSessionInfo(oldData);
-      setCondition(SUCCESS);
-      setAlertMsg('Removed successfully!');
-      setOpen(true);
-      setPlayerStat(true);
-    } else {
-      setCondition(ERROR);
-      setAlertMsg('Something went wrong... Try refreshing the');
-      setOpen(true);
-    }
+  const onRemove = () => {
+    removeFromSession(sessionInfo[selected]._id)
+      .then((res) => {
+        let oldData = sessionInfo;
+        oldData[selected].players = res;
+        setSessionInfo(oldData);
+        setCondition(SUCCESS);
+        setAlertMsg('Removed successfully!');
+        setOpen(true);
+        setPlayerStat(true);
+      })
+      .catch((error) => {
+        setCondition(ERROR);
+        setAlertMsg(error.response.data.error);
+        setOpen(true);
+      });
   };
   const handleClose = () => {
     setOpen(false);
@@ -324,9 +324,7 @@ const HomePage = () => {
     <div>
       <Stack
         spacing={2}
-        display='flex'
-        justifyContent='center'
-        alignItems='center'
+        sx={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}
       >
         <div>
           <Modal
@@ -338,9 +336,11 @@ const HomePage = () => {
             <Box sx={styleImage}>
               <Stack
                 spacing={2}
-                display='flex'
-                justifyContent='center'
-                alignItems='center'
+                sx={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  display: 'flex',
+                }}
               >
                 {image !== null && (
                   <>
@@ -437,9 +437,9 @@ const HomePage = () => {
                       bgcolor: 'background.paper',
                       maxHeight: 400,
                       overflow: 'auto',
+                      alignItems: 'center',
+                      justifycontent: 'center',
                     }}
-                    alignItems='center'
-                    justifycontent='center'
                   >
                     {sessionInfo[selected].players.length === 0 ? (
                       <Box textAlign='center' mr={2}>
@@ -458,7 +458,7 @@ const HomePage = () => {
                     ) : (
                       sessionInfo[selected].players.map((player) => (
                         <div key={player.username}>
-                          <ListItem alignitems='center'>
+                          <ListItem sx={{ alignitems: 'center' }}>
                             <ListItemText
                               style={{
                                 display: 'flex',

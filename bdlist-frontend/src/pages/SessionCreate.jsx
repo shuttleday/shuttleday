@@ -11,7 +11,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { Typography } from '@mui/material';
 import { createSession, joinSession } from '../data/repository';
-import { ERROR, SUCCESS, Alert, RE } from '../constants';
+import { ERROR, SUCCESS, Alert, RE, ID } from '../constants';
 import { AdminWrapper } from '../hoc';
 const SessionCreate = () => {
   const [open, setOpen] = useState(false);
@@ -59,7 +59,7 @@ const SessionCreate = () => {
       title: title.current.value,
     };
 
-    createSession(sessionData)
+    createSession(sessionData, sessionStorage.getItem(ID))
       .then((res) => {
         joinSession(res.result.insertedId).then((res) => {});
         setAlertMsg('Created session succesfully');
@@ -67,7 +67,6 @@ const SessionCreate = () => {
         setOpen(true);
       })
       .catch((error) => {
-        console.log(error);
         setAlertMsg(error.response.data.error);
         setCondition(ERROR);
         setOpen(true);
@@ -79,9 +78,7 @@ const SessionCreate = () => {
     <div>
       <Stack
         spacing={6}
-        display='flex'
-        justifyContent='center'
-        alignItems='center'
+        sx={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}
       >
         <div className='rounded-[20px] flex justify-evenly items-center flex-col border border-green-400 space-y-9 w-[380px] '>
           <p className=' text-center text-[30px] mt-4 underline underline-offset-4'>

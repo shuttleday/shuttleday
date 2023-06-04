@@ -14,6 +14,18 @@ async function userCheck(email, roomId) {
   }
 }
 
+//Simple get all user function for admins to see
+async function getUsers() {
+  try {
+    const response = await axios.get(serverAdd + '/users');
+    const users = response.data;
+    return users.result;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
 //Creates an account for new users automatically with their given username (also requires google jwt)
 async function createAccount(username) {
   const data = {
@@ -64,16 +76,14 @@ async function getSession(roomId) {
 }
 
 //Adds current user to the existing session
-async function joinSession(sessionId, roomId) {
+async function joinSession(sessionId) {
   try {
-    const data = {
-      sessionId: sessionId,
-    };
-    const response = await axios.post(serverAdd + '/session-players', data);
+    const response = await axios.post(
+      serverAdd + `/sessions/${sessionId}/players`
+    );
     return response.data.players;
   } catch (error) {
-    console.log(error);
-    return null;
+    throw error;
   }
 }
 
@@ -82,13 +92,12 @@ async function joinSession(sessionId, roomId) {
 //https://stackoverflow.com/questions/51069552/axios-delete-request-with-request-body-and-headers
 async function removeFromSession(sessionId) {
   try {
-    const response = await axios.delete(serverAdd + '/session-players', {
-      data: { sessionId: sessionId },
-    });
+    const response = await axios.delete(
+      serverAdd + `/sessions/${sessionId}/players`
+    );
     return response.data.players;
   } catch (error) {
-    console.log(error);
-    return null;
+    throw error;
   }
 }
 
@@ -106,23 +115,11 @@ async function uploadReceipt(image, sessionId) {
   }
 }
 
-//Simple get all user function for admins to see
-async function getUsers() {
-  try {
-    const response = await axios.get(serverAdd + '/users');
-    const users = response.data;
-    return users.result;
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
-}
-
 //Creates a session only if an admin is making the request
-async function createSession(sessionData) {
+async function createSession(sessionData, roomId) {
   try {
     const response = await axios.post(
-      serverAdd + '/game-sessions',
+      serverAdd + `/rooms/${roomId}/sessions`,
       sessionData
     );
     return response.data;
@@ -135,7 +132,7 @@ async function createSession(sessionData) {
 async function editSession(sessionData) {
   try {
     const response = await axios.patch(
-      serverAdd + '/game-sessions',
+      serverAdd + `/sessions/${sessionData.sessionId}`,
       sessionData
     );
 
@@ -304,7 +301,7 @@ axios.interceptors.response.use(
         const response = {
           data: 'Refresh',
         };
-        alert('Refresh the page');
+        alert('Page is going to refresh');
 
         return response;
       } catch (error) {
