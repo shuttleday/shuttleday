@@ -1,18 +1,18 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { tokens } from '../constants';
 
 const LoginWrapper = (Component) =>
   function HOC() {
     let navigate = useNavigate();
     useEffect(() => {
-      if (localStorage.getItem('jwtToken_Login') == null) {
+      if (localStorage.getItem(tokens.jwt) == null) {
         navigate('/GLogin');
       }
     }, [navigate]);
 
-    const isAuthenticated = localStorage.getItem('jwtToken_Login') !== null;
-
-    return isAuthenticated ? <Component /> : null;
+    const Token = localStorage.getItem(tokens.jwt) != null;
+    return Token ? <Component /> : null;
   };
 
 export default LoginWrapper;

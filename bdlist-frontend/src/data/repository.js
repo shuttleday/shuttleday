@@ -4,13 +4,13 @@ import { tokens } from '../constants';
 
 const serverAdd = import.meta.env.VITE_API_LINK;
 
-//Checks if an user exist in the db
-async function userCheck(email) {
+//Used for room admin authentication
+async function userCheck(email, roomId) {
   try {
-    const user = await axios.get(`${serverAdd}/users/${email}`);
-    return user;
+    const user = await axios.get(`${serverAdd}/rooms/${roomId}/users/${email}`);
+    return user.data;
   } catch (error) {
-    return false;
+    throw error;
   }
 }
 
@@ -39,13 +39,13 @@ async function googleSignIn() {
 }
 
 //Get the list of players that are joining the session
-async function getSession() {
+async function getSession(roomId) {
   try {
     const today = dayjs();
     const past = today.subtract(8, 'day');
     const future = today.add(8, 'day');
 
-    const response = await axios.get(serverAdd + '/game-sessions', {
+    const response = await axios.get(serverAdd + `/rooms/${roomId}/sessions`, {
       params: { fromDate: past.toISOString(), toDate: future.toISOString() },
     });
 
@@ -64,7 +64,7 @@ async function getSession() {
 }
 
 //Adds current user to the existing session
-async function joinSession(sessionId) {
+async function joinSession(sessionId, roomId) {
   try {
     const data = {
       sessionId: sessionId,

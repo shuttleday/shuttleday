@@ -8,7 +8,7 @@ import {
   getReceipts,
   getQR,
 } from '../data/repository';
-
+import { LoginWrapper, RoomWrapper } from '../hoc';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
@@ -45,8 +45,9 @@ import {
   admin,
   Alert,
   styleImage,
+  tokens,
+  ID,
 } from '../constants';
-import { useLocation } from 'react-router-dom';
 import InfoHeader from '../components/InfoHeader';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
@@ -59,8 +60,8 @@ import Tilt from 'react-parallax-tilt';
 
 const HomePage = () => {
   const color = green[400];
-  const location = useLocation();
   let navigate = useNavigate();
+  const roomID = sessionStorage.getItem(ID);
 
   function handleSpeedDial(operation) {
     if (operation === 'details') {
@@ -128,48 +129,45 @@ const HomePage = () => {
   };
   //--------------------------------------------------------------------------------
 
-  useEffect(() => {
-    if (localStorage.getItem('jwtToken_Login') == null) {
-      navigate('/GLogin');
-    } else if (localStorage.getItem('jwtToken_Login') === 'USER NOT FOUND') {
-      const googleToken = jwt_decode(location.state.googleToken);
-      localStorage.setItem('jwtToken_Login', location.state.googleToken);
-      setUsername(googleToken.name);
-      handleOpen();
-    } else {
-      const user = jwt_decode(localStorage.getItem('jwtToken_Login'));
+  useEffect(
+    () => {
+      const user = jwt_decode(localStorage.getItem(tokens.jwt));
       async function getSessionData() {
-        getSession().then((res) => {
-          if (res.gameSessions.length > 0) {
-            setSessionInfo(res.gameSessions);
-            setSelected(0);
-            if (
-              res.gameSessions[selected].players.find(
-                (item) => item.userEmail === user.email
-              )
-            ) {
-              setPlayerStat(false);
-            } else {
-              setPlayerStat(true);
-            }
+        getSession(roomID)
+          .then((res) => {
+            if (res.gameSessions.length > 0) {
+              setSessionInfo(res.gameSessions);
+              setSelected(0);
+              if (
+                res.gameSessions[selected].players.find(
+                  (item) => item.userEmail === user.email
+                )
+              ) {
+                setPlayerStat(false);
+              } else {
+                setPlayerStat(true);
+              }
 
-            if (
-              dayjs().isAfter(
-                dayjs(res.gameSessions[selected].end).subtract(2, 'day')
-              )
-            ) {
-              setBail(true);
+              if (
+                dayjs().isAfter(
+                  dayjs(res.gameSessions[selected].end).subtract(2, 'day')
+                )
+              ) {
+                setBail(true);
+              } else {
+                setBail(false);
+              }
             } else {
-              setBail(false);
+              setSessionInfo(undefined);
             }
-          } else {
+          })
+          .catch((error) => {
             setSessionInfo(undefined);
-          }
-        });
+          });
       }
 
       //Checks if user is admin
-      userCheck(user.email).then((user) => {
+      userCheck(user.email, roomID).then((user) => {
         if (user.data === 'Refresh') {
           setCondition(WARNING);
           setAlertMsg('Refresh your page plz');
@@ -182,9 +180,10 @@ const HomePage = () => {
       });
 
       getSessionData();
-    }
+    },
     // eslint-disable-next-line
-  }, []);
+    []
+  );
 
   const [alertMsg, setAlertMsg] = useState('');
 
@@ -236,11 +235,9 @@ const HomePage = () => {
 
   const onJoin = async () => {
     const newPlayerList = await joinSession(sessionInfo[selected]._id);
-
     if (newPlayerList) {
       let oldData = sessionInfo;
       oldData[selected].players = newPlayerList;
-
       setSessionInfo(oldData);
       setCondition(SUCCESS);
       setAlertMsg('Joined successfully!');
@@ -272,33 +269,11 @@ const HomePage = () => {
     setOpen(false);
   };
 
-  //Modal for username -----------------------------------------------------------------------
-  const [openModal, setOpenModal] = useState(false);
-  const [username, setUsername] = useState('');
-
-  const handleOpen = () => setOpenModal(true);
-  const handleCloseModal = () => setOpenModal(false);
-  const onChange = (event) => {
-    setUsername(event.target.value);
-  };
-
   // For rendering buttons only admins can access --------------------------------------------
   const [render, setRender] = useState(false);
 
   //For setting alert condition---------------------------------------------------------------
   const [condition, setCondition] = useState(SUCCESS);
-
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: { xs: 320, sm: 500 },
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-  };
 
   const handleSelect = (event) => {
     setSelected(event.target.value);
@@ -716,4 +691,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default RoomWrapper(LoginWrapper(HomePage));

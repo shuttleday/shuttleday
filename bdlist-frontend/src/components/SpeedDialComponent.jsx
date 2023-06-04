@@ -14,7 +14,7 @@ const SpeedDialComponent = () => {
   const actions = [{ icon: <HomeIcon />, name: 'Home' }];
 
   function handleSpeedDial(operation) {
-    navigate('/');
+    navigate('/Home');
   }
 
   return (

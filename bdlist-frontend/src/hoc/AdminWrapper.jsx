@@ -1,26 +1,36 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
-import { admin } from '../constants';
+import { ID, tokens } from '../constants';
+import { userCheck } from '../data/repository';
 
 const AdminWrapper = (Component) =>
   function HOC() {
-    let navigate = useNavigate();
+    const [isAdmin, setIsAdmin] = useState(false);
+    const navigate = useNavigate();
+
     useEffect(() => {
-      if (localStorage.getItem('jwtToken_Login') == null) {
-        navigate('/GLogin');
+      async function checkAdmin(data) {
+        const res = await userCheck(data.email, sessionStorage.getItem(ID));
+        if (res.isAdmin) {
+          setIsAdmin(true);
+        } else {
+          navigate('/NotFound-404');
+        }
       }
-      const user = jwt_decode(localStorage.getItem('jwtToken_Login'));
-      if (user.userType !== admin) {
-        navigate('/NotFound-404');
+
+      if (localStorage.getItem(tokens.jwt) === null) {
+        navigate('/GLogin');
+      } else {
+        const user = jwt_decode(localStorage.getItem(tokens.jwt));
+        checkAdmin(user);
       }
     }, [navigate]);
 
-    const isAuthenticated = localStorage.getItem('jwtToken_Login') !== null;
-    const user = jwt_decode(localStorage.getItem('jwtToken_Login'));
-    const isAdmin = isAuthenticated && user.userType === admin;
-
-    return isAdmin ? <Component /> : null;
+    if (!isAdmin) {
+      return null;
+    }
+    return <Component />;
   };
 
 export default AdminWrapper;
