@@ -230,4 +230,56 @@ router
     }
   });
 
+router
+  // Demote an existing member in the room from an admin to a player
+  // Only admins may demote members
+  .route("/:roomId/users/:userEmail/demote")
+  .patch(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // validation
+      const userEmail = req.user.email;
+      const roomId = req.params.roomId;
+      const emailToPromote = req.params.userEmail;
+      if (!isValidObjectId(roomId))
+        throw new ApiError(400, "Not a valid room ID");
+
+      const user = await Users.findOne({ email: emailToPromote });
+      if (!user) throw new ApiError(404, "No user with that email");
+
+      if (user.email === userEmail)
+        throw new ApiError(400, "Cannot demote yourself");
+
+      // Check if the requester is an admin
+      if (!(await isAdminByEmail(roomId, userEmail)))
+        throw new ApiError(403, "Only admins can perform this action");
+
+      // Update and return new document
+      // Looks for room with specified ID
+      // checks that player to promote is in the playerList
+      const updatedRoom = await Rooms.findOneAndUpdate(
+        {
+          _id: new ObjectId(roomId),
+          playerList: { $elemMatch: { email: user.email } },
+        },
+        {
+          $set: {
+            "playerList.$.isAdmin": false,
+          },
+        },
+        { returnDocument: "after" }
+      );
+      if (updatedRoom.value === null)
+        throw new ApiError(
+          404,
+          "No room with that ID, not an admin or user is not in room"
+        );
+
+      const updatedPlayerList = updatedRoom.value.playerList;
+      res.status(200).json(updatedPlayerList);
+      next();
+    } catch (error) {
+      next(error);
+    }
+  });
+
 export default router;
