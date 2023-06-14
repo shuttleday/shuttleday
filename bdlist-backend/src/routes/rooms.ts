@@ -232,24 +232,24 @@ router
 
 router
   // Demote an existing member in the room from an admin to a player
-  // Only admins may demote members
+  // Only the creator may demote admins
   .route("/:roomId/users/:userEmail/demote")
   .patch(async (req: Request, res: Response, next: NextFunction) => {
     try {
       // validation
       const userEmail = req.user.email;
       const roomId = req.params.roomId;
-      const emailToPromote = req.params.userEmail;
+      const emailToDemote = req.params.userEmail;
       if (!isValidObjectId(roomId))
         throw new ApiError(400, "Not a valid room ID");
 
-      const user = await Users.findOne({ email: emailToPromote });
+      const user = await Users.findOne({ email: emailToDemote });
       if (!user) throw new ApiError(404, "No user with that email");
 
       if (user.email === userEmail)
         throw new ApiError(400, "Cannot demote yourself");
 
-      // Check if the requester is an admin
+      // Check if the requester is an admin of the room
       if (!(await isAdminByEmail(roomId, userEmail)))
         throw new ApiError(403, "Only admins can perform this action");
 
@@ -260,6 +260,7 @@ router
         {
           _id: new ObjectId(roomId),
           playerList: { $elemMatch: { email: user.email } },
+          creatorEmail: userEmail,
         },
         {
           $set: {
@@ -271,7 +272,7 @@ router
       if (updatedRoom.value === null)
         throw new ApiError(
           404,
-          "No room with that ID, not an admin or user is not in room"
+          "No room with that ID, not the creator or user is not in room"
         );
 
       const updatedPlayerList = updatedRoom.value.playerList;
