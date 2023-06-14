@@ -15,14 +15,34 @@ async function userCheck(email, roomId) {
 }
 
 //Simple get all user function for admins to see
-async function getUsers() {
+async function getUsers(roomId) {
   try {
-    const response = await axios.get(serverAdd + '/users');
-    const users = response.data;
-    return users.result;
+    const response = await axios.get(serverAdd + `/rooms/${roomId}`);
+    return response.data;
   } catch (error) {
-    console.log(error);
-    return null;
+    throw error;
+  }
+}
+
+async function promoteUser(roomId, email) {
+  try {
+    const response = await axios.patch(
+      serverAdd + `/rooms/${roomId}/users/${email}/promote`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function demoteUser(roomId, email) {
+  try {
+    const response = await axios.patch(
+      serverAdd + `/rooms/${roomId}/users/${email}/demote`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
   }
 }
 
@@ -335,4 +355,6 @@ export {
   leaveRoom,
   deleteRoom,
   editRoom,
+  promoteUser,
+  demoteUser,
 };

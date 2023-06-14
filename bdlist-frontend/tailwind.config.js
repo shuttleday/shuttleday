@@ -37,6 +37,7 @@ module.exports = {
       },
       boxShadow: {
         card: '0px 35px 120px -15px #211e35',
+        mid: '0px 15px 20px #211e35',
       },
       animation: {
         text: 'text 5s ease infinite',

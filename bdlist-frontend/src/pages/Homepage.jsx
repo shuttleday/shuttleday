@@ -41,8 +41,6 @@ import {
   userActions,
   ERROR,
   SUCCESS,
-  WARNING,
-  admin,
   Alert,
   styleImage,
   tokens,

@@ -61,8 +61,9 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 const RE = /^\d+(,\d+)*$/; //Format for input e.g. 1,2,3,4
 
 const ACTIONS = {
-  SUCCESS: 'FETCH_CART_SUCCESS',
-  FAILURE: 'FETCH_CART_FAILURE',
+  SUCCESS: 'FETCH_DATA_SUCCESS',
+  FAILURE: 'FETCH_DATA_FAILURE',
+  EDIT: 'EDIT_DATA',
 };
 //Modal style
 const styleImage = {
