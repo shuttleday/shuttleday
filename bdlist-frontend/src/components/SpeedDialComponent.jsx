@@ -6,6 +6,7 @@ import SpeedDialAction from '@mui/material/SpeedDialAction';
 import HomeIcon from '@mui/icons-material/Home';
 import { useNavigate } from 'react-router-dom';
 import { green } from '@mui/material/colors';
+import { ID } from '../constants';
 
 const SpeedDialComponent = () => {
   let navigate = useNavigate();
@@ -14,7 +15,11 @@ const SpeedDialComponent = () => {
   const actions = [{ icon: <HomeIcon />, name: 'Home' }];
 
   function handleSpeedDial(operation) {
-    navigate('/Home');
+    if (sessionStorage.getItem(ID) == null) {
+      navigate('/');
+    } else {
+      navigate('/Home');
+    }
   }
 
   return (

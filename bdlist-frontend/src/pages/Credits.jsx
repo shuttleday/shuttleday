@@ -20,16 +20,16 @@ const Credits = () => {
           <Tilt className=' p-9'>
             <div
               options={{ max: 45, scale: 1, speed: 450 }}
-              className='w-[300px] sm:w-[470px] md:w-[520px] lg:w-[650px] border border-green-400 shadow-card rounded-md'
+              className='w-[300px] sm:w-[470px] md:w-[520px] lg:w-[650px] border border-green-400 shadow-card rounded-[24px]'
             >
-              <div className='flex flex-col md:flex-row md:space-x-14 mb-2 items-center'>
+              <div className='flex flex-col md:flex-row md:space-x-14 p-4 items-center'>
                 <div className='p-4'>
                   <Avatar
                     alt={dev.name}
                     src={dev.image}
                     sx={{
-                      width: { xs: 90, sm: 100, md: 180 },
-                      height: { xs: 90, sm: 100, md: 180 },
+                      width: { xs: 90, sm: 100, md: 160 },
+                      height: { xs: 90, sm: 100, md: 160 },
                     }}
                   />
                 </div>

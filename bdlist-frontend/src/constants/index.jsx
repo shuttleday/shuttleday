@@ -7,6 +7,7 @@ import QrCode2Icon from '@mui/icons-material/QrCode2';
 import React from 'react';
 import MuiAlert from '@mui/material/Alert';
 import BugReportIcon from '@mui/icons-material/BugReport';
+import WestIcon from '@mui/icons-material/West';
 
 const ERROR = 'error';
 const SUCCESS = 'success';
@@ -40,12 +41,19 @@ const info = [
 ];
 const adminActions = [
   { icon: <LogoutIcon />, name: 'Logout', operation: 'logout' },
+  { icon: <WestIcon />, name: 'Rooms', operation: 'room' },
   { icon: <InfoIcon />, name: 'Credits', operation: 'credits' },
   { icon: <BugReportIcon />, name: 'Bug Report', operation: 'report' },
   { icon: <QrCode2Icon />, name: 'Manage QR', operation: 'qr' },
   { icon: <EditIcon />, name: 'Edit Session', operation: 'edit' },
   { icon: <PrivacyTipIcon />, name: 'User Details', operation: 'details' },
   { icon: <AddBoxIcon />, name: 'Create Session', operation: 'create' },
+];
+
+const roomActions = [
+  { icon: <LogoutIcon />, name: 'Logout', operation: 'logout' },
+  { icon: <InfoIcon />, name: 'Credits', operation: 'credits' },
+  { icon: <BugReportIcon />, name: 'Bug Report', operation: 'report' },
 ];
 
 const userActions = [
@@ -88,6 +96,7 @@ const operations = {
 export {
   adminActions,
   userActions,
+  roomActions,
   ERROR,
   SUCCESS,
   WARNING,

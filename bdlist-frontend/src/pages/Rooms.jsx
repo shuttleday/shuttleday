@@ -11,11 +11,12 @@ import {
   ACTIONS,
   operations,
   ID,
+  roomActions,
 } from '../constants';
 import jwtDecode from 'jwt-decode';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { grey } from '@mui/material/colors';
+import { grey, green } from '@mui/material/colors';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -32,6 +33,10 @@ import Snackbar from '@mui/material/Snackbar';
 import Loading from '../components/Loading';
 import { useNavigate } from 'react-router-dom';
 import { LoginWrapper } from '../hoc';
+import SpeedDial from '@mui/material/SpeedDial';
+import SpeedDialIcon from '@mui/material/SpeedDialIcon';
+import SpeedDialAction from '@mui/material/SpeedDialAction';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const roomReducer = (state, action) => {
   switch (action.type) {
@@ -53,6 +58,7 @@ const roomReducer = (state, action) => {
 };
 
 const Rooms = () => {
+  const colorG = green[400];
   let navigate = useNavigate();
   const color = grey[900];
   const passwordRef = useRef();
@@ -129,6 +135,18 @@ const Rooms = () => {
 
   const [buttonOp, setButtonOp] = useState(operations.create);
   const [isClicked, setIsClicked] = useState(false);
+
+  function handleSpeedDial(operation) {
+    if (operation === 'credits') {
+      navigate('/credits');
+    } else if (operation === 'report') {
+      navigate('/report');
+    } else if (operation === 'logout') {
+      localStorage.removeItem('jwtToken_Login');
+      localStorage.removeItem('refreshToken');
+      navigate('/Glogin');
+    }
+  }
   const handleClick = (index) => {
     getRoomByID(roomState.data[index].id)
       .then((res) => {
@@ -649,6 +667,29 @@ const Rooms = () => {
           </div>
         </div>
       </div>
+      <SpeedDial
+        sticky='true'
+        ariaLabel='SpeedDial openIcon'
+        sx={{
+          position: 'absolute',
+          bottom: 16,
+          right: 16,
+          '& .MuiFab-primary': { backgroundColor: colorG },
+        }}
+        icon={<SpeedDialIcon openIcon={<AccountCircleIcon />} />}
+      >
+        {roomActions.map((action) => (
+          <SpeedDialAction
+            key={action.name}
+            onClick={(e) => {
+              handleSpeedDial(action.operation);
+            }}
+            icon={action.icon}
+            tooltipTitle={action.name}
+          />
+        ))}
+      </SpeedDial>
+
       <Snackbar
         open={alert}
         autoHideDuration={2000}

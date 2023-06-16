@@ -78,6 +78,8 @@ const HomePage = () => {
       navigate('/Glogin');
     } else if (operation === 'edit') {
       navigate('/edit');
+    } else if (operation === 'room') {
+      navigate('/');
     }
   }
 
