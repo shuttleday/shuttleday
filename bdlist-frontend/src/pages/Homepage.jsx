@@ -398,7 +398,9 @@ const HomePage = () => {
               >
                 <Tab label='NameList' value='1' />
 
-                {sessionInfo != null && <Tab label='Payment' value='2' />}
+                {sessionInfo != null && !playerStat && (
+                  <Tab label='Payment' value='2' />
+                )}
                 {render && sessionInfo != null && (
                   <Tab label='Receipts' value='3' />
                 )}
