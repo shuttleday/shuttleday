@@ -15,14 +15,15 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { Typography } from '@mui/material';
 import { editSession, getSession } from '../data/repository';
-import { Alert, ERROR, SUCCESS, RE } from '../constants';
+import { Alert, ERROR, SUCCESS, RE, ID } from '../constants';
 import { AdminWrapper } from '../hoc';
 import Loading from '../components/Loading';
 
 const Edit = () => {
+  const roomID = sessionStorage.getItem(ID);
   useEffect(() => {
     async function getData() {
-      getSession().then((res) => {
+      getSession(roomID).then((res) => {
         if (res.gameSessions.length > 0) {
           setSessionInfo(res.gameSessions);
           setValue(dayjs(res.gameSessions[selected].start));
