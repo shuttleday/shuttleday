@@ -63,6 +63,7 @@ const QRManagement = () => {
         setCondition(SUCCESS);
         setImage(null);
         setOpen(true);
+        isNull(false);
       })
       .catch((error) => {
         setAlertMsg(error.response.data.error);
