@@ -343,260 +343,316 @@ const Rooms = () => {
 
   return (
     <div>
-      <Modal
-        open={openPassModal}
-        onClose={handlePassCloseModal}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'
-      >
-        <Box sx={modalStyle}>
-          <Typography id='modal-modal-title' variant='h6' component='h2'>
-            Enter room password
-          </Typography>
-          <Typography id='modal-modal-description' sx={{ mt: 2 }}>
-            <TextField
-              fullWidth
-              label='Password'
-              id='fullWidth'
-              color='secondary'
-              className='mb-2'
-              inputRef={passwordRef}
-            />
-          </Typography>
-
-          <Box textAlign='center' sx={{ mt: 2 }}>
-            <Button
-              variant='contained'
-              color={SUCCESS}
-              maxwidth='100%'
-              onClick={handlePassword}
-            >
-              Enter
-            </Button>
-          </Box>
-        </Box>
-      </Modal>
-
-      <Modal open={openCreateModal} onClose={handleCloseCreateModal}>
-        <Box sx={modalStyle}>
-          <Typography
-            id='modal-modal-title'
-            variant='h4'
-            component='h2'
-            sx={{ mb: 2 }}
-          >
-            Room info
-          </Typography>
-
-          <Typography id='modal-modal-title' variant='h6' component='h2'>
-            Name
-          </Typography>
-          <Typography id='modal-modal-description'>
-            <TextField
-              fullWidth
-              label='Name'
-              id='fullWidth'
-              color='secondary'
-              className='mb-2'
-              value={roomName}
-              onChange={onChangeName}
-            />
-          </Typography>
-
-          <Typography
-            id='modal-modal-title'
-            variant='h6'
-            component='h2'
-            sx={{ mt: 2 }}
-          >
-            Description (optional)
-          </Typography>
-          <Typography id='modal-modal-description'>
-            <TextField
-              fullWidth
-              label='65 word Limit'
-              id='fullWidth'
-              color='secondary'
-              className='mb-2'
-              multiline
-              rows={3}
-              value={roomDescription}
-              onChange={onChangeDes}
-            />
-          </Typography>
-
-          <Box textAlign='center' sx={{ mt: 2 }}>
-            {buttonOp === operations.create ? (
-              <Button
-                variant='contained'
-                color={SUCCESS}
-                maxwidth='100%'
-                onClick={handleCreate}
-              >
-                Create
-              </Button>
-            ) : (
-              <Button
-                variant='contained'
-                color={SUCCESS}
-                maxwidth='100%'
-                onClick={handleEdit}
-              >
-                Confirm
-              </Button>
-            )}
-          </Box>
-        </Box>
-      </Modal>
-      <Modal
-        open={showWarning}
-        onClose={handleShowWarningClose}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'
-      >
-        <Box sx={modalStyle}>
-          <Typography align='center'>
-            <Typography
-              id='modal-modal-title'
-              variant='h5'
-              component='h2'
-              color={ERROR}
-            >
-              WARNING
+      <div>
+        <Modal
+          open={openPassModal}
+          onClose={handlePassCloseModal}
+          aria-labelledby='modal-modal-title'
+          aria-describedby='modal-modal-description'
+        >
+          <Box sx={modalStyle}>
+            <Typography id='modal-modal-title' variant='h6' component='h2'>
+              Enter room password
             </Typography>
             <Typography id='modal-modal-description' sx={{ mt: 2 }}>
-              {`Are you sure about ${warningMsg} this room?`}
+              <TextField
+                fullWidth
+                label='Password'
+                id='fullWidth'
+                color='secondary'
+                className='mb-2'
+                inputRef={passwordRef}
+              />
             </Typography>
-          </Typography>
 
-          <Stack
-            spacing={2}
-            display='flex'
-            direction='row'
-            sx={{ justifyContent: 'center', mt: 2 }}
-          >
-            {warningMsg === operations.delete ? (
+            <Box textAlign='center' sx={{ mt: 2 }}>
               <Button
                 variant='contained'
-                color={ERROR}
+                color={SUCCESS}
                 maxwidth='100%'
-                onClick={handleDelete}
+                onClick={handlePassword}
               >
-                Delete
+                Enter
               </Button>
-            ) : (
-              <Button
-                variant='contained'
-                maxwidth='100%'
-                onClick={handleLeave}
-                color={ERROR}
-              >
-                Leave
-              </Button>
-            )}
-            <Button
-              variant='contained'
-              maxwidth='100%'
-              onClick={handleShowWarningClose}
-              color='info'
+            </Box>
+          </Box>
+        </Modal>
+
+        <Modal open={openCreateModal} onClose={handleCloseCreateModal}>
+          <Box sx={modalStyle}>
+            <Typography
+              id='modal-modal-title'
+              variant='h4'
+              component='h2'
+              sx={{ mb: 2 }}
             >
-              Cancel
-            </Button>
-          </Stack>
-        </Box>
-      </Modal>
-      <div className='flex justify-center items-center flex-col'>
-        <div className='underline underline-offset-8 rounded-md p-7'>
-          <h1 className='text-4xl font-mono'>Rooms</h1>
-        </div>
+              Room info
+            </Typography>
 
-        <div className='perspective'>
-          <div
-            className={` min-h-[650px] ${
-              showPass && 'h-[670px]'
-            } w-[355px] mb-6 relative border border-green-400 rounded-[20px] shadow-card duration-1000 preserve-3d ${
-              isClicked ? 'my-rotate-y-180' : ''
-            }`}
-          >
-            <div className='py-5 px-12 flex items-center flex-col gap-6 absolute w-full h-full backface-hidden'>
-              {roomState.loading ? (
-                <Loading />
+            <Typography id='modal-modal-title' variant='h6' component='h2'>
+              Name
+            </Typography>
+            <Typography id='modal-modal-description'>
+              <TextField
+                fullWidth
+                label='Name'
+                id='fullWidth'
+                color='secondary'
+                className='mb-2'
+                value={roomName}
+                onChange={onChangeName}
+              />
+            </Typography>
+
+            <Typography
+              id='modal-modal-title'
+              variant='h6'
+              component='h2'
+              sx={{ mt: 2 }}
+            >
+              Description (optional)
+            </Typography>
+            <Typography id='modal-modal-description'>
+              <TextField
+                fullWidth
+                label='65 word Limit'
+                id='fullWidth'
+                color='secondary'
+                className='mb-2'
+                multiline
+                rows={3}
+                value={roomDescription}
+                onChange={onChangeDes}
+              />
+            </Typography>
+
+            <Box textAlign='center' sx={{ mt: 2 }}>
+              {buttonOp === operations.create ? (
+                <Button
+                  variant='contained'
+                  color={SUCCESS}
+                  maxwidth='100%'
+                  onClick={handleCreate}
+                >
+                  Create
+                </Button>
               ) : (
-                roomState.data && (
-                  <>
-                    {roomState.data.map((room, index) => (
-                      <Button
-                        variant='contained'
-                        className='w-full py-4 px-6 bg-green-400 text-lg rounded-2xl'
-                        onClick={() => {
-                          handleClick(index, room.id);
-                        }}
-                        key={`${room.name}-room`}
-                      >
-                        {room.name}
-                      </Button>
-                    ))}
-                  </>
-                )
+                <Button
+                  variant='contained'
+                  color={SUCCESS}
+                  maxwidth='100%'
+                  onClick={handleEdit}
+                >
+                  Confirm
+                </Button>
               )}
-
-              <IconButton
-                variant='contained'
-                className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
-                onClick={() => handleOpenCreate(operations.create)}
+            </Box>
+          </Box>
+        </Modal>
+        <Modal
+          open={showWarning}
+          onClose={handleShowWarningClose}
+          aria-labelledby='modal-modal-title'
+          aria-describedby='modal-modal-description'
+        >
+          <Box sx={modalStyle}>
+            <Typography align='center'>
+              <Typography
+                id='modal-modal-title'
+                variant='h5'
+                component='h2'
+                color={ERROR}
               >
-                <AddIcon />
-              </IconButton>
-            </div>
-            <div className='absolute w-full h-full rounded-[20px] backface-hidden my-rotate-y-180'>
-              {roomState.data && (
-                <div className='p-6 flex items-left text-lg flex-col gap-4'>
-                  <div className='font-bold text-[30px] mt-6'>
-                    {roomState.data[selected].name}
-                  </div>
-                  <div className='min-h-[310px]'>
-                    {roomState.data[selected].description ? (
-                      <p>{roomState.data[selected].description}</p>
-                    ) : (
-                      <p>No Description</p>
-                    )}
-                  </div>
+                WARNING
+              </Typography>
+              <Typography id='modal-modal-description' sx={{ mt: 2 }}>
+                {`Are you sure about ${warningMsg} this room?`}
+              </Typography>
+            </Typography>
 
-                  {roomState.data[selected].creatorUsername ===
-                  user.username ? (
-                    <div className='flex flex-col gap-2'>
-                      <div className='grid grid-cols-2 gap-2'>
+            <Stack
+              spacing={2}
+              display='flex'
+              direction='row'
+              sx={{ justifyContent: 'center', mt: 2 }}
+            >
+              {warningMsg === operations.delete ? (
+                <Button
+                  variant='contained'
+                  color={ERROR}
+                  maxwidth='100%'
+                  onClick={handleDelete}
+                >
+                  Delete
+                </Button>
+              ) : (
+                <Button
+                  variant='contained'
+                  maxwidth='100%'
+                  onClick={handleLeave}
+                  color={ERROR}
+                >
+                  Leave
+                </Button>
+              )}
+              <Button
+                variant='contained'
+                maxwidth='100%'
+                onClick={handleShowWarningClose}
+                color='info'
+              >
+                Cancel
+              </Button>
+            </Stack>
+          </Box>
+        </Modal>
+        <div className='flex justify-center items-center flex-col'>
+          <div className='underline underline-offset-8 rounded-md p-7'>
+            <h1 className='text-4xl font-mono'>Rooms</h1>
+          </div>
+
+          <div className='perspective'>
+            <div
+              className={` min-h-[650px] ${
+                showPass && 'h-[670px]'
+              } w-[355px] mb-6 relative border border-green-400 rounded-[20px] shadow-card duration-1000 preserve-3d ${
+                isClicked ? 'my-rotate-y-180' : ''
+              }`}
+            >
+              <div className='py-5 px-12 flex items-center flex-col gap-6 absolute w-full h-full backface-hidden'>
+                {roomState.loading ? (
+                  <Loading />
+                ) : (
+                  roomState.data && (
+                    <>
+                      {roomState.data.map((room, index) => (
                         <Button
                           variant='contained'
-                          className='w-full py-3 px-6 bg-purple-500 text-lg rounded-2xl'
-                          onClick={() => handleOpenCreate(operations.edit)}
+                          className='w-full py-4 px-6 bg-green-400 text-lg rounded-2xl'
+                          onClick={() => {
+                            handleClick(index, room.id);
+                          }}
+                          key={`${room.name}-room`}
                         >
-                          Edit
+                          {room.name}
                         </Button>
-                        <Button
-                          variant='contained'
-                          className='w-full py-3 px-6 bg-red-500 text-lg rounded-2xl'
-                          onClick={() => handleWarning(operations.delete)}
-                        >
-                          Delete
-                        </Button>
-                        {showPass ? (
+                      ))}
+                    </>
+                  )
+                )}
+
+                <IconButton
+                  variant='contained'
+                  className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
+                  onClick={() => handleOpenCreate(operations.create)}
+                >
+                  <AddIcon />
+                </IconButton>
+              </div>
+              <div className='absolute w-full h-full rounded-[20px] backface-hidden my-rotate-y-180'>
+                {roomState.data && (
+                  <div className='p-6 flex items-left text-lg flex-col gap-4'>
+                    <div className='font-bold text-[30px] mt-6'>
+                      {roomState.data[selected].name}
+                    </div>
+                    <div className='min-h-[310px]'>
+                      {roomState.data[selected].description ? (
+                        <p>{roomState.data[selected].description}</p>
+                      ) : (
+                        <p>No Description</p>
+                      )}
+                    </div>
+
+                    {roomState.data[selected].creatorUsername ===
+                    user.username ? (
+                      <div className='flex flex-col gap-2'>
+                        <div className='grid grid-cols-2 gap-2'>
                           <Button
                             variant='contained'
-                            className='w-full py-3 px-6 bg-cyan-700 text-lg rounded-2xl'
-                            onClick={handleHide}
+                            className='w-full py-3 px-6 bg-purple-500 text-lg rounded-2xl'
+                            onClick={() => handleOpenCreate(operations.edit)}
                           >
-                            Hide
+                            Edit
                           </Button>
+                          <Button
+                            variant='contained'
+                            className='w-full py-3 px-6 bg-red-500 text-lg rounded-2xl'
+                            onClick={() => handleWarning(operations.delete)}
+                          >
+                            Delete
+                          </Button>
+                          {showPass ? (
+                            <Button
+                              variant='contained'
+                              className='w-full py-3 px-6 bg-cyan-700 text-lg rounded-2xl'
+                              onClick={handleHide}
+                            >
+                              Hide
+                            </Button>
+                          ) : (
+                            <Button
+                              variant='contained'
+                              className='w-full py-3 px-6 bg-blue-600 text-lg rounded-2xl'
+                              onClick={handleShow}
+                            >
+                              Password
+                            </Button>
+                          )}
+                          <IconButton
+                            variant='contained'
+                            className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
+                            onClick={handleBack}
+                          >
+                            <ArrowBackIcon />
+                          </IconButton>
+                        </div>
+                        <Button
+                          variant='contained'
+                          className='w-full py-3 px-6 bg-green-400 text-lg rounded-2xl'
+                          onClick={handleEnter}
+                        >
+                          Enter
+                        </Button>
+                        <div
+                          className={`border border-gray-400 w-full rounded-xl flex justify-between transition-opacity duration-700 ease-in ${
+                            showPass ? 'opacity-100' : 'opacity-0'
+                          } `}
+                        >
+                          <p className='p-2 text-center'>{password}</p>
+                          <IconButton onClick={handleCopy}>
+                            <ContentCopyIcon />
+                          </IconButton>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        {joined ? (
+                          <>
+                            <Button
+                              variant='contained'
+                              className='w-full py-3 px-6 bg-green-400 text-lg rounded-2xl'
+                              onClick={handleEnter}
+                            >
+                              Enter
+                            </Button>
+                            <Button
+                              variant='contained'
+                              className='w-full py-3 px-6 bg-red-500 text-lg rounded-2xl'
+                              onClick={() => handleWarning(operations.leave)}
+                            >
+                              Leave
+                            </Button>
+                          </>
                         ) : (
                           <Button
                             variant='contained'
-                            className='w-full py-3 px-6 bg-blue-600 text-lg rounded-2xl'
-                            onClick={handleShow}
+                            className='w-full py-3 px-6 bg-green-400 text-lg rounded-2xl'
+                            onClick={handleJoin}
                           >
-                            Password
+                            Join
                           </Button>
                         )}
+
                         <IconButton
                           variant='contained'
                           className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
@@ -604,106 +660,62 @@ const Rooms = () => {
                         >
                           <ArrowBackIcon />
                         </IconButton>
-                      </div>
-                      <Button
-                        variant='contained'
-                        className='w-full py-3 px-6 bg-green-400 text-lg rounded-2xl'
-                        onClick={handleEnter}
-                      >
-                        Enter
-                      </Button>
-                      <div
-                        className={`border border-gray-400 w-full rounded-xl flex justify-between transition-opacity duration-700 ease-in ${
-                          showPass ? 'opacity-100' : 'opacity-0'
-                        } `}
-                      >
-                        <p className='p-2 text-center'>{password}</p>
-                        <IconButton onClick={handleCopy}>
-                          <ContentCopyIcon />
-                        </IconButton>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      {joined ? (
-                        <>
-                          <Button
-                            variant='contained'
-                            className='w-full py-3 px-6 bg-green-400 text-lg rounded-2xl'
-                            onClick={handleEnter}
-                          >
-                            Enter
-                          </Button>
-                          <Button
-                            variant='contained'
-                            className='w-full py-3 px-6 bg-red-500 text-lg rounded-2xl'
-                            onClick={() => handleWarning(operations.leave)}
-                          >
-                            Leave
-                          </Button>
-                        </>
-                      ) : (
-                        <Button
-                          variant='contained'
-                          className='w-full py-3 px-6 bg-green-400 text-lg rounded-2xl'
-                          onClick={handleJoin}
-                        >
-                          Join
-                        </Button>
-                      )}
-
-                      <IconButton
-                        variant='contained'
-                        className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
-                        onClick={handleBack}
-                      >
-                        <ArrowBackIcon />
-                      </IconButton>
-                    </>
-                  )}
-                </div>
-              )}
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <SpeedDial
-        sticky='true'
-        ariaLabel='SpeedDial openIcon'
-        sx={{
-          position: 'absolute',
-          bottom: 16,
-          right: 16,
-          '& .MuiFab-primary': { backgroundColor: colorG },
-        }}
-        icon={<SpeedDialIcon openIcon={<AccountCircleIcon />} />}
-      >
-        {roomActions.map((action) => (
-          <SpeedDialAction
-            key={action.name}
-            onClick={(e) => {
-              handleSpeedDial(action.operation);
-            }}
-            icon={action.icon}
-            tooltipTitle={action.name}
-          />
-        ))}
-      </SpeedDial>
 
-      <Snackbar
-        open={alert}
-        autoHideDuration={2000}
-        onClose={handleCloseAlert}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert
+        <Snackbar
+          open={alert}
+          autoHideDuration={2000}
           onClose={handleCloseAlert}
-          severity={condition}
-          sx={{ width: '100%' }}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         >
-          {alertMsg}
-        </Alert>
-      </Snackbar>
+          <Alert
+            onClose={handleCloseAlert}
+            severity={condition}
+            sx={{ width: '100%' }}
+          >
+            {alertMsg}
+          </Alert>
+        </Snackbar>
+      </div>
+      <Box
+        sx={{
+          transform: 'translateZ(0px)',
+          flexGrow: 1,
+          position: 'fixed',
+          bottom: 0,
+          width: 1.0,
+        }}
+      >
+        <SpeedDial
+          sticky='true'
+          ariaLabel='SpeedDial openIcon'
+          sx={{
+            position: 'absolute',
+            bottom: 16,
+            right: 16,
+            '& .MuiFab-primary': { backgroundColor: colorG },
+          }}
+          icon={<SpeedDialIcon openIcon={<AccountCircleIcon />} />}
+        >
+          {roomActions.map((action) => (
+            <SpeedDialAction
+              key={action.name}
+              onClick={(e) => {
+                handleSpeedDial(action.operation);
+              }}
+              icon={action.icon}
+              tooltipTitle={action.name}
+            />
+          ))}
+        </SpeedDial>
+      </Box>
     </div>
   );
 };
