@@ -14,9 +14,11 @@ const MyClass = plugin(function ({ addUtilities }) {
       perspective: '1000px',
     },
     '.backface-hidden': {
-      // perspective must be 0 to be supported in mac
       backfaceVisibility: 'hidden',
       perspective: 0,
+      '-webkit-perspective': 0,
+      '-webkit-backface-visibility': 'hidden',
+      '-moz-backface-visibility': 'hidden',
     },
   });
 });
@@ -35,6 +37,7 @@ module.exports = {
         'black-200': '#090325',
         'white-100': '#f3f3f3',
       },
+
       boxShadow: {
         card: '0px 35px 120px -15px #211e35',
         mid: '0px 15px 20px #211e35',

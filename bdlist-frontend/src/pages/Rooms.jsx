@@ -549,13 +549,13 @@ const Rooms = () => {
                   <AddIcon />
                 </IconButton>
               </div>
-              <div className='absolute w-full h-full rounded-[20px] backface-hidden my-rotate-y-180'>
+              <div className='absolute w-full h-full rounded-[20px] backface-hidden bg-black my-rotate-y-180'>
                 {roomState.data && (
                   <div className='p-6 flex items-left text-lg flex-col gap-4'>
-                    <div className='font-bold text-[30px] mt-6'>
+                    <div className='font-bold text-[30px] mt-6 text-white'>
                       {roomState.data[selected].name}
                     </div>
-                    <div className='min-h-[310px]'>
+                    <div className='min-h-[310px] text-white'>
                       {roomState.data[selected].description ? (
                         <p>{roomState.data[selected].description}</p>
                       ) : (
