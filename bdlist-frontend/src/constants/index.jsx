@@ -36,7 +36,7 @@ const info = [
     title: 'Frontend Legend',
     image: 'https://github.com/Kirixi.png',
     gradients: 'from-amber-300 via-orange-400 to-red-500',
-    lore: 'Talented up-and-coming Frontend Engineer from Australia’s RMIT University with a keen interest in web animations. Always keen to help friends in need, likes to play competitive games like Valoranta, casual anime fan, and a K-pop enjoyer especially when it comes to groups like Twice and Aespa.',
+    lore: 'Talented up-and-coming Frontend Engineer from Australia’s RMIT University with a keen interest in web animations. Always keen to help friends in need, likes to play competitive games like Valorant, casual anime fan, and a K-pop enjoyer especially when it comes to groups like Twice and Aespa.',
   },
 ];
 const adminActions = [
