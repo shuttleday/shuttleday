@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -15,19 +15,20 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { Typography } from '@mui/material';
 import { editSession, getSession } from '../data/repository';
-import { Alert, ERROR, SUCCESS, RE } from '../constants';
+import { Alert, ERROR, SUCCESS, RE, ID } from '../constants';
 import { AdminWrapper } from '../hoc';
 import Loading from '../components/Loading';
 
 const Edit = () => {
+  const roomID = sessionStorage.getItem(ID);
   useEffect(() => {
     async function getData() {
-      getSession().then((res) => {
+      getSession(roomID).then((res) => {
         if (res.gameSessions.length > 0) {
           setSessionInfo(res.gameSessions);
           setValue(dayjs(res.gameSessions[selected].start));
           setCourts(res.gameSessions[selected].courts.join(','));
-          setCost(res.gameSessions[selected].cost);
+          setTotal(res.gameSessions[selected].cost);
           setTitle(res.gameSessions[selected].title);
           setDuration(
             dayjs(res.gameSessions[selected].end).diff(
@@ -54,7 +55,6 @@ const Edit = () => {
     setSessionInfo(sessionInfo);
     setValue(dayjs(sessionInfo[event.target.value].start));
     setCourts(sessionInfo[event.target.value].courts.join(','));
-    setCost(sessionInfo[event.target.value].cost);
     setTitle(sessionInfo[event.target.value].title);
     setDuration(
       dayjs(sessionInfo[event.target.value].end).diff(
@@ -73,9 +73,17 @@ const Edit = () => {
   const [condition, setCondition] = useState(SUCCESS);
   const [value, setValue] = useState(null);
   const [courts, setCourts] = useState(null);
-  const [cost, setCost] = useState(null);
   const [duration, setDuration] = useState(null);
   const [title, setTitle] = useState(null);
+  const [total, setTotal] = useState(0);
+
+  const [show, setShow] = useState(false);
+  const [manual, setManual] = useState(true);
+  const players = useRef(1);
+  const Nshuttle = useRef(0);
+  const costShuttle = useRef(0);
+  const Ncourts = useRef(0);
+  const costCourt = useRef(0);
 
   const onTitle = (event) => {
     setTitle(event.target.value);
@@ -89,8 +97,15 @@ const Edit = () => {
     setCourts(event.target.value);
   };
 
-  const onCost = (event) => {
-    setCost(event.target.value);
+  const onTotal = (event) => {
+    console.log(Nshuttle.current.value);
+    const shuttleTotal = Nshuttle.current.value * costShuttle.current.value;
+    const courtTotal =
+      Ncourts.current.value * duration * costCourt.current.value;
+    const perPerson = (shuttleTotal + courtTotal) / players.current.value;
+
+    setTotal(perPerson.toFixed(2));
+    setShow(true);
   };
 
   const onConfirm = async () => {
@@ -106,8 +121,8 @@ const Edit = () => {
       start: dayjs(value).toISOString(),
       end: dayjs(value).add(duration, 'hour').toISOString(),
       courts: courtList,
-      cost: parseInt(cost),
       payTo: sessionInfo[selected].payTo,
+      cost: parseFloat(total),
       sessionId: sessionInfo[selected]._id,
       title: title,
     };
@@ -209,14 +224,151 @@ const Edit = () => {
               <Typography variant='h6' align='left' sx={{ mb: 1 }}>
                 Price per player
               </Typography>
-              <TextField
-                style={{ width: 250 }}
-                id='text-price'
-                value={cost}
-                helperText='Optional, can be added later in edit'
-                variant='standard'
-                onChange={onCost}
-              />
+              {manual ? (
+                <div className='flex flex-col items-center'>
+                  <TextField
+                    style={{ width: 250 }}
+                    id='text-price'
+                    label='Price'
+                    defaultValue='0'
+                    helperText='Optional, can be added later in edit'
+                    variant='standard'
+                    value={total}
+                  />
+                  <Button className='mt-3' onClick={() => setManual(false)}>
+                    Calculator
+                  </Button>
+                </div>
+              ) : (
+                <div className='rounded-[20px] border space-y-6 w-[270px] p-6'>
+                  <div className='flex items-center justify-between'>
+                    <div>
+                      <Typography variant='subtitle1' align='left'>
+                        {' '}
+                        No. Players:{' '}
+                      </Typography>
+                    </div>
+                    <div>
+                      <TextField
+                        style={{ width: 100 }}
+                        id='text-price'
+                        inputRef={players}
+                        size='small'
+                      />
+                    </div>
+                  </div>
+                  <div className='flex items-center justify-between'>
+                    <div>
+                      <Typography variant='subtitle1' align='left'>
+                        {' '}
+                        Cost per hour:
+                      </Typography>
+                    </div>
+                    <div>
+                      <TextField
+                        style={{ width: 100 }}
+                        id='text-price'
+                        inputRef={costCourt}
+                        size='small'
+                      />
+                    </div>
+                  </div>
+                  <div className='flex items-center justify-between'>
+                    <div>
+                      <Typography variant='subtitle1' align='left'>
+                        {' '}
+                        No. Courts:{' '}
+                      </Typography>
+                    </div>
+                    <div>
+                      <TextField
+                        style={{ width: 100 }}
+                        id='text-price'
+                        inputRef={Ncourts}
+                        size='small'
+                      />
+                    </div>
+                  </div>
+                  <div className='flex items-center justify-between'>
+                    <div>
+                      <Typography variant='subtitle1' align='left'>
+                        {' '}
+                        No. Shuttles:{' '}
+                      </Typography>
+                    </div>
+                    <div>
+                      <TextField
+                        style={{ width: 100 }}
+                        id='text-price'
+                        inputRef={Nshuttle}
+                        size='small'
+                      />
+                    </div>
+                  </div>
+                  <div className='flex items-center justify-between'>
+                    <div>
+                      <Typography variant='subtitle1' align='left'>
+                        {' '}
+                        Duration:{' '}
+                      </Typography>
+                    </div>
+                    <div>
+                      {duration ? (
+                        <Typography variant='subtitle1' align='left'>
+                          {duration} Hour(s)
+                        </Typography>
+                      ) : (
+                        <Typography variant='subtitle1' align='left'>
+                          0 Hour(s)
+                        </Typography>
+                      )}
+                    </div>
+                  </div>
+                  <div className='flex items-center justify-between'>
+                    <div>
+                      <Typography variant='subtitle1' align='left'>
+                        {' '}
+                        Shuttle cost:{' '}
+                      </Typography>
+                    </div>
+                    <div>
+                      <TextField
+                        style={{ width: 100 }}
+                        id='text-price'
+                        inputRef={costShuttle}
+                        size='small'
+                      />
+                    </div>
+                  </div>
+                  <div className='flex items-center justify-between'>
+                    <div>
+                      <Button
+                        variant='contained'
+                        color='success'
+                        onClick={onTotal}
+                      >
+                        Total
+                      </Button>
+                    </div>
+                    <div>
+                      <Typography
+                        variant='h6'
+                        align='left'
+                        className={`transition-opacity duration-700 ease-in ${
+                          show ? 'opacity-100' : 'opacity-0'
+                        } `}
+                      >
+                        RM {total}
+                      </Typography>
+                    </div>
+                  </div>
+                  <div className='flex items-center justify-center'>
+                    <Button onClick={() => setManual(true)}>
+                      Manual Input
+                    </Button>
+                  </div>
+                </div>
+              )}
             </Box>
 
             <Box>

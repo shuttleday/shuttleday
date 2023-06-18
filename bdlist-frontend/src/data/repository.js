@@ -15,14 +15,34 @@ async function userCheck(email, roomId) {
 }
 
 //Simple get all user function for admins to see
-async function getUsers() {
+async function getUsers(roomId) {
   try {
-    const response = await axios.get(serverAdd + '/users');
-    const users = response.data;
-    return users.result;
+    const response = await axios.get(serverAdd + `/rooms/${roomId}`);
+    return response.data;
   } catch (error) {
-    console.log(error);
-    return null;
+    throw error;
+  }
+}
+
+async function promoteUser(roomId, email) {
+  try {
+    const response = await axios.patch(
+      serverAdd + `/rooms/${roomId}/users/${email}/promote`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function demoteUser(roomId, email) {
+  try {
+    const response = await axios.patch(
+      serverAdd + `/rooms/${roomId}/users/${email}/demote`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
   }
 }
 
@@ -105,9 +125,11 @@ async function removeFromSession(sessionId) {
 async function uploadReceipt(image, sessionId) {
   const formData = new FormData();
   formData.append('receipt', image);
-  formData.append('sessionId', sessionId);
   try {
-    const response = await axios.post(serverAdd + '/user-payments', formData);
+    const response = await axios.post(
+      serverAdd + `/${sessionId}/receipts`,
+      formData
+    );
     return response.data;
   } catch (error) {
     console.log(error);
@@ -145,9 +167,7 @@ async function editSession(sessionData) {
 //Gets receipts of players and modify it into custom object type for display
 async function getReceipts(id) {
   try {
-    const response = await axios.get(serverAdd + '/payment-receipts', {
-      params: { sessionId: id },
-    });
+    const response = await axios.get(serverAdd + `/${id}/receipts`);
 
     let images = [];
     for (var j = 0; j < response.data.signedUrls.length; j++) {
@@ -169,7 +189,7 @@ async function uploadQR(image) {
   const formData = new FormData();
   formData.append('my-qr', image);
   try {
-    const response = await axios.post(serverAdd + '/admins/qr', formData);
+    const response = await axios.post(serverAdd + '/users/qrs', formData);
     return response.data;
   } catch (error) {
     console.log(error);
@@ -181,20 +201,18 @@ async function editQR(image) {
   const formData = new FormData();
   formData.append('file', image);
   try {
-    const response = await axios.patch(serverAdd + '/admins/qr', formData);
+    const response = await axios.patch(serverAdd + '/users/qrs', formData);
     return response.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
 
 async function getQR(email) {
   try {
-    const response = await axios.get(serverAdd + `/admins/qr/${email}`);
+    const response = await axios.get(serverAdd + `/users/qrs/${email}`);
     return response.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -335,4 +353,6 @@ export {
   leaveRoom,
   deleteRoom,
   editRoom,
+  promoteUser,
+  demoteUser,
 };

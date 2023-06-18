@@ -76,6 +76,7 @@ const GLogin = () => {
           .then((res) => {
             localStorage.setItem(tokens.jwt, res.accessToken);
             localStorage.setItem(tokens.refresh, res.refreshToken);
+            localStorage.removeItem(tokens.google);
             navigate('/');
           })
           .then((error) => {

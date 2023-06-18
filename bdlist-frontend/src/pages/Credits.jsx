@@ -20,16 +20,16 @@ const Credits = () => {
           <Tilt className=' p-9'>
             <div
               options={{ max: 45, scale: 1, speed: 450 }}
-              className='w-[300px] sm:w-[470px] md:w-[520px] lg:w-[650px] border border-green-400 shadow-card rounded-md'
+              className='w-[300px] sm:w-[470px] md:w-[510px] lg:w-[600px] border border-green-400 shadow-card rounded-[24px]'
             >
-              <div className='flex flex-col md:flex-row md:space-x-14 mb-2 items-center'>
+              <div className='flex flex-col md:flex-row md:space-x-14 p-4 items-center'>
                 <div className='p-4'>
                   <Avatar
                     alt={dev.name}
                     src={dev.image}
                     sx={{
-                      width: { xs: 90, sm: 100, md: 180 },
-                      height: { xs: 90, sm: 100, md: 180 },
+                      width: { xs: 90, sm: 100, md: 160 },
+                      height: { xs: 90, sm: 100, md: 160 },
                     }}
                   />
                 </div>
@@ -51,7 +51,7 @@ const Credits = () => {
 
       <SpeedDialComponent />
       <p className=' font-light text-[15px] text-center bottom-4 mb-9 p-3'>
-        You can find our proper introductions at{' '}
+        You can find more about us at{' '}
         <a href='https://pierreccesario.com/' className=' text-cyan-400'>
           Pierre Cesario
         </a>{' '}
@@ -71,14 +71,14 @@ const LoreComponent = (props) => {
     setCompact((prev) => (prev ? false : true));
   };
   return (
-    <div className='flex items-center justify-center p-5'>
+    <div className='flex items-center justify-center p-5 text-base'>
       <Paper elevation={24} sx={{ width: 600 }} className='p-5'>
         {compact ? (
-          <div className=' text-base font-mono text-left line-clamp-6 md:line-clamp-none'>
+          <div className='font-mono text-left line-clamp-6 md:line-clamp-none'>
             {props.dev.lore}
           </div>
         ) : (
-          <div className=' text-base font-mono text-left'>{props.dev.lore}</div>
+          <div className='font-mono text-left'>{props.dev.lore}</div>
         )}
 
         <div className='mt-2 visible md:hidden'>

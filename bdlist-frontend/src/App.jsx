@@ -2,7 +2,7 @@ import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import GLogin from './pages/GLogin';
 import NotFound from './pages/NotFound';
-import Details from './pages/Details';
+import Details from './pages/UserSettings';
 import SessionCreate from './pages/SessionCreate';
 import { createContext, useMemo, useState } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';

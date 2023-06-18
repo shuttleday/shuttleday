@@ -7,6 +7,7 @@ import QrCode2Icon from '@mui/icons-material/QrCode2';
 import React from 'react';
 import MuiAlert from '@mui/material/Alert';
 import BugReportIcon from '@mui/icons-material/BugReport';
+import WestIcon from '@mui/icons-material/West';
 
 const ERROR = 'error';
 const SUCCESS = 'success';
@@ -28,24 +29,31 @@ const info = [
     title: 'DevOps God',
     image: 'https://github.com/PScoriae.png',
     gradients: 'from-green-400 via-blue-500 to-purple-500',
-    lore: "Once upon a time, there was a brilliant DevOps Engineer named Pierre, who had acquired his technical mastery at the prestigious Lancaster University. But Pierre was no ordinary engineer. He had a deep love for the magical world of Kpop and was a fervent follower of the legendary LE SSERAFIM. Pie's combination of technological expertise and his passion for pop culture made him a truly unique hero, whose presence in any project was said to bring a touch of magic and diversity. His legend continues to inspire and captivate those who are fortunate enough to cross paths with him.",
+    lore: 'Talented up-and-coming DevOps Engineer from Sunway University with exceptional skills in the field of technology. Always friendly in person with a warm personality, able to speak a few languages such as Tagalog, French, and Korean, and a Big fan of Kpop, and a stan of Le Sserafim with a collection of albums. ',
   },
   {
     name: 'Teh',
     title: 'Frontend Legend',
     image: 'https://github.com/Kirixi.png',
     gradients: 'from-amber-300 via-orange-400 to-red-500',
-    lore: "Legend has it that there was a talented Frontend Engineer by the name of Teh, who hailed from the renowned RMIT University. Teh possessed an extraordinary skill set that allowed them to create stunning user interfaces and engaging web experiences. But Teh was more than just a technical genius. It was rumored that Teh was a devoted follower of the Kpop group, TWICE, and he would often be found passionately singing along to their favorite songs. Teh's love for music and technology brought a unique energy to their work and inspired those around them. The legend of Teh lives on as a testament to the power of pursuing one's passions",
+    lore: 'Talented up-and-coming Frontend Engineer from Australia’s RMIT University with a keen interest in web animations. Always keen to help friends in need, likes to play competitive games like Valoranta, casual anime fan, and a K-pop enjoyer especially when it comes to groups like Twice and Aespa.',
   },
 ];
 const adminActions = [
   { icon: <LogoutIcon />, name: 'Logout', operation: 'logout' },
+  { icon: <WestIcon />, name: 'Rooms', operation: 'room' },
   { icon: <InfoIcon />, name: 'Credits', operation: 'credits' },
   { icon: <BugReportIcon />, name: 'Bug Report', operation: 'report' },
   { icon: <QrCode2Icon />, name: 'Manage QR', operation: 'qr' },
   { icon: <EditIcon />, name: 'Edit Session', operation: 'edit' },
   { icon: <PrivacyTipIcon />, name: 'User Details', operation: 'details' },
   { icon: <AddBoxIcon />, name: 'Create Session', operation: 'create' },
+];
+
+const roomActions = [
+  { icon: <LogoutIcon />, name: 'Logout', operation: 'logout' },
+  { icon: <InfoIcon />, name: 'Credits', operation: 'credits' },
+  { icon: <BugReportIcon />, name: 'Bug Report', operation: 'report' },
 ];
 
 const userActions = [
@@ -61,8 +69,9 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 const RE = /^\d+(,\d+)*$/; //Format for input e.g. 1,2,3,4
 
 const ACTIONS = {
-  SUCCESS: 'FETCH_CART_SUCCESS',
-  FAILURE: 'FETCH_CART_FAILURE',
+  SUCCESS: 'FETCH_DATA_SUCCESS',
+  FAILURE: 'FETCH_DATA_FAILURE',
+  EDIT: 'EDIT_DATA',
 };
 //Modal style
 const styleImage = {
@@ -87,6 +96,7 @@ const operations = {
 export {
   adminActions,
   userActions,
+  roomActions,
   ERROR,
   SUCCESS,
   WARNING,

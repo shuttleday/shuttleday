@@ -41,8 +41,6 @@ import {
   userActions,
   ERROR,
   SUCCESS,
-  WARNING,
-  admin,
   Alert,
   styleImage,
   tokens,
@@ -80,6 +78,8 @@ const HomePage = () => {
       navigate('/Glogin');
     } else if (operation === 'edit') {
       navigate('/edit');
+    } else if (operation === 'room') {
+      navigate('/');
     }
   }
 
@@ -400,7 +400,9 @@ const HomePage = () => {
               >
                 <Tab label='NameList' value='1' />
 
-                {sessionInfo != null && <Tab label='Payment' value='2' />}
+                {sessionInfo != null && !playerStat && (
+                  <Tab label='Payment' value='2' />
+                )}
                 {render && sessionInfo != null && (
                   <Tab label='Receipts' value='3' />
                 )}
