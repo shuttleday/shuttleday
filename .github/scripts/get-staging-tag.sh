@@ -5,7 +5,7 @@ input_tag=$1
 
 # Read the current tag value from overlays/staging/api-deployment.patch.yml in the k8s repo
 file_content=$(curl https://raw.githubusercontent.com/shuttleday/k8s/main/overlays/staging/api-deployment.patch.yaml)
-current_tag=$(awk -F'ghcr.io/shuttleday/api:' '/ghcr.io\/shuttleday\/api/ {match($2, /[0-9]+\.[0-9]+\.[0-9]+-rc([0-9]+)/, arr); print substr($2, RSTART, RLENGTH), arr[1]}' <<< "$file_content")
+current_tag=$(awk -F':' '{print $3}' <<< "$file_content")
 
 # Extract semantic version of the tag
 current_semantic_version=$(echo "${current_tag}" | awk -F'-rc' '{print $1}')
