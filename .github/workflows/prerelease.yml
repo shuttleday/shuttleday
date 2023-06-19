@@ -138,7 +138,7 @@ jobs:
       - name: Script
         id: get-tag
         run: |
-          docker_tag=$(scripts/get-staging-tag.sh "${{ needs.get-next-version.outputs.new-release-version }}")  # Capture the output of the script into a variable
+          docker_tag=$(./.github/scripts/get-staging-tag.sh "${{ needs.get-next-version.outputs.new-release-version }}")  # Capture the output of the script into a variable
           echo "docker_tag=$docker_tag" >> "$GITHUB_OUTPUT"  # Pass to output for other steps to use
 
   dockerize-backend:
