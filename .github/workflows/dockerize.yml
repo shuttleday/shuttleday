@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       working-directory:
-        description: Working directory for the project 
+        description: Working directory for the project
         required: true
         type: string
       artifact-name:
@@ -27,7 +27,7 @@ on:
         description: Boolean value for whether this image is an rc
         required: true
         type: boolean
-      
+
 jobs:
   dockerize-app:
     name: ${{ inputs.image-name }}
@@ -63,7 +63,7 @@ jobs:
           flavor: |
             latest=false
           tags: |
-            type=semver,pattern={{version}},value=${{ inputs.git-tag }}-rc
+            type=semver,pattern={{version}},value=${{ inputs.git-tag }}
             type=sha
 
       - name: Docker meta for release

@@ -3,8 +3,8 @@ name: Prerelease CI
 on:
   workflow_dispatch:
   push:
-    branches: [ 'staging' ]
-    paths: [ "bdlist-backend/**", "bdlist-frontend/**" ]
+    branches: ["staging"]
+    paths: ["bdlist-backend/**", "bdlist-frontend/**"]
 
 jobs:
   get-next-version:
@@ -107,34 +107,47 @@ jobs:
         working-directory: ./bdlist-frontend
 
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 18
-    
-    - name: Install dependencies
-      run: npm install
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-    - name: Build Frontend
-      run: npm run build
-      env:
-        VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
-        VITE_API_LINK: ${{ secrets.VITE_API_LINK }}
+      - name: Install dependencies
+        run: npm install
 
-    - name: Upload React artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: static-react-build
-        path: ./bdlist-frontend/dist/
-        retention-days: 14  
+      - name: Build Frontend
+        run: npm run build
+        env:
+          VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
+          VITE_API_LINK: ${{ secrets.VITE_API_LINK }}
+
+      - name: Upload React artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: static-react-build
+          path: ./bdlist-frontend/dist/
+          retention-days: 14
+
+  get-next-tag:
+    name: Get next tag for Docker
+    needs: [get-next-version]
+    runs-on: ubuntu-latest
+    outputs:
+      docker_tag: ${{ steps.get-tag.outputs.docker_tag }}
+    steps:
+      - name: Script
+        id: get-tag
+        run: |
+          docker_tag=$(scripts/get-staging-tag.sh "${{ needs.get-next-version.outputs.new-release-version }}")  # Capture the output of the script into a variable
+          echo "docker_tag=$docker_tag" >> "$GITHUB_OUTPUT"  # Pass to output for other steps to use
 
   dockerize-backend:
     name: Build and Push
     if: ${{ needs.get-next-version.outputs.new-release-published }}
-    needs: [transpile-backend, get-next-version]
+    needs: [transpile-backend, get-next-tag, get-next-version]
     uses: ./.github/workflows/dockerize.yml
     with:
-      git-tag: v${{ needs.get-next-version.outputs.new-release-version }}
+      git-tag: v${{ needs.get-next-tag.outputs.docker_tag }}
       working-directory: bdlist-backend
       artifact-name: transpiled-api
       artifact-download-path: bdlist-backend/dist
@@ -144,10 +157,10 @@ jobs:
   dockerize-frontend:
     name: Build and Push
     if: ${{ needs.get-next-version.outputs.new-release-published }}
-    needs: [build-react-app, get-next-version]
+    needs: [build-react-app, get-next-tag, get-next-version]
     uses: ./.github/workflows/dockerize.yml
     with:
-      git-tag: v${{ needs.get-next-version.outputs.new-release-version }}
+      git-tag: v${{ needs.get-next-tag.outputs.docker_tag }}
       working-directory: bdlist-frontend
       artifact-name: static-react-build
       artifact-download-path: bdlist-frontend/dist
@@ -156,7 +169,7 @@ jobs:
 
   deploy:
     name: Trigger K8s staging manifest update in K8s repository
-    needs: [dockerize-backend, dockerize-frontend, get-next-version]
+    needs: [dockerize-backend, dockerize-frontend, get-next-tag]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -169,9 +182,9 @@ jobs:
               repo: 'k8s',
               workflow_id: 'update-staging.yml',
               ref: 'main',
-              inputs: { 'tag': '${{ needs.get-next-version.outputs.new-release-version }}' }
+              inputs: { 'tag': '${{ needs.get-next-tag.outputs.docker_tag }}' }
             })
-            
+
       - name: Send Discord Notification
         uses: sarisia/actions-status-discord@v1
         if: always()
