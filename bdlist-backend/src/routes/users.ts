@@ -11,6 +11,36 @@ import { RoomPlayer } from "../db/interfaces.js";
 
 const router = Router();
 
+// Get list of rooms that the requester has joined
+router.get(
+  "/users/rooms",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const email = req.user.email;
+      const rooms = await Rooms.find({
+        playerList: { $elemMatch: { email } },
+      }).toArray();
+
+      if (rooms.length === 0)
+        throw new ApiError(400, "You have not joined any rooms");
+
+      const truncatedRes = rooms.map((room) => {
+        return {
+          _id: room._id,
+          name: room.name,
+          description: room.description,
+          creatorEmail: room.creatorEmail,
+          creatorUsername: room.creatorUsername,
+        };
+      });
+
+      res.status(200).json(truncatedRes);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 // Get user in a room by email
 // Only those in the room can query
 router.get(
