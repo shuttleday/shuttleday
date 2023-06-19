@@ -135,6 +135,7 @@ jobs:
     outputs:
       docker_tag: ${{ steps.get-tag.outputs.docker_tag }}
     steps:
+      - uses: actions/checkout@v2
       - name: Script
         id: get-tag
         run: |
