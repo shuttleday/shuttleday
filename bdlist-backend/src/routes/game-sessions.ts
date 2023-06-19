@@ -70,6 +70,7 @@ router
           payTo: req.user.email,
           title: req.body.title,
           roomId,
+          location: req.body.location,
         };
 
         const result = await GameSessions.insertOne(document);
@@ -161,6 +162,7 @@ router
             payTo: req.body.payTo,
             courts: req.body.courts as string[],
             title: req.body.title,
+            location: req.body.location,
           },
         },
         { returnDocument: "after" }
