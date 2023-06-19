@@ -15,7 +15,6 @@ current_rc_number=$(echo "${current_tag}" | awk -F'-rc' '{print $2}' | tr -d '\n
 
 # Check if the input tag is different from the current semantic tag
 if [ "$input_tag" = "$current_semantic_version" ]; then
-  echo "input tag is the same as the current semantic version"
   # Increment the "rc" number
   let updated_rc_number=$current_rc_number+1
   
@@ -24,7 +23,6 @@ if [ "$input_tag" = "$current_semantic_version" ]; then
   
   echo "${updated_tag}"
 else
-  echo "input tag is different from the current semantic version"
   updated_tag="${input_tag}-rc1"
   echo "${updated_tag}"
 fi
