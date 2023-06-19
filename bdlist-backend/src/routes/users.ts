@@ -50,6 +50,46 @@ router.get(
   }
 );
 
+// Join a new room based on its password
+// All room passwords are unique anyway
+router
+  .route("/rooms/join")
+  .post(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const attemptedPw = req.body.password;
+
+      const room = await Rooms.findOne({
+        password: attemptedPw,
+      });
+      if (!room) throw new ApiError(400, "Invalid password");
+      const emailList = room.playerList.map((player) => player.email);
+      if (emailList.includes(req.user.email))
+        throw new ApiError(400, "You are already in this room");
+
+      const player: RoomPlayer = {
+        username: req.user.username,
+        email: req.user.email,
+        isAdmin: false,
+      };
+      const result = await Rooms.findOneAndUpdate(
+        { _id: room._id },
+        {
+          $push: {
+            playerList: player,
+          },
+        },
+        { returnDocument: "after" }
+      );
+
+      if (result.value === null)
+        throw new ApiError(500, "Internal server error");
+
+      res.status(200).json({ playerList: result.value.playerList });
+    } catch (error) {
+      next(error);
+    }
+  });
+
 router
   // Get all users in a room
   // Only those in the room can query
@@ -68,45 +108,6 @@ router
 
       res.status(200).json({ users });
       next();
-    } catch (error) {
-      next(error);
-    }
-  })
-  // Add self to a room
-  .post(async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const roomId = req.params.roomId;
-      if (!isValidObjectId(roomId))
-        throw new ApiError(400, "Not a valid room ID");
-      const room = await Rooms.findOne({ _id: new ObjectId(roomId) });
-      if (!room) throw new ApiError(404, "No room with that ID");
-      // Check if requester is in room
-      const playerList = room.playerList;
-      if (isEmailInPlayerList(playerList, req.user.email))
-        throw new ApiError(403, "You are already in the room");
-
-      if (req.body.password !== room.password)
-        throw new ApiError(401, "Incorrect password");
-
-      const player: RoomPlayer = {
-        username: req.user.username,
-        email: req.user.email,
-        isAdmin: false,
-      };
-      const result = await Rooms.findOneAndUpdate(
-        { _id: new ObjectId(roomId) },
-        {
-          $push: {
-            playerList: player,
-          },
-        },
-        { returnDocument: "after" }
-      );
-
-      if (result.value === null)
-        throw new ApiError(500, "Internal server error");
-
-      res.status(200).json({ playerList: result.value.playerList });
     } catch (error) {
       next(error);
     }
