@@ -19,7 +19,7 @@ if [[ "${input_tag}" != "${current_semantic_version}" ]]; then
   echo "${updated_tag}"
 else
   # Increment the "rc" number
-  updated_rc_number=$(($current_rc_number + 1))
+  let updated_rc_number=$current_rc_number+1
   
   # Construct the updated tag with the incremented "rc" number
   updated_tag="${input_tag}-rc${updated_rc_number}"
