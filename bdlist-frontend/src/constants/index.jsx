@@ -17,6 +17,10 @@ const admin = 'ADMIN';
 
 const ID = 'ID';
 
+const FILE = {
+  PDF: 'PDF',
+  IMG: 'IMAGE',
+};
 const tokens = {
   google: 'gtoken',
   refresh: 'refreshToken',
@@ -109,4 +113,5 @@ export {
   operations,
   ID,
   tokens,
+  FILE,
 };

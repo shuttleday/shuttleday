@@ -45,6 +45,7 @@ import {
   styleImage,
   tokens,
   ID,
+  FILE,
 } from '../constants';
 import InfoHeader from '../components/InfoHeader';
 import ImageList from '@mui/material/ImageList';
@@ -107,10 +108,16 @@ const HomePage = () => {
 
   const [bail, setBail] = useState(false);
 
+  const [fileType, setFileType] = useState(null);
   //Checkbox logic for usernames----------------------------------------------------
 
   const handleOnChange = (e) => {
     setButtonON(false);
+    if (e.target.files[0].type === 'application/pdf') {
+      setFileType(FILE.PDF);
+    } else {
+      setFileType(FILE.IMG);
+    }
     setImage(e.target.files[0]);
   };
 
@@ -346,19 +353,33 @@ const HomePage = () => {
                   <>
                     <Card
                       sx={{
-                        width: { sx: 400, sm: 450, md: 500 },
+                        width: { sx: 450, sm: 490, md: 500 },
                         height: { sx: 300, sm: 350, md: 300 },
                       }}
                     >
-                      <CardMedia
-                        component='img'
-                        image={URL.createObjectURL(image)}
-                        alt='Your Image'
-                        sx={{
-                          maxHeight: '400px',
-                          height: { sx: 300, sm: 350, md: 390 },
-                        }}
-                      />
+                      {fileType === FILE.PDF ? (
+                        <p
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            textAlign: 'center',
+                            height: '200px',
+                          }}
+                        >
+                          {image.name}
+                        </p>
+                      ) : (
+                        <CardMedia
+                          component='img'
+                          image={URL.createObjectURL(image)}
+                          alt='Your Image'
+                          sx={{
+                            maxHeight: '400px',
+                            height: { sx: 300, sm: 350, md: 390 },
+                          }}
+                        />
+                      )}
                     </Card>
                   </>
                 )}
@@ -369,7 +390,7 @@ const HomePage = () => {
                 >
                   <input
                     hidden
-                    accept='image/*'
+                    accept='image/*, application/pdf'
                     type='file'
                     onChange={handleOnChange}
                   />
