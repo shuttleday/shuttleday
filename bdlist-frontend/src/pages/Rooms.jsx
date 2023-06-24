@@ -12,6 +12,7 @@ import {
   operations,
   ID,
   roomActions,
+  tokens,
 } from '../constants';
 import jwtDecode from 'jwt-decode';
 import Box from '@mui/material/Box';
@@ -22,12 +23,12 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import {
   createRoom,
-  getRooms,
   joinRoom,
   getRoomByID,
   leaveRoom,
   deleteRoom,
   editRoom,
+  getJoinedRooms,
 } from '../data/repository';
 import Snackbar from '@mui/material/Snackbar';
 import Loading from '../components/Loading';
@@ -37,6 +38,7 @@ import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import LoginIcon from '@mui/icons-material/Login';
 
 const roomReducer = (state, action) => {
   switch (action.type) {
@@ -85,26 +87,15 @@ const Rooms = () => {
   const [roomState, roomDispatch] = useReducer(roomReducer, initialRoomState);
 
   const getAllRooms = async () => {
-    getRooms()
+    getJoinedRooms()
       .then((res) => {
-        roomDispatch({ type: ACTIONS.SUCCESS, payload: res.rooms });
+        roomDispatch({ type: ACTIONS.SUCCESS, payload: res });
       })
       .catch((error) => {
         roomDispatch({ type: ACTIONS.FAILURE, payload: null });
       });
   };
 
-  const checkJoined = () => {
-    getRoomByID(roomState.data[selected].id)
-      .then((res) => {
-        setJoined(
-          res.playerList.find((currentUser) => currentUser.email === user.email)
-        );
-      })
-      .catch((error) => {
-        setJoined(null);
-      });
-  };
   useEffect(() => {
     async function getData() {
       getAllRooms();
@@ -113,19 +104,15 @@ const Rooms = () => {
     getData();
   }, []);
 
-  const [user, setUser] = useState(
-    localStorage.getItem('jwtToken_Login')
-      ? jwtDecode(localStorage.getItem('jwtToken_Login'))
-      : null
-  );
+  const user = localStorage.getItem(tokens.jwt)
+    ? jwtDecode(localStorage.getItem(tokens.jwt))
+    : null;
 
   //Alert logic for page information
   const [alert, setAlert] = useState(false);
   const [alertMsg, setAlertMsg] = useState('');
   const [condition, setCondition] = useState(SUCCESS);
   //----------------------------------------------------------
-
-  const [joined, setJoined] = useState(null);
 
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
@@ -142,21 +129,12 @@ const Rooms = () => {
     } else if (operation === 'report') {
       navigate('/report');
     } else if (operation === 'logout') {
-      localStorage.removeItem('jwtToken_Login');
-      localStorage.removeItem('refreshToken');
+      localStorage.removeItem(tokens.jwt);
+      localStorage.removeItem(tokens.refresh);
       navigate('/Glogin');
     }
   }
   const handleClick = (index) => {
-    getRoomByID(roomState.data[index].id)
-      .then((res) => {
-        setJoined(
-          res.playerList.find((currentUser) => currentUser.email === user.email)
-        );
-      })
-      .catch((error) => {
-        setJoined(null);
-      });
     setSelected(index);
     setIsClicked(true);
   };
@@ -188,7 +166,7 @@ const Rooms = () => {
   };
 
   const handleShow = () => {
-    getRoomByID(roomState.data[selected].id)
+    getRoomByID(roomState.data[selected]._id)
       .then((res) => {
         setPassword(res.password);
         setShowPass(true);
@@ -220,10 +198,10 @@ const Rooms = () => {
       password: passwordRef.current.value,
     };
 
-    joinRoom(password, roomState.data[selected].id)
+    joinRoom(password, roomState.data[selected]._id)
       .then((res) => {
         activateAlert(SUCCESS, 'Joined!');
-        checkJoined();
+        getAllRooms();
         handlePassCloseModal();
       })
       .catch((error) => {
@@ -233,11 +211,13 @@ const Rooms = () => {
 
   //Leave selected room
   const handleLeave = () => {
-    handleShowWarningClose();
-    leaveRoom(roomState.data[selected].id)
+    leaveRoom(roomState.data[selected]._id)
       .then((res) => {
-        checkJoined();
         activateAlert(SUCCESS, 'You have left this room.');
+        getAllRooms();
+        handleBack();
+        setSelected(0);
+        handleShowWarningClose();
       })
       .catch((error) => {
         activateAlert(ERROR, error.response.data.error);
@@ -246,7 +226,7 @@ const Rooms = () => {
 
   //Delete seleted room
   const handleDelete = () => {
-    deleteRoom(roomState.data[selected].id)
+    deleteRoom(roomState.data[selected]._id)
       .then((res) => {
         handleShowWarningClose();
         getAllRooms();
@@ -281,7 +261,7 @@ const Rooms = () => {
       description: roomDescription,
     };
 
-    editRoom(roomState.data[selected].id, newInfo)
+    editRoom(roomState.data[selected]._id, newInfo)
       .then((res) => {
         activateAlert(SUCCESS, 'Room info updated!');
         getAllRooms();
@@ -324,7 +304,7 @@ const Rooms = () => {
   };
 
   const handleEnter = () => {
-    sessionStorage.setItem(ID, roomState.data[selected].id);
+    sessionStorage.setItem(ID, roomState.data[selected]._id);
     navigate('/Home');
   };
 
@@ -513,7 +493,7 @@ const Rooms = () => {
 
           <div className='perspective'>
             <div
-              className={` min-h-[650px] ${
+              className={` min-h-[680px] ${
                 showPass && 'h-[670px]'
               } w-[355px] mb-6 relative border border-green-400 rounded-[20px] shadow-card duration-1000 preserve-3d ${
                 isClicked ? 'my-rotate-y-180' : ''
@@ -541,9 +521,16 @@ const Rooms = () => {
                   )
                 )}
 
+                <Button
+                  variant='contained'
+                  className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl text-green-400'
+                  onClick={handleJoin}
+                >
+                  <LoginIcon />
+                </Button>
                 <IconButton
                   variant='contained'
-                  className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
+                  className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl text-green-400'
                   onClick={() => handleOpenCreate(operations.create)}
                 >
                   <AddIcon />
@@ -626,33 +613,20 @@ const Rooms = () => {
                       </div>
                     ) : (
                       <>
-                        {joined ? (
-                          <>
-                            <Button
-                              variant='contained'
-                              className='w-full py-3 px-6 bg-green-400 text-lg rounded-2xl'
-                              onClick={handleEnter}
-                            >
-                              Enter
-                            </Button>
-                            <Button
-                              variant='contained'
-                              className='w-full py-3 px-6 bg-red-500 text-lg rounded-2xl'
-                              onClick={() => handleWarning(operations.leave)}
-                            >
-                              Leave
-                            </Button>
-                          </>
-                        ) : (
-                          <Button
-                            variant='contained'
-                            className='w-full py-3 px-6 bg-green-400 text-lg rounded-2xl'
-                            onClick={handleJoin}
-                          >
-                            Join
-                          </Button>
-                        )}
-
+                        <Button
+                          variant='contained'
+                          className='w-full py-3 px-6 bg-green-400 text-lg rounded-2xl'
+                          onClick={handleEnter}
+                        >
+                          Enter
+                        </Button>
+                        <Button
+                          variant='contained'
+                          className='w-full py-3 px-6 bg-red-500 text-lg rounded-2xl'
+                          onClick={() => handleWarning(operations.leave)}
+                        >
+                          Leave
+                        </Button>
                         <IconButton
                           variant='contained'
                           className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
