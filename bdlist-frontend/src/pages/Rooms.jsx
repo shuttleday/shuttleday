@@ -120,6 +120,8 @@ const Rooms = () => {
   //Used as an index to identify which room is currently selected
   const [selected, setSelected] = useState(0);
 
+  const [infoScreen, setInfoScreen] = useState(true);
+
   const [buttonOp, setButtonOp] = useState(operations.create);
   const [isClicked, setIsClicked] = useState(false);
 
@@ -135,6 +137,7 @@ const Rooms = () => {
     }
   }
   const handleClick = (index) => {
+    setInfoScreen(true);
     setSelected(index);
     setIsClicked(true);
   };
@@ -216,6 +219,7 @@ const Rooms = () => {
         activateAlert(SUCCESS, 'You have left this room.');
         getAllRooms();
         handleBack();
+        setInfoScreen(false);
         setSelected(0);
         handleShowWarningClose();
       })
@@ -231,6 +235,7 @@ const Rooms = () => {
         handleShowWarningClose();
         getAllRooms();
         handleBack();
+        setInfoScreen(false);
         setSelected(0);
         activateAlert(SUCCESS, 'Room has been deleted.');
       })
@@ -537,7 +542,7 @@ const Rooms = () => {
                 </IconButton>
               </div>
               <div className='absolute w-full h-full rounded-[20px] backface-hidden bg-black my-rotate-y-180'>
-                {roomState.data && (
+                {roomState.data && infoScreen ? (
                   <div className='p-6 flex items-left text-lg flex-col gap-4'>
                     <div className='font-bold text-[30px] mt-6 text-white'>
                       {roomState.data[selected].name}
@@ -637,6 +642,8 @@ const Rooms = () => {
                       </>
                     )}
                   </div>
+                ) : (
+                  <div></div>
                 )}
               </div>
             </div>
