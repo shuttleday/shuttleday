@@ -116,6 +116,11 @@ const GLogin = () => {
             </Typography>
             <br />
             <Typography>
+              Shuttleday sessions will automatically block name removals from
+              the list 2 days before the session.
+            </Typography>
+            <br />
+            <Typography>
               Shuttleday has no access to your private data, Google only
               provides user emails for login.
             </Typography>
