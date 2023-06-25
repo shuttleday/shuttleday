@@ -62,6 +62,7 @@ const roomActions = [
 
 const userActions = [
   { icon: <LogoutIcon />, name: 'Logout', operation: 'logout' },
+  { icon: <WestIcon />, name: 'Rooms', operation: 'room' },
   { icon: <BugReportIcon />, name: 'Bug Report', operation: 'report' },
   { icon: <InfoIcon />, name: 'Credits', operation: 'credits' },
 ];

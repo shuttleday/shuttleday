@@ -77,7 +77,7 @@ const Rooms = () => {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: { xs: 320, sm: 500 },
-    bgcolor: color,
+    bgcolor: 'background.paper',
     border: '2px solid #000',
     borderRadius: '16px',
     boxShadow: 24,
@@ -528,14 +528,14 @@ const Rooms = () => {
 
                 <Button
                   variant='contained'
-                  className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl text-green-400'
+                  className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
                   onClick={handleJoin}
                 >
-                  <LoginIcon />
+                  Join a Room
                 </Button>
                 <IconButton
                   variant='contained'
-                  className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl text-green-400'
+                  className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
                   onClick={() => handleOpenCreate(operations.create)}
                 >
                   <AddIcon />
