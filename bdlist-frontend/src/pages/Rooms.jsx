@@ -201,14 +201,14 @@ const Rooms = () => {
       password: passwordRef.current.value,
     };
 
-    joinRoom(password, roomState.data[selected]._id)
+    joinRoom(password)
       .then((res) => {
         activateAlert(SUCCESS, 'Joined!');
         getAllRooms();
         handlePassCloseModal();
       })
       .catch((error) => {
-        activateAlert(ERROR, error.response.data.error);
+        activateAlert(ERROR, error.response.data.error + ': No rooms found.');
       });
   };
 
@@ -500,7 +500,7 @@ const Rooms = () => {
             <div
               className={` min-h-[680px] ${
                 showPass && 'h-[670px]'
-              } w-[355px] mb-6 relative border border-green-400 rounded-[20px] shadow-card duration-1000 preserve-3d ${
+              } w-[355px] mb-16 relative border border-green-400 rounded-[20px] shadow-card duration-1000 preserve-3d ${
                 isClicked ? 'my-rotate-y-180' : ''
               }`}
             >
