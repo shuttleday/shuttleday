@@ -504,7 +504,7 @@ const Rooms = () => {
                 isClicked ? 'my-rotate-y-180' : ''
               }`}
             >
-              <div className='py-5 px-12 flex items-center flex-col gap-6 absolute w-full h-full backface-hidden'>
+              <div className='py-7 px-12 flex items-center flex-col gap-6 absolute w-full h-full backface-hidden'>
                 {roomState.loading ? (
                   <Loading />
                 ) : (
