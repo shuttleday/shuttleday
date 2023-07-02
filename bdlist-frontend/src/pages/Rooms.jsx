@@ -38,7 +38,6 @@ import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import LoginIcon from '@mui/icons-material/Login';
 
 const roomReducer = (state, action) => {
   switch (action.type) {
@@ -528,7 +527,7 @@ const Rooms = () => {
 
                 <Button
                   variant='contained'
-                  className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl'
+                  className='w-full py-4 px-6 bg-gray-500 text-lg rounded-2xl text-green-400'
                   onClick={handleJoin}
                 >
                   Join a Room
