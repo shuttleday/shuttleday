@@ -15,7 +15,8 @@ const userReducer = (state, action) => {
       return {
         ...state,
         loading: false,
-        data: action.payload,
+        data: action.payload.playerList,
+        creator: action.payload.creatorUsername,
       };
     case ACTIONS.FAILURE:
       return {
@@ -45,7 +46,7 @@ const UserSettings = () => {
   useEffect(() => {
     async function getUsersData() {
       getUsers(sessionStorage.getItem(ID)).then((res) => {
-        userDispatch({ type: ACTIONS.SUCCESS, payload: res.playerList });
+        userDispatch({ type: ACTIONS.SUCCESS, payload: res });
       });
     }
 
@@ -103,7 +104,9 @@ const UserSettings = () => {
                       <h2 className='text-[23px]'>{user.username}</h2>
                       <h2>{user.email}</h2>
                       <div className='mt-3'>
-                        {!user.isAdmin ? (
+                        {user.username === userState.creator ? (
+                          <></>
+                        ) : !user.isAdmin ? (
                           <Button
                             color={SUCCESS}
                             onClick={() => handlePromote(index)}
