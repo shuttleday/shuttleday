@@ -175,15 +175,10 @@ const HomePage = () => {
 
       //Checks if user is admin
       userCheck(user.email, roomID).then((user) => {
-        if (user.data === 'Refresh') {
-          window.location.reload();
-        }
-
         if (user.isAdmin) {
           setRender(true);
         }
       });
-
       getSessionData();
     },
     // eslint-disable-next-line

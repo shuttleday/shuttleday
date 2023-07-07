@@ -293,16 +293,22 @@ async function editRoom(roomId, data) {
 
 //Intercepts all request to the server and attaches the token to the header
 axios.interceptors.request.use(function (config) {
-  if (
-    config.url === serverAdd + '/auth/signin' ||
-    config.url === serverAdd + '/auth/register'
-  ) {
-    const Gtoken = localStorage.getItem(tokens.google);
-    config.headers.Authorization = `Bearer ${Gtoken}`;
-    return config;
-  } else {
-    const token = localStorage.getItem(tokens.jwt);
-    config.headers.Authorization = `Bearer ${token}`;
+  try {
+    if (
+      config.url === serverAdd + '/auth/signin' ||
+      config.url === serverAdd + '/auth/register'
+    ) {
+      const Gtoken = localStorage.getItem(tokens.google);
+      config.headers.Authorization = `Bearer ${Gtoken}`;
+      return config;
+    } else {
+      const token = localStorage.getItem(tokens.jwt);
+      config.headers.Authorization = `Bearer ${token}`;
+      return config;
+    }
+  } catch (error) {
+    const templateToken = '';
+    config.headers.Authorization = `Bearer ${templateToken}`;
     return config;
   }
 });
@@ -313,23 +319,19 @@ axios.interceptors.response.use(
   },
   async function (error) {
     if (error.response.status === 401) {
-      const refreshToken = {
-        refreshToken: localStorage.getItem(tokens.refresh),
-      };
-
       try {
+        const refreshToken = {
+          refreshToken: localStorage.getItem(tokens.refresh),
+        };
         const newToken = await axios.post(
           serverAdd + '/auth/refreshToken',
           refreshToken
         );
         localStorage.setItem(tokens.jwt, newToken.data.accessToken);
 
-        const response = {
-          data: 'Refresh',
-        };
-        alert('Page is going to refresh');
+        window.location.reload();
 
-        return response;
+        throw error;
       } catch (error) {
         console.log(error);
       }

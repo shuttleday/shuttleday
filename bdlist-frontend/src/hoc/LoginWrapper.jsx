@@ -6,7 +6,10 @@ const LoginWrapper = (Component) =>
   function HOC() {
     let navigate = useNavigate();
     useEffect(() => {
-      if (localStorage.getItem(tokens.jwt) == null) {
+      if (
+        localStorage.getItem(tokens.jwt) == null ||
+        localStorage.getItem(tokens.jwt) === ''
+      ) {
         navigate('/GLogin');
       }
     }, [navigate]);
