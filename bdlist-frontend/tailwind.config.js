@@ -23,7 +23,7 @@ const MyClass = plugin(function ({ addUtilities }) {
   });
 });
 module.exports = {
-  content: ['./src/**/*.{jsx,js,tsx}'],
+  content: ['./src/**/*.{jsx,js,ts,tsx,html,css}'],
   important: '#root',
   theme: {
     extend: {
