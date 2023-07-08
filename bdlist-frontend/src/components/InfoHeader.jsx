@@ -30,14 +30,16 @@ const InfoHeader = (props) => {
             variant='filled'
             className=' w-full'
           >
-            <InputLabel id='demo-simple-select-helper-label'>
+            <InputLabel
+              sx={{ color: '#000000 !important' }}
+              id='selector-label'
+            >
               Sessions
             </InputLabel>
             <Select
-              id='demo-simple-select-helper'
+              id='selector'
               value={props.selected}
               label='Sessions'
-              color='primary'
               onChange={props.handleSelect}
               style={{ borderRadius: '8px' }}
             >
