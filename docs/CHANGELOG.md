@@ -1,3 +1,104 @@
+# [2.0.0](https://github.com/shuttleday/shuttleday/compare/v1.6.0...v2.0.0) (2023-07-08)
+
+
+### Bug Fixes
+
+* add objectId validation ([1b8f50f](https://github.com/shuttleday/shuttleday/commit/1b8f50f2427a58bf3430c4fb09f25c0254d1aa80))
+* added few changes ([91b111d](https://github.com/shuttleday/shuttleday/commit/91b111d5d0562fa451812e314a28e50bd13f5c44))
+* allow only creators to demote room admins ([e90cd4e](https://github.com/shuttleday/shuttleday/commit/e90cd4ed89c0d15c8165589bd51220daf162b448))
+* breaking visual bug fixed for safari users ([ae8cc2e](https://github.com/shuttleday/shuttleday/commit/ae8cc2e4a162d5b0af8baa7c92b0ff992c3e35b6))
+* bug fixed for dev and main page ([7db4744](https://github.com/shuttleday/shuttleday/commit/7db47447b0c62604a2d900ed31f630f50185571f))
+* card spin visuals updated ([dfefa67](https://github.com/shuttleday/shuttleday/commit/dfefa670df3c90eff4e40bf6a9fa9d892a1fef87))
+* **ci:** add checkout step ([9ba81a8](https://github.com/shuttleday/shuttleday/commit/9ba81a8cc9832a054661254ff6ac93193b32b5b9))
+* **ci:** double quote to fix syntax error ([7ff4216](https://github.com/shuttleday/shuttleday/commit/7ff42165a0d4dbeeb6f162e8939a7909cea9db35))
+* **ci:** improve increment logic and syntax ([b3d29d7](https://github.com/shuttleday/shuttleday/commit/b3d29d746749f35111dbbbc71e96df5aca8277ae))
+* **ci:** increment rc logic simplified ([32c9cbe](https://github.com/shuttleday/shuttleday/commit/32c9cbe534b5b27652dd68e7765d18f27375e460))
+* **ci:** move script to .github folder ([34edc3c](https://github.com/shuttleday/shuttleday/commit/34edc3c544ce1060daaffc15055a6fcc234a29bf))
+* **ci:** remove unneccesary echoes ([f20655f](https://github.com/shuttleday/shuttleday/commit/f20655f757a5878a01513cabbbd3eeda71f7d2dd))
+* **ci:** simplify awk logic ([e389c99](https://github.com/shuttleday/shuttleday/commit/e389c99a7ec204f6b2a8c9538b655b78a2bb0ff7))
+* **ci:** update increment rc number logic ([df309e7](https://github.com/shuttleday/shuttleday/commit/df309e76c58f3c6ab870b2ffc598275983576f91))
+* **ci:** use basic arith ([18faa67](https://github.com/shuttleday/shuttleday/commit/18faa677cdc182f1278e03185dac6822d607cd27))
+* **ci:** use expr for incrementing rc ([f7a9e7b](https://github.com/shuttleday/shuttleday/commit/f7a9e7b8670a8b4d8288290ac4f2d9984860d538))
+* **ci:** use let for arithmetic ([dcbb737](https://github.com/shuttleday/shuttleday/commit/dcbb7379874ef1d49d3205d426a50a4d2be890f2))
+* correct game session logic ([593c54e](https://github.com/shuttleday/shuttleday/commit/593c54ebf534ac438f8bfce5f07b6efbcdb1a266))
+* creator demote bug fixed ([15168aa](https://github.com/shuttleday/shuttleday/commit/15168aa4ec9793f1aae0ab88fcae38db21d2c342))
+* credits page updated ([67c5189](https://github.com/shuttleday/shuttleday/commit/67c518952d27cd6148b0b3a5b05fb1a83a57bbae))
+* edit logic updated to fit new api ([6eb45a9](https://github.com/shuttleday/shuttleday/commit/6eb45a91939e3bcd10ea952219bbc0b5d8807b3a))
+* enhance error message ([d0dac64](https://github.com/shuttleday/shuttleday/commit/d0dac64b39e3aef4655ec2d5b6f5ba410828947c))
+* ensure getMissingKeys flags empty strings ([6e414f2](https://github.com/shuttleday/shuttleday/commit/6e414f2a9f92c75fd92a6af18e59e3b034b19d12))
+* fixed typo on introduction ([cc09a97](https://github.com/shuttleday/shuttleday/commit/cc09a9707ccce296cdbda14b9b4511ed4d215b38))
+* fixed visual bug for firefox users ([bae9330](https://github.com/shuttleday/shuttleday/commit/bae9330f56204255152b862774e4c30192d7ee75))
+* fixed visual bug for room speed dial ([766128e](https://github.com/shuttleday/shuttleday/commit/766128e1da11b7f274a502be019dffec79ee76fe))
+* implemented missing logic ([ad8d898](https://github.com/shuttleday/shuttleday/commit/ad8d89837a08240491e2a0e3e14d0c2d57cafbff))
+* improve limit offset validation ([021a628](https://github.com/shuttleday/shuttleday/commit/021a6286499d5df189eb425c3bc879746c367c75))
+* improve required GET query validation ([c79571c](https://github.com/shuttleday/shuttleday/commit/c79571c2ba993fb1d7b498d43edd7130fa0c9e24))
+* improve user room validation ([9c76cb8](https://github.com/shuttleday/shuttleday/commit/9c76cb8aee7f99e7ca1ce4ad6a13da9817446d06))
+* increment staging rc number for identical semver tags ([6a12cd3](https://github.com/shuttleday/shuttleday/commit/6a12cd32237fb942a50d4f0062867dac534c8641))
+* join room based on password ([5fde749](https://github.com/shuttleday/shuttleday/commit/5fde7497b248d46d6766a6199b3b3eee74b1b43c))
+* join room bug fixed ([fcfe873](https://github.com/shuttleday/shuttleday/commit/fcfe87352e4d4180ea8617aa22c9dd9927044add))
+* join room logic updated ([331ba50](https://github.com/shuttleday/shuttleday/commit/331ba50c73a216725662f638a9788562df0cbc88))
+* label styling fixed ([b873b27](https://github.com/shuttleday/shuttleday/commit/b873b274dc56e4f9ccbba09c54eb781881dc9673))
+* make script executable ([524bb8c](https://github.com/shuttleday/shuttleday/commit/524bb8c604b4b3f6dfded79fa014c6d866fc5888))
+* margins for room buttons changed ([615cc49](https://github.com/shuttleday/shuttleday/commit/615cc4992c4972cca6357049dcbbd198008f4fc7))
+* pdf support added ([73ce9d3](https://github.com/shuttleday/shuttleday/commit/73ce9d3cdda2ae7367ec63126308fcf20d2bb671))
+* receipt upload constrain added ([23ff115](https://github.com/shuttleday/shuttleday/commit/23ff1157d1268c79d6ebe5136ebb401c70db7b25))
+* remove userType ([17bc132](https://github.com/shuttleday/shuttleday/commit/17bc1320a2865c647afa70ffe8c6d3ccd5241e58))
+* s3 filename uploads ([9883bd2](https://github.com/shuttleday/shuttleday/commit/9883bd2c293a0a31bb6b6019363110b0a46122de))
+* session selection updated ([9cf8663](https://github.com/shuttleday/shuttleday/commit/9cf866326fe5c4b97496acd924b821efce257b8e))
+* token validation bug fixed ([931a66b](https://github.com/shuttleday/shuttleday/commit/931a66bb740e6aed4e2c76da9a03288401b03d2a))
+* update error message for empty string error ([4a67f1d](https://github.com/shuttleday/shuttleday/commit/4a67f1d6cbb653121cf9829fffc823b84f118944))
+* update room endpoints to use new playerList schema ([7148a35](https://github.com/shuttleday/shuttleday/commit/7148a3543721a9b3cf1c0742821e230201b2540a))
+* update route for room user promotion ([6646f01](https://github.com/shuttleday/shuttleday/commit/6646f01bce2dbe33ce4fa2f42e84233764e4f67c))
+* updated join and remove api ([3872e09](https://github.com/shuttleday/shuttleday/commit/3872e096d6ef9f71e34a48ac3c5a94cdd8de9c2b))
+* updated page description and logo ([ec50934](https://github.com/shuttleday/shuttleday/commit/ec509344efc656865c40dd7aaf782b296ef7a272))
+* updated QR operations to fit new api ([5dafb7c](https://github.com/shuttleday/shuttleday/commit/5dafb7c7c1e5e11225da3ba1539c6e5a7a8aa6b2))
+* updated routing for new api ([a17ee13](https://github.com/shuttleday/shuttleday/commit/a17ee1353c4d6b1293f1bcb03b09db5813447293))
+* updated text color ([45752bc](https://github.com/shuttleday/shuttleday/commit/45752bcb0b2da19004a6da36370fe1cca2ccb085))
+* use correct filename for delete method ([9c22d6e](https://github.com/shuttleday/shuttleday/commit/9c22d6e6a060488117b3e39be3bd6a1335a6b0c8))
+* use email for room creator ([859b235](https://github.com/shuttleday/shuttleday/commit/859b235beb770eb298162bf8e878fbca74c8e207))
+
+
+* fix!: use new endpoint to add player to session ([c74c513](https://github.com/shuttleday/shuttleday/commit/c74c51354e461a714e8d4cade9ef57f55d1d9efa))
+* chore!: change room playerList schema ([5bdc2f2](https://github.com/shuttleday/shuttleday/commit/5bdc2f258d1bf38c2bf6531ad46c9bff50274b35))
+* feat!: update rooms endpoint logic ([31bfaad](https://github.com/shuttleday/shuttleday/commit/31bfaadba966956b2b77f5c94f356ab5825bffd3))
+
+
+### Features
+
+* add /users/rooms endpoint ([0d3c92b](https://github.com/shuttleday/shuttleday/commit/0d3c92b59cbafc430938e791606297b884bf0753))
+* add admin status to room user by email query ([426f78f](https://github.com/shuttleday/shuttleday/commit/426f78fe4eda93661632726224968f410b369f66))
+* add delete room route ([74ed23c](https://github.com/shuttleday/shuttleday/commit/74ed23c1d3438c34ad555a8ca35681c65aa0e1a2))
+* add demote admin to user endpoint ([420eb15](https://github.com/shuttleday/shuttleday/commit/420eb15d8d99231e121afaa94bd80ff49e00f10b))
+* add get room password by id ([5a8f09c](https://github.com/shuttleday/shuttleday/commit/5a8f09c088887221b7117cf4262708cb04cc75c0))
+* add limit and offset to GET room response ([60c7620](https://github.com/shuttleday/shuttleday/commit/60c76204c52d9ce2c48d1d5ee0b78e14aba34179))
+* add location field to sessions ([254d2f9](https://github.com/shuttleday/shuttleday/commit/254d2f9077bbabf9f50d79b15d01043fa4b483b8))
+* add room collection and interface ([dc07a54](https://github.com/shuttleday/shuttleday/commit/dc07a549a405c69f6f0f7f9f8c7aa83144a7fe45))
+* add room user endpoints ([805d9b4](https://github.com/shuttleday/shuttleday/commit/805d9b45d6009b3ace42436b9cd5aad0daeffeeb))
+* add rooms endpoint ([c4fe568](https://github.com/shuttleday/shuttleday/commit/c4fe5684ba3b6e622acbd4717042d00708064f01))
+* add rooms endpoint ([6976d31](https://github.com/shuttleday/shuttleday/commit/6976d314c12dd7a15ec19e3d4098ded08148acad))
+* add rooms validation ([e70e667](https://github.com/shuttleday/shuttleday/commit/e70e6679d340a88e9d8fb3d79de92339c655be2f))
+* add user qrs endpoint ([ba351f0](https://github.com/shuttleday/shuttleday/commit/ba351f059044a119ea9b04f4c5d914d300ee178b))
+* added navigation to room page ([f738ab6](https://github.com/shuttleday/shuttleday/commit/f738ab647dca82be87ced917b09c34a42a03272a))
+* cost calculator implemented for [#32](https://github.com/shuttleday/shuttleday/issues/32) ([1b76b50](https://github.com/shuttleday/shuttleday/commit/1b76b506485f0b49e103631ebcbea239d73d66c2))
+* create room feature implemented ([ad2ef69](https://github.com/shuttleday/shuttleday/commit/ad2ef6997f2e88e71e15c5d080c7419cbf503b5c))
+* delete and leave room feature implemented ([61f170e](https://github.com/shuttleday/shuttleday/commit/61f170ed246b9139685f92b9c8990e6e804fc06e))
+* editing room info implemented ([f21b01b](https://github.com/shuttleday/shuttleday/commit/f21b01b4a330b2b790cbef5d5dbbb06f8dd5235d))
+* join room logic implemented ([50cfa5e](https://github.com/shuttleday/shuttleday/commit/50cfa5e51c18a73fd9efbce6aad9c09e42ee6011))
+* join room logic implemented ([595a554](https://github.com/shuttleday/shuttleday/commit/595a554b6ef8c9b2f875538f32158b9e64b7b0d0))
+* password reveal implemented ([ff8fa8f](https://github.com/shuttleday/shuttleday/commit/ff8fa8fda12f3934e24015349e7063feed641a31))
+* update game-sessions to use new room schema ([475502c](https://github.com/shuttleday/shuttleday/commit/475502c78254a66288347214c51fd03433c635b4))
+* update payments to use new schema ([ddc8ec3](https://github.com/shuttleday/shuttleday/commit/ddc8ec3a5348e9181e30bc4b9973b4299dc35a37))
+* update session-players to use new room schema ([ad56679](https://github.com/shuttleday/shuttleday/commit/ad56679874fe3fcad05ab0fa597969423aeedbf0))
+* User settings implemented ([4b30315](https://github.com/shuttleday/shuttleday/commit/4b30315af8fa1ab3f1b8d6b43eed9d5d3828a5f7))
+
+
+### BREAKING CHANGES
+
+* simplify endpoint since session ID is unique anyways
+* consolidate playerList and adminList into array of objects
+- fix existing business validation logic
+* API endpoints changed, forgot to put this in the previous commits oops
+
 # [1.6.0](https://github.com/shuttleday/shuttleday/compare/v1.5.3...v1.6.0) (2023-05-24)
 
 
