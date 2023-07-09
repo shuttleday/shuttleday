@@ -46,7 +46,7 @@ import {
   tokens,
   ID,
   FILE,
-} from '../constants';
+} from '../constants/constants';
 import InfoHeader from '../components/InfoHeader';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';

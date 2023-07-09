@@ -12,7 +12,7 @@ import ImageIcon from '@mui/icons-material/Image';
 import IconButton from '@mui/material/IconButton';
 import { uploadQR, editQR, getQR } from '../data/repository';
 import Snackbar from '@mui/material/Snackbar';
-import { Alert, ERROR, WARNING, SUCCESS } from '../constants';
+import { Alert, ERROR, WARNING, SUCCESS } from '../constants/constants';
 import { amber } from '@mui/material/colors';
 import SpeedDialComponent from '../components/SpeedDialComponent';
 import jwt_decode from 'jwt-decode';

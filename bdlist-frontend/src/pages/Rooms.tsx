@@ -13,7 +13,7 @@ import {
   ID,
   roomActions,
   tokens,
-} from '../constants';
+} from '../constants/constants';
 import jwtDecode from 'jwt-decode';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -38,6 +38,7 @@ import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { Room } from '../constants/types';
 
 const roomReducer = (state, action) => {
   switch (action.type) {
@@ -260,7 +261,7 @@ const Rooms = () => {
       return;
     }
 
-    const newInfo = {
+    const newInfo: Room = {
       name: roomName,
       description: roomDescription,
     };

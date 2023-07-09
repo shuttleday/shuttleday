@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, FC } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { tokens } from '../constants';
+import { tokens } from '../constants/constants';
 
-const LoginWrapper = (Component) =>
+const LoginWrapper = (Component: FC) =>
   function HOC() {
     let navigate = useNavigate();
     useEffect(() => {

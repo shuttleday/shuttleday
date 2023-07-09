@@ -3,7 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { getUsers, promoteUser, demoteUser } from '../data/repository';
 import { useState } from 'react';
 import { AdminWrapper } from '../hoc';
-import { ID, ACTIONS, SUCCESS, ERROR, Alert, WARNING } from '../constants';
+import {
+  ID,
+  ACTIONS,
+  SUCCESS,
+  ERROR,
+  Alert,
+  WARNING,
+} from '../constants/constants';
 import { Button } from '@mui/material';
 import SpeedDialComponent from '../components/SpeedDialComponent';
 import Loading from '../components/Loading';

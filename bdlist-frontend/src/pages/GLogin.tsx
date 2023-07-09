@@ -11,7 +11,13 @@ import { Button } from '@mui/material';
 import { amber } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { styleImage, SUCCESS, ERROR, Alert, tokens } from '../constants';
+import {
+  styleImage,
+  SUCCESS,
+  ERROR,
+  Alert,
+  tokens,
+} from '../constants/constants';
 import { Typography } from '@mui/material';
 import Link from '@mui/material/Link';
 import Checkbox from '@mui/material/Checkbox';

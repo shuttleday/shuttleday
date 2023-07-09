@@ -1,23 +1,10 @@
 import React, { useEffect, useState, FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
-import { ID, tokens } from '../constants';
+import { ID, tokens } from '../constants/constants';
 import { userCheck } from '../data/repository';
+import User from '../constants/types';
 
-interface QR {
-  uploaded: boolean;
-  fileExt: string;
-}
-interface User {
-  _id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  username: string;
-  createdAt: string;
-  QR: QR;
-  isAdmin: boolean;
-}
 const AdminWrapper = (Component: FC) =>
   function HOC() {
     const [isAdmin, setIsAdmin] = useState(false);

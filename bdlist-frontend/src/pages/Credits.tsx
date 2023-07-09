@@ -3,7 +3,7 @@ import SpeedDialComponent from '../components/SpeedDialComponent';
 import Avatar from '@mui/material/Avatar';
 import Paper from '@mui/material/Paper';
 import Tilt from 'react-parallax-tilt';
-import { info } from '../constants';
+import { info } from '../constants/constants';
 import { Button } from '@mui/material';
 
 const Credits = () => {

@@ -15,7 +15,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { Typography } from '@mui/material';
 import { editSession, getSession } from '../data/repository';
-import { Alert, ERROR, SUCCESS, RE, ID } from '../constants';
+import { Alert, ERROR, SUCCESS, RE, ID } from '../constants/constants';
 import { AdminWrapper } from '../hoc';
 import Loading from '../components/Loading';
 

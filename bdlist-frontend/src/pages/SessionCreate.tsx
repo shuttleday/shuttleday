@@ -11,7 +11,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { Typography } from '@mui/material';
 import { createSession, joinSession } from '../data/repository';
-import { ERROR, SUCCESS, Alert, RE, ID } from '../constants';
+import { ERROR, SUCCESS, Alert, RE, ID } from '../constants/constants';
 import { AdminWrapper } from '../hoc';
 const SessionCreate = () => {
   const [open, setOpen] = useState(false);
