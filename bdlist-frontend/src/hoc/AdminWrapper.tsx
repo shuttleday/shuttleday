@@ -1,17 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import { ID, tokens } from '../constants';
 import { userCheck } from '../data/repository';
 
-const AdminWrapper = (Component) =>
+interface QR {
+  uploaded: boolean;
+  fileExt: string;
+}
+interface User {
+  _id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  createdAt: string;
+  QR: QR;
+  isAdmin: boolean;
+}
+const AdminWrapper = (Component: FC) =>
   function HOC() {
     const [isAdmin, setIsAdmin] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
-      async function checkAdmin(data) {
-        const res = await userCheck(data.email, sessionStorage.getItem(ID));
+      async function checkAdmin(data: User) {
+        const res = await userCheck(
+          data.email,
+          sessionStorage.getItem(ID) as string
+        );
         if (res.isAdmin) {
           setIsAdmin(true);
         } else {
@@ -19,10 +36,15 @@ const AdminWrapper = (Component) =>
         }
       }
 
-      if (localStorage.getItem(tokens.jwt) === null) {
+      if (
+        localStorage.getItem(tokens.jwt) == null ||
+        localStorage.getItem(tokens.jwt) === ''
+      ) {
         navigate('/GLogin');
       } else {
-        const user = jwt_decode(localStorage.getItem(tokens.jwt));
+        const user: User = jwt_decode(
+          localStorage.getItem(tokens.jwt) as string
+        );
         checkAdmin(user);
       }
     }, [navigate]);

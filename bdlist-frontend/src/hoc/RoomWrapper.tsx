@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ID } from '../constants';
 
-const RoomWrapper = (Component) =>
+const RoomWrapper = (Component: FC) =>
   function HOC() {
     let navigate = useNavigate();
     useEffect(() => {

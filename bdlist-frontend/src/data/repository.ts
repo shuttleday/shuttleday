@@ -5,7 +5,7 @@ import { tokens } from '../constants';
 const serverAdd = import.meta.env.VITE_API_LINK;
 
 //Used for room admin authentication
-async function userCheck(email, roomId) {
+async function userCheck(email: string, roomId: string) {
   try {
     const user = await axios.get(`${serverAdd}/rooms/${roomId}/users/${email}`);
     return user.data;

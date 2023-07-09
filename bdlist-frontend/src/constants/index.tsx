@@ -5,7 +5,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import PrivacyTipIcon from '@mui/icons-material/PrivacyTip';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
 import React from 'react';
-import MuiAlert from '@mui/material/Alert';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import BugReportIcon from '@mui/icons-material/BugReport';
 import WestIcon from '@mui/icons-material/West';
 
@@ -67,7 +67,10 @@ const userActions = [
   { icon: <InfoIcon />, name: 'Credits', operation: 'credits' },
 ];
 
-const Alert = React.forwardRef(function Alert(props, ref) {
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref
+) {
   return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
 });
 
