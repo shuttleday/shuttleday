@@ -5,6 +5,11 @@ import Paper from '@mui/material/Paper';
 import Tilt from 'react-parallax-tilt';
 import { info } from '../constants/constants';
 import { Button } from '@mui/material';
+import { Info } from '../constants/types';
+
+interface Props {
+  dev: Info;
+}
 
 const Credits = () => {
   return (
@@ -18,10 +23,7 @@ const Credits = () => {
 
         {info.map((dev, index) => (
           <Tilt className=' p-9'>
-            <div
-              options={{ max: 45, scale: 1, speed: 450 }}
-              className='w-[300px] sm:w-[470px] md:w-[510px] lg:w-[600px] border border-green-400 shadow-card rounded-[24px]'
-            >
+            <div className='w-[300px] sm:w-[470px] md:w-[510px] lg:w-[600px] border border-green-400 shadow-card rounded-[24px]'>
               <div className='flex flex-col md:flex-row md:space-x-14 p-4 items-center'>
                 <div className='p-4'>
                   <Avatar
@@ -64,10 +66,10 @@ const Credits = () => {
   );
 };
 
-const LoreComponent = (props) => {
+const LoreComponent = (props: Props) => {
   const [compact, setCompact] = useState(true);
 
-  const onClick = (event) => {
+  const onClick = (event: Event) => {
     setCompact((prev) => (prev ? false : true));
   };
   return (
@@ -83,8 +85,10 @@ const LoreComponent = (props) => {
 
         <div className='mt-2 visible md:hidden'>
           {compact ? (
+            // @ts-ignore comment
             <Button onClick={onClick}>Expand</Button>
           ) : (
+            // @ts-ignore comment
             <Button onClick={onClick}>Collapse</Button>
           )}
         </div>

@@ -5,7 +5,13 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Box from '@mui/material/Box';
 import dayjs from 'dayjs';
-const InfoHeader = (props) => {
+import { Session } from '../constants/types';
+interface Props {
+  sessionInfo: Session[];
+  selected: number;
+  handleSelect: () => void;
+}
+const InfoHeader = (props: Props) => {
   return (
     <>
       <div className='flex space-x-2'>
@@ -43,7 +49,7 @@ const InfoHeader = (props) => {
               onChange={props.handleSelect}
               style={{ borderRadius: '8px' }}
             >
-              {props.sessionInfo.map((ses, index) => (
+              {props.sessionInfo.map((ses: Session, index: number) => (
                 <MenuItem key={index} value={index}>
                   <p>
                     {dayjs(ses.end).format('DD/MM/YY ddd')} - {`${ses.title}`}

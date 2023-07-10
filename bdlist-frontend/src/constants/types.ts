@@ -36,3 +36,22 @@ export interface Info {
   gradients: string;
   lore: string;
 }
+
+export interface Player {
+  paid: boolean;
+  paidAt?: string;
+  userEmail: string;
+  username: string;
+}
+export interface Session {
+  _id: string;
+  start: string;
+  end: string;
+  players: Player[];
+  cost: number;
+  courts: string[];
+  createdAt: string;
+  payTo: string;
+  title: string;
+  roomId: string;
+}

@@ -31,17 +31,9 @@ const Header = () => {
           color='inherit'
         >
           {theme.palette.mode === 'dark' ? (
-            <GiShuttlecock
-              sx={{ justifyContent: 'center' }}
-              size={30}
-              style={{ transform: 'rotate(125deg)' }}
-            />
+            <GiShuttlecock size={30} style={{ transform: 'rotate(125deg)' }} />
           ) : (
-            <GiShuttlecock
-              sx={{ justifyContent: 'center' }}
-              size={30}
-              style={{ transform: 'rotate(45deg)' }}
-            />
+            <GiShuttlecock size={30} style={{ transform: 'rotate(45deg)' }} />
           )}
         </IconButton>
       </Box>

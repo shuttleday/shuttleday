@@ -5,7 +5,12 @@ import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import { Stack } from '@mui/system';
 
-const error = (props) => {
+interface Props {
+  title: string;
+  subTitle: string;
+}
+
+const error = (props: Props) => {
   return (
     <Stack
       spacing={2}

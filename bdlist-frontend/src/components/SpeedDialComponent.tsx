@@ -14,7 +14,7 @@ const SpeedDialComponent = () => {
   const color = green[400];
   const actions = [{ icon: <HomeIcon />, name: 'Home' }];
 
-  function handleSpeedDial(operation) {
+  function handleSpeedDial() {
     if (sessionStorage.getItem(ID) == null) {
       navigate('/');
     } else {
@@ -33,7 +33,6 @@ const SpeedDialComponent = () => {
       }}
     >
       <SpeedDial
-        sticky='true'
         ariaLabel='SpeedDial basic'
         sx={{
           position: 'absolute',
