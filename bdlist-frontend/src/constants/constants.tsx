@@ -8,6 +8,7 @@ import React from 'react';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import BugReportIcon from '@mui/icons-material/BugReport';
 import WestIcon from '@mui/icons-material/West';
+import { Info } from './types';
 
 const ERROR = 'error';
 const SUCCESS = 'success';
@@ -27,7 +28,7 @@ const tokens = {
   jwt: 'jwtToken_Login',
 };
 
-const info = [
+const info: Info[] = [
   {
     name: 'Pie',
     title: 'DevOps God',

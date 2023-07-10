@@ -28,3 +28,11 @@ export interface Room {
   name: string;
   description: string;
 }
+
+export interface Info {
+  name: string;
+  title: string;
+  image: string;
+  gradients: string;
+  lore: string;
+}
