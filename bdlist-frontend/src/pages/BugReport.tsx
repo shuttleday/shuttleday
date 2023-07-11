@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Loading from '../components/Loading';
 import SpeedDialComponent from '../components/SpeedDialComponent';
 const BugReport = () => {
-  const [version, setVersion] = useState('');
+  const [version, setVersion] = useState<string | null>('');
   const [load, setLoad] = useState(true);
 
   useEffect(() => {
@@ -14,7 +14,7 @@ const BugReport = () => {
       const myRegex = /\[(.*?)\]/;
       const myMatch = text.match(myRegex);
 
-      const version = myMatch ? myMatch[1] : null;
+      let version: string | null = myMatch ? myMatch[1] : null;
 
       setVersion(version);
 
