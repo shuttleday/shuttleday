@@ -56,17 +56,17 @@ function App() {
             <Header />
             <>
               <Routes>
-                <Route exact path='/Home' element={<HomePage />} />
-                <Route exact path='/' element={<Rooms />} />
-                <Route exact path='/Glogin' element={<GLogin />} />
-                <Route exact path='*' element={<NotFound />} />
-                <Route exact path='/details' element={<Details />} />
-                <Route exact path='/create' element={<SessionCreate />} />
-                <Route exact path='/edit' element={<Edit />} />
-                <Route exact path='/dev' element={<Dev />} />
-                <Route exact path='/qr' element={<QRManagement />} />
-                <Route exact path='/report' element={<BugReport />} />
-                <Route exact path='/credits' element={<Credits />} />
+                <Route path='/Home' element={<HomePage />} />
+                <Route path='/' element={<Rooms />} />
+                <Route path='/Glogin' element={<GLogin />} />
+                <Route path='*' element={<NotFound />} />
+                <Route path='/details' element={<Details />} />
+                <Route path='/create' element={<SessionCreate />} />
+                <Route path='/edit' element={<Edit />} />
+                <Route path='/dev' element={<Dev />} />
+                <Route path='/qr' element={<QRManagement />} />
+                <Route path='/report' element={<BugReport />} />
+                <Route path='/credits' element={<Credits />} />
               </Routes>
             </>
           </div>
