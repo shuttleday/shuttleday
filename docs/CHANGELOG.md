@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/shuttleday/shuttleday/compare/v2.0.0...v2.0.1) (2023-07-14)
+
+
+### Bug Fixes
+
+* always serve /index.html regardless of path ([28b84a3](https://github.com/shuttleday/shuttleday/commit/28b84a3f720acd6af2964a4b2e881fb490c7caf6))
+
 # [2.0.0](https://github.com/shuttleday/shuttleday/compare/v1.6.0...v2.0.0) (2023-07-08)
 
 
