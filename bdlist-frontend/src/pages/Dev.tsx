@@ -6,18 +6,19 @@ import { AdminWrapper } from '../hoc';
 const Dev = () => {
   let navigate = useNavigate();
 
-  const token = useRef();
+  const tokenRef = useRef<HTMLInputElement | null>(null);
   function submit() {
-    console.log(token.current.value);
-    localStorage.setItem('jwtToken_Login', token.current.value);
-
+    if (tokenRef.current == null) {
+      return;
+    }
+    localStorage.setItem('jwtToken_Login', tokenRef.current.value);
     navigate('/');
   }
   return (
     <div>
       <TextField
         required
-        inputRef={token}
+        inputRef={tokenRef}
         id='outlined-required'
         label='Required'
       />
