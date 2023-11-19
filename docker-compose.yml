@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   db:
-    image: mongo:4.4.13
+    image: mongo:4.4.13 # last version of mongo to support armv8
     # mapping for Internet to access db
     ports:
       - "2500:27017"
