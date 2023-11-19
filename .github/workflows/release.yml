@@ -117,9 +117,6 @@ jobs:
 
       - name: Build Frontend
         run: npm run build
-        env:
-          VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
-          VITE_API_LINK: ${{ secrets.VITE_API_LINK }}
 
       - name: Upload React artifacts
         uses: actions/upload-artifact@v3
