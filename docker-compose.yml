@@ -1,0 +1,47 @@
+version: "3.8"
+services:
+  db:
+    image: mongo:4.4.13
+    # mapping for Internet to access db
+    ports:
+      - "2500:27017"
+    volumes:
+      - ~/shuttleday-volume:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+    command: [--auth]
+    restart: always
+
+  api:
+    image: ghcr.io/shuttleday/api:2.0.1
+    depends_on:
+      - db
+    # access within subnet
+    ports:
+      - "2600:2600"
+    environment:
+      - MONGO_USER=${MONGO_USER}
+      - MONGO_PW=${MONGO_PW}
+      - MONGO_URL=db:27017/?authSource=shuttleday-prod
+      - SERVER_PORT=${SERVER_PORT}
+      - AWS_S3_SECRET_ACCESS_KEY=${AWS_S3_SECRET_ACCESS_KEY}
+      - AWS_S3_ACCESS_KEY_ID=${AWS_S3_ACCESS_KEY_ID}
+      - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
+      - G_AUTH_CLIENT_ID=${G_AUTH_CLIENT_ID}
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
+    links:
+      - db
+    restart: always
+
+  frontend:
+    image: ghcr.io/shuttleday/frontend:2.0.1
+    depends_on:
+      - api
+    ports:
+      - "2700:80"
+    environment:
+      - VITE_CLIENT_ID=${VITE_CLIENT_ID}
+      - VITE_API_LINK=${VITE_API_LINK}
+    restart: always
