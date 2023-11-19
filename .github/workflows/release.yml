@@ -3,8 +3,8 @@ name: Release CI
 on:
   workflow_dispatch:
   push:
-    branches: [ 'main' ]
-    paths: [ "bdlist-backend/**", "bdlist-frontend/**" ]
+    branches: ["main"]
+    paths: ["bdlist-backend/**", "bdlist-frontend/**"]
 
 jobs:
   get-next-version:
@@ -21,7 +21,7 @@ jobs:
         name: Install pnpm
         id: pnpm-install
         with:
-          version: 7
+          version: 8
           run_install: false
 
       - name: Get pnpm store directory
@@ -107,26 +107,26 @@ jobs:
         working-directory: ./bdlist-frontend
 
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 18
-    
-    - name: Install dependencies
-      run: npm install
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-    - name: Build Frontend
-      run: npm run build
-      env:
-        VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
-        VITE_API_LINK: ${{ secrets.VITE_API_LINK }}
+      - name: Install dependencies
+        run: npm install
 
-    - name: Upload React artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: static-react-build
-        path: ./bdlist-frontend/dist/
-        retention-days: 14  
+      - name: Build Frontend
+        run: npm run build
+        env:
+          VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
+          VITE_API_LINK: ${{ secrets.VITE_API_LINK }}
+
+      - name: Upload React artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: static-react-build
+          path: ./bdlist-frontend/dist/
+          retention-days: 14
 
   dockerize-backend:
     name: Dockerize and Push Backend Image
@@ -171,7 +171,7 @@ jobs:
               ref: 'main',
               inputs: { 'tag': '${{ needs.get-next-version.outputs.new-release-version }}' }
             })
-            
+
       - name: Send Discord Notification
         uses: sarisia/actions-status-discord@v1
         if: always()
@@ -179,7 +179,7 @@ jobs:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
 
   semantic-release:
-    needs: [ deploy ]
+    needs: [deploy]
     permissions:
       contents: write # to be able to publish a GitHub release
       issues: write # to be able to comment on released issues
