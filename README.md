@@ -52,6 +52,8 @@
 
 # About
 
+Seems like the project is dead. Archived.
+
 ## Background
 
 [Pierre](https://pierreccesario.com) didn't like using a messaging app for organising badminton sessions. Fortunately he and [Jonathan](https://tjonathan.com) are developers.
