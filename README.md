@@ -5,28 +5,6 @@
 <p>
   <img src="docs/shuttlecock.webp" width=300>
 </p>
-<p>
-  <a href="https://github.com/shuttleday/shuttleday/blob/main/LICENSE.md">
-    <img src="https://img.shields.io/badge/license-WTFPL-brightgreen">
-  </a>
-</p>
-
-<p>
-  <a href="https://codecov.io/github/shuttleday/shuttleday" > 
-    <img src="https://codecov.io/github/shuttleday/shuttleday/branch/main/graph/badge.svg?token=KA4B01QNXI"/> 
-  </a>
-</p>
-
-[![Release CI](https://github.com/shuttleday/shuttleday/actions/workflows/release.yml/badge.svg)](https://github.com/shuttleday/shuttleday/actions/workflows/release.yml)
-
-<p>
-
-<a href="https://status.shuttleday.info">
-<img src="https://uptime-kuma.pierreccesario.com/api/badge/9/uptime/720?label=API%20Uptime%2030d">
-</a>
-<a href="https://status.shuttleday.info">
-<img src="https://uptime-kuma.pierreccesario.com/api/badge/5/uptime/720?label=Frontend%20Uptime%2030d">
-</a>
 
 </p>
 </div>
