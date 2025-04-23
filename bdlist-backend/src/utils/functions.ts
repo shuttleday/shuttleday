@@ -35,7 +35,7 @@ export async function validateGJwt(req: Request) {
   async function verify() {
     const ticket = await client.verifyIdToken({
       idToken: token!,
-      aud: CLIENT_ID,
+      audience: CLIENT_ID,
     });
     const payload = ticket.getPayload();
     return payload;
