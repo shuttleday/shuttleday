@@ -93,7 +93,7 @@ jobs:
         run: pnpm build
 
       - name: Upload Transpiled Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: transpiled-api
           path: ./bdlist-backend/dist/
@@ -122,7 +122,7 @@ jobs:
           VITE_API_LINK: ${{ secrets.VITE_API_LINK }}
 
       - name: Upload React artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: static-react-build
           path: ./bdlist-frontend/dist/
