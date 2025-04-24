@@ -1,5 +1,5 @@
 import { FileExtension } from "file-type";
-import { WithId, Document } from "mongodb";
+import { ObjectId } from "mongodb";
 
 interface QR {
   uploaded: boolean;
@@ -12,7 +12,8 @@ export interface RoomPlayer {
   isAdmin: boolean;
 }
 
-export interface User extends WithId<Document> {
+export interface User {
+  _id: ObjectId;
   email: string;
   firstName: string;
   lastName: string;
@@ -21,7 +22,8 @@ export interface User extends WithId<Document> {
   QR: QR;
 }
 
-export interface UserPayment extends WithId<Document> {
+export interface UserPayment {
+  _id: ObjectId;
   userEmail: string;
   username: string;
   paid: boolean;
@@ -29,7 +31,8 @@ export interface UserPayment extends WithId<Document> {
   fileExt: FileExtension | null;
 }
 
-export interface GameSession extends WithId<Document> {
+export interface GameSession {
+  _id: ObjectId;
   start: Date;
   end: Date;
   players: UserPayment[];
@@ -42,7 +45,8 @@ export interface GameSession extends WithId<Document> {
   location: string;
 }
 
-export interface Room extends WithId<Document> {
+export interface Room {
+  _id: ObjectId;
   name: string;
   description?: string;
   creatorEmail: string;

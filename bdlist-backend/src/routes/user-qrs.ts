@@ -71,7 +71,7 @@ router
             $set: {
               QR: {
                 uploaded: true,
-                fileExt: req.fileExt,
+                fileExt: req.fileExt ?? null,
               },
             },
           },
